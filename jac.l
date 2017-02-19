@@ -6,8 +6,8 @@
 NUMBER				[0-9]
 CHARACTER     [a-zA-Z]
 
-ID             {CHARACTER}({CHARACTER}|{NUMBER}|"$"|"_")*
-DECLIT         {NUMBER}+
+ID             ({CHARACTER}|"$"|"_")({CHARACTER}|{NUMBER}|"$"|"_")*
+DECLIT         ([1-9]|0)
 BOOL           boolean
 BOOLIT         true|false
 CLASS          class
@@ -48,7 +48,7 @@ NOT            "!"
 ASSIGN         "="
 SEMI           ";"
 COMMA          ","
-RESERVED       null|"++"|"--"
+RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|synchronized|goto|private|this|break|implements|protected|throw|byte|import|throws|case|enum|instanceof|transient|catch|extends|short|try|char|final|interface|finally|long|strictfp|volatile|const|float|native|super
 
 %%
 
