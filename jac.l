@@ -120,7 +120,7 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 {STRING}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
 {VOID}		{if(erro == 1){printf("VOID\n");}			col+=yyleng;}
 
-{ILLEGALESCAPE} {printf("Line %d, col %d: Invalid escape sequence (%s)\n",line,col,yytext);			col+=yyleng;}
+{ILLEGALESCAPE} {printf("Line %d, col %d: Invalid escape sequence(%s)\n",line,col,yytext);			col+=yyleng;}
 
 {REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
@@ -128,9 +128,9 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
 
 
-
 \n			{line++; col=1;}
-.               {;}
+"\t"|" "	{col+=yyleng;}
+.               {printf("Line %d, col %d: illegal character(%s)\n",line,col,yytext);			col+=yyleng;}
 
 %%
 int main(int argc, char** argv){
