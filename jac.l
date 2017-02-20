@@ -1,13 +1,34 @@
+%x COMMENT
 %{
 	int line=1, col=1, auxLine=0, auxCol=0, erro=0;
 
 %}
 
 NUMBER				[0-9]
+NONZERO				[1-9]
 CHARACTER     [a-zA-Z]
+ZERO					0
+JAVALETTER		[a-zA-Z]|$|_
+JAVALETTERORDIGIT {JAVALETTER}|[0-9]
+UNDERSCORE		_
+DECIMALNUMERAL 0|{NONZERO}{DIGITS}?
+DIGITS        {DIGIT}|{DIGIT}{DIGITSANDUNDERSCORES}?{DIGIT}
+DIGIT 				0|{NONZERO}
+DIGITSANDUNDERSCORES {DIGITORUNDERSCORE}{DIGITORUNDERSCORE}*
+DIGITORUNDERSCORE {DIGIT}|_
+UNDERSCORES __*
+EXPONENTPART {EXPONENTINDICATOR}{SIGNEDINTEGER}
+EXPONENTINDICATOR e|E
+SIGNEDINTEGER {SIGN}?{DIGITS}
+SIGN "+"|"-"
+STRINGCHARACTER {INPUTCHARACTER}+{ESCAPESEQUENCE}?|{ESCAPESEQUENCE}
+ESCAPESEQUENCE \f|\n|\r|\t|\\|\"
+INPUTCHARACTER [^\r\n]
 
-ID             ({CHARACTER}|"$"|"_")({CHARACTER}|{NUMBER}|"$"|"_")*
-DECLIT         ([1-9]|0)
+ID             {JAVALETTER}{JAVALETTERORDIGIT}*
+DECLIT         {ZERO}|{NONZERO}{DIGITS}?|{NONZERO}{UNDERSCORES}{DIGITS}
+REALLIT				 {DIGITS}"."{DIGITS}?{EXPONENTPART}?|"."{DIGITS}{EXPONENTPART}?|{DIGITS}{EXPONENTPART}
+STRLIT				 \"{STRINGCHARACTER}*\"
 BOOL           boolean
 BOOLIT         true|false
 CLASS          class
@@ -51,6 +72,12 @@ COMMA          ","
 RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|synchronized|goto|private|this|break|implements|protected|throw|byte|import|throws|case|enum|instanceof|transient|catch|extends|short|try|char|final|interface|finally|long|strictfp|volatile|const|float|native|super
 
 %%
+"/*"		    	{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
+<COMMENT>"*/"       {BEGIN 0;col+=yyleng;}
+<COMMENT>"\n"	    {line++;col=1;}
+<COMMENT>.	    	{col+=yyleng;}
+<COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
+
 
 {IF}		{if(erro == 1){printf("IF\n");}			col+=yyleng;}
 {AND}		{if(erro == 1){printf("AND\n");}					col+=yyleng;}
@@ -61,7 +88,6 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 {CBRACE}		{if(erro == 1){printf("CBRACE\n");}					col+=yyleng;}
 {COMMA}		{if(erro == 1){printf("COMMA\n");}					col+=yyleng;}
 {CSQUARE}		{if(erro == 1){printf("CSQUARE\n");}					col+=yyleng;}
-{DECLIT}		{if(erro == 1){printf("DECLIT\n");}			col+=yyleng;}
 {DIV}		{if(erro == 1){printf("DIV\n");}					col+=yyleng;}
 {DO}		{if(erro == 1){printf("DO\n");}			col+=yyleng;}
 {DOTLENGTH}		{if(erro == 1){printf("DOTLENGTH\n");}			col+=yyleng;}
@@ -93,7 +119,13 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 {STRING}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
 {VOID}		{if(erro == 1){printf("VOID\n");}			col+=yyleng;}
 
+{REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
+{DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
+{STRLIT}		{if(erro == 1){printf("STRLIT(%s)\n", yytext);}			col+=yyleng;}
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
+
+
+
 \n			{line++; col=1;}
 .               {;}
 
