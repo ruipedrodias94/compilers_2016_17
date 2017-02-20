@@ -21,9 +21,10 @@ EXPONENTPART {EXPONENTINDICATOR}{SIGNEDINTEGER}
 EXPONENTINDICATOR e|E
 SIGNEDINTEGER {SIGN}?{DIGITS}
 SIGN "+"|"-"
-STRINGCHARACTER {ESCAPESEQUENCE}|{INPUTCHARACTER}
+STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
 INPUTCHARACTER [^\r\n\"]
+ILLEGALESCAPE  \"{STRINGCHARACTER}*(\\[^fnrt\\\"]){STRINGCHARACTER}*\"
 
 ID             {JAVALETTER}{JAVALETTERORDIGIT}*
 DECLIT         {ZERO}|{NONZERO}{DIGITS}?|{NONZERO}{UNDERSCORES}{DIGITS}
@@ -118,6 +119,8 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 {STATIC}		{if(erro == 1){printf("STATIC\n");}			col+=yyleng;}
 {STRING}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
 {VOID}		{if(erro == 1){printf("VOID\n");}			col+=yyleng;}
+
+{ILLEGALESCAPE} {printf("Line %d, col %d: Invalid escape sequence (%s)\n",line,col,yytext);			col+=yyleng;}
 
 {REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
