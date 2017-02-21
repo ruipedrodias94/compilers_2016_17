@@ -1,0 +1,19 @@
+class Echo {
+          public static void main(String[] args) {
+               int x;
+               int y;
+               2.3
+               3  .3E34
+               1_432_43
+               0_123_23
+               "asd"
+               "\xdf"
+               "ad\sd"
+               "\j"
+               "s\f\g\hg\"f"
+               "dasd\f"
+               // comentariozao
+
+
+          }
+          }
