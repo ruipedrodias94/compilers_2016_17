@@ -1,6 +1,9 @@
 %x COMMENT
+%x STRING
 %{
 	int line=1, col=1, auxLine=0, auxCol=0, erro=0;
+	char* aux;
+
 
 %}
 
@@ -24,12 +27,12 @@ SIGN "+"|"-"
 STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
 INPUTCHARACTER [^\r\n\"]
-ILLEGALESCAPE  \"{STRINGCHARACTER}*(\\[^fnrt\\\"]){STRINGCHARACTER}*\"
+ONELINECOMMENT "//".*
+
 
 ID             {JAVALETTER}{JAVALETTERORDIGIT}*
 DECLIT         {ZERO}|{NONZERO}{DIGITS}?|{NONZERO}{UNDERSCORES}{DIGITS}
 REALLIT				 {DIGITS}"."{DIGITS}?{EXPONENTPART}?|"."{DIGITS}{EXPONENTPART}?|{DIGITS}{EXPONENTPART}
-STRLIT				 \"{STRINGCHARACTER}*\"
 BOOL           boolean
 BOOLIT         true|false
 CLASS          class
@@ -80,6 +83,8 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 <COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
 
 
+
+
 {IF}		{if(erro == 1){printf("IF\n");}			col+=yyleng;}
 {AND}		{if(erro == 1){printf("AND\n");}					col+=yyleng;}
 {ASSIGN}		{if(erro == 1){printf("ASSIGN\n");}					col+=yyleng;}
@@ -119,17 +124,24 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 {STATIC}		{if(erro == 1){printf("STATIC\n");}			col+=yyleng;}
 {STRING}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
 {VOID}		{if(erro == 1){printf("VOID\n");}			col+=yyleng;}
+{ONELINECOMMENT}  {if(erro == 1){printf("VOID\n");}}
 
-{ILLEGALESCAPE} {printf("Line %d, col %d: Invalid escape sequence(%s)\n",line,col,yytext);			col+=yyleng;}
+
 
 {REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
-{STRLIT}		{if(erro == 1){printf("STRLIT(%s)\n", yytext);}			col+=yyleng;}
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
 
 
-\n			{line++; col=1;}
+"\""       {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;}
+<STRING>"\n"	    {line++;col=1;}
+<STRING>{STRINGCHARACTER}*\\[^fnrt\\\"]{STRINGCHARACTER}*	 {printf("Line %d, col %d: illegal escape sequence (%s)\n",auxLine,auxCol,yytext);}
+<STRING>{STRINGCHARACTER}* {printf("STRLIT(%s)\n",yytext);auxCol+=yyleng;}
+<STRING><<EOF>>  {printf("Line %d, col %d: unterminated string\n",auxLine,auxCol);BEGIN 0; return *yytext;}
+<STRING>"\""       {BEGIN 0;col+=yyleng;}
+
 "\t"|" "	{col+=yyleng;}
+"\n"			{line++; col=1;}
 .               {printf("Line %d, col %d: illegal character(%s)\n",line,col,yytext);			col+=yyleng;}
 
 %%
