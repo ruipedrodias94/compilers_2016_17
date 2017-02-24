@@ -19,7 +19,7 @@ DIGITS        {DIGIT}|{DIGIT}{DIGITSANDUNDERSCORES}?{DIGIT}
 DIGIT 				0|{NONZERO}
 DIGITSANDUNDERSCORES {DIGITORUNDERSCORE}{DIGITORUNDERSCORE}*
 DIGITORUNDERSCORE {DIGIT}|_
-UNDERSCORES __*
+UNDERSCORES _(_)*
 EXPONENTPART {EXPONENTINDICATOR}{SIGNEDINTEGER}
 EXPONENTINDICATOR e|E
 SIGNEDINTEGER {SIGN}?{DIGITS}
@@ -73,7 +73,7 @@ NOT            "!"
 ASSIGN         "="
 SEMI           ";"
 COMMA          ","
-RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|synchronized|goto|private|this|break|implements|protected|throw|byte|import|throws|case|enum|instanceof|transient|catch|extends|short|try|char|final|interface|finally|long|strictfp|volatile|const|float|native|super
+RESERVED       System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|default|package|synchronized|goto|private|this|break|implements|protected|throw|byte|import|throws|case|enum|instanceof|transient|catch|extends|short|try|char|final|interface|finally|long|strictfp|volatile|const|float|native|super
 
 %%
 "/*"		    	{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
@@ -133,15 +133,9 @@ RESERVED       null|"++"|"--"|abstract|continue|for|new|switch|default|package|s
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
 
 
-"\""       {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;}
-<STRING>"\n"	    {line++;col=1;}
-<STRING>{STRINGCHARACTER}*\\[^fnrt\\\"]{STRINGCHARACTER}*	 {printf("Line %d, col %d: illegal escape sequence (%s)\n",auxLine,auxCol,yytext);}
-<STRING>{STRINGCHARACTER}* {printf("STRLIT(%s)\n",yytext);auxCol+=yyleng;}
-<STRING><<EOF>>  {printf("Line %d, col %d: unterminated string\n",auxLine,auxCol);BEGIN 0; return *yytext;}
-<STRING>"\""       {BEGIN 0;col+=yyleng;}
 
-"\t"|" "	{col+=yyleng;}
-"\n"			{line++; col=1;}
+"\t"|" "|"\f"	{col+=yyleng;}
+"\n"|"\r"|"\n\r"	{line++; col=1;}
 .               {printf("Line %d, col %d: illegal character(%s)\n",line,col,yytext);			col+=yyleng;}
 
 %%
