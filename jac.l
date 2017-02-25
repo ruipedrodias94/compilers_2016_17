@@ -8,6 +8,7 @@
 %}
 %x COMMENT
 %x STRING
+%x LINECOMMENT
 NUMBER				[0-9]
 NONZERO				[1-9]
 CHARACTER     [a-zA-Z]
@@ -28,7 +29,7 @@ SIGN "+"|"-"
 STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
 INPUTCHARACTER [^\r\n\"]
-ONELINECOMMENT "//"{INPUTCHARACTER}*
+ONELINECOMMENT "//"({INPUTCHARACTER}|(\"{STRINGCHARACTER}*\"))*
 NOSTAR {INPUTCHARACTER}^"*"{COMMENTTAIL}
 COMMENTTAILSTAR "/"|"*"{COMMENTTAILSTAR}|{NOTSTARNOTSLASH}{COMMENTTAIL}
 NOTSTARNOTSLASH ({INPUTCHARACTER}^("*"|"/"))| {LINETERMINATOR}
@@ -40,22 +41,22 @@ COMMENTTAIL "*"{COMMENTTAILSTAR}|{NOSTAR}
 ID             ({JAVALETTER}{JAVALETTERORDIGIT}*)
 DECLIT         {ZERO}|{NONZERO}{DIGITS}?|{NONZERO}{UNDERSCORES}{DIGITS}
 REALLIT				 {DIGITS}"."{DIGITS}?{EXPONENTPART}?|"."{DIGITS}{EXPONENTPART}?|{DIGITS}{EXPONENTPART}
-STRLIT					\"{STRINGCHARACTER}*\"       
+STRLIT					\"{STRINGCHARACTER}*\"
 BOOL           boolean
 BOOLIT         true|false
 CLASS          class
 DO             do
-DOTLENGTH      "."length
+DOTLENGTH      ("."length)
 DOUBLE         double
 ELSE           else
 IF             if
 INT            int
-PARSEINT       Integer.parseInt
-PRINT          System.out.println
+PARSEINT       (Integer"."parseInt)
+PRINT          (System"."out"."println)
 PUBLIC         public
 RETURN         return
 STATIC         static
-STRING         string
+STRINGW        String
 VOID           void
 WHILE          while
 OCURV          "("
@@ -81,7 +82,7 @@ NOT            "!"
 ASSIGN         "="
 SEMI           ";"
 COMMA          ","
-RESERVED       System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|default|package|synchronized|goto|private|this|break|implements|protected|throw|byte|import|throws|case|enum|instanceof|transient|catch|extends|short|try|char|final|interface|finally|long|strictfp|volatile|const|float|native|super
+RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|default|package|synchronized|goto|private|this|break|implements|protected|throw|byte|import|throws|case|enum|instanceof|transient|catch|extends|short|try|char|final|interface|finally|long|strictfp|volatile|const|float|native|super
 
 %%
 "/*"		    	{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
@@ -92,7 +93,9 @@ RESERVED       System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|de
 <COMMENT>.	    	{col+=yyleng;}
 <COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
 
-{STRLIT} {if(erro == 1){printf("STRLIT(%s)\n", yytext);}			col+=yyleng;}
+"//" {BEGIN LINECOMMENT;}
+<LINECOMMENT>. {;}
+<LINECOMMENT>\n {BEGIN 0;}
 
 \" {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;aux = yytext;}
 <STRING>"\n"		{;}
@@ -137,9 +140,9 @@ RESERVED       System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|de
 {SEMI}		{if(erro == 1){printf("SEMI\n");}					col+=yyleng;}
 {STAR}		{if(erro == 1){printf("STAR\n");}					col+=yyleng;}
 {STATIC}		{if(erro == 1){printf("STATIC\n");}			col+=yyleng;}
-{STRING}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
+{STRINGW}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
 {VOID}		{if(erro == 1){printf("VOID\n");}			col+=yyleng;}
-{ONELINECOMMENT}  {col+=yyleng;}
+{WHILE} 	{if(erro == 1){printf("WHILE\n");}			col+=yyleng;}
 
 
 
@@ -148,7 +151,7 @@ RESERVED       System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|de
 {REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
-
+{STRLIT} {if(erro == 1){printf("STRLIT(%s)\n", yytext);}			col+=yyleng;}
 
 
 "\t"|" "|"\f"	{col+=yyleng;}
