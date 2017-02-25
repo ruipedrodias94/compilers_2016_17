@@ -1,12 +1,13 @@
-%x COMMENT
-%x STRING
+
+
 %{
 	int line=1, col=1, auxLine=0, auxCol=0, erro=0;
 	char* aux;
 
 
 %}
-
+%x COMMENT
+%x STRING
 NUMBER				[0-9]
 NONZERO				[1-9]
 CHARACTER     [a-zA-Z]
@@ -27,17 +28,24 @@ SIGN "+"|"-"
 STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
 INPUTCHARACTER [^\r\n\"]
-ONELINECOMMENT "//".*
+ONELINECOMMENT "//"{INPUTCHARACTER}*
+NOSTAR {INPUTCHARACTER}^"*"{COMMENTTAIL}
+COMMENTTAILSTAR "/"|"*"{COMMENTTAILSTAR}|{NOTSTARNOTSLASH}{COMMENTTAIL}
+NOTSTARNOTSLASH ({INPUTCHARACTER}^("*"|"/"))| {LINETERMINATOR}
+LINETERMINATOR  "\n"|"\r"|"\n\r"
+COMMENTTAIL "*"{COMMENTTAILSTAR}|{NOSTAR}
 
 
-ID             {JAVALETTER}{JAVALETTERORDIGIT}*
+
+ID             ({JAVALETTER}{JAVALETTERORDIGIT}*)
 DECLIT         {ZERO}|{NONZERO}{DIGITS}?|{NONZERO}{UNDERSCORES}{DIGITS}
 REALLIT				 {DIGITS}"."{DIGITS}?{EXPONENTPART}?|"."{DIGITS}{EXPONENTPART}?|{DIGITS}{EXPONENTPART}
+STRLIT					\"{STRINGCHARACTER}*\"       
 BOOL           boolean
 BOOLIT         true|false
 CLASS          class
 DO             do
-DOTLENGTH      .length
+DOTLENGTH      "."length
 DOUBLE         double
 ELSE           else
 IF             if
@@ -79,11 +87,18 @@ RESERVED       System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|de
 "/*"		    	{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
 <COMMENT>"*/"       {BEGIN 0;col+=yyleng;}
 <COMMENT>"\n"	    {line++;col=1;}
+<COMMENT>"\r"	    {line++;col=1;}
+<COMMENT>"\n\r"	    {line++;col=1;}
 <COMMENT>.	    	{col+=yyleng;}
 <COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
 
+{STRLIT} {if(erro == 1){printf("STRLIT(%s)\n", yytext);}			col+=yyleng;}
 
-
+\" {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;aux = yytext;}
+<STRING>"\n"		{;}
+<STRING>\" {BEGIN 0;col+=yyleng;aux = yytext;}
+<STRING>.		{;}
+<STRING><<EOF>>    {printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
 
 {IF}		{if(erro == 1){printf("IF\n");}			col+=yyleng;}
 {AND}		{if(erro == 1){printf("AND\n");}					col+=yyleng;}
@@ -117,17 +132,19 @@ RESERVED       System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|de
 {PLUS}		{if(erro == 1){printf("PLUS\n");}					col+=yyleng;}
 {PRINT}		{if(erro == 1){printf("PRINT\n");}			col+=yyleng;}
 {PUBLIC}		{if(erro == 1){printf("PUBLIC\n");}			col+=yyleng;}
-{RESERVED}		{if(erro == 1){printf("RESERVED\n");}					col+=yyleng;}
+{RESERVED}		{if(erro == 1){printf("RESERVED(%s)\n", yytext);}					col+=yyleng;}
 {RETURN}		{if(erro == 1){printf("RETURN\n");}			col+=yyleng;}
 {SEMI}		{if(erro == 1){printf("SEMI\n");}					col+=yyleng;}
 {STAR}		{if(erro == 1){printf("STAR\n");}					col+=yyleng;}
 {STATIC}		{if(erro == 1){printf("STATIC\n");}			col+=yyleng;}
 {STRING}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
 {VOID}		{if(erro == 1){printf("VOID\n");}			col+=yyleng;}
-{ONELINECOMMENT}  {if(erro == 1){printf("VOID\n");}}
+{ONELINECOMMENT}  {col+=yyleng;}
 
 
 
+
+{BOOLIT}		{if(erro == 1){printf("BOOLIT(%s)\n", yytext);}			col+=yyleng;}
 {REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
