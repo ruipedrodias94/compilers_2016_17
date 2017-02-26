@@ -147,7 +147,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 
 
-{BOOLIT}		{if(erro == 1){printf("BOOLIT(%s)\n", yytext);}			col+=yyleng;}
+{BOOLIT}		{if(erro == 1){printf("BOOLLIT(%s)\n", yytext);}			col+=yyleng;}
 {REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
