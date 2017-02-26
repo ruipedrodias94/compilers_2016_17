@@ -29,12 +29,8 @@ SIGN "+"|"-"
 STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
 INPUTCHARACTER [^\r\n\"]
-ONELINECOMMENT "//"({INPUTCHARACTER}|(\"{STRINGCHARACTER}*\"))*
-NOSTAR {INPUTCHARACTER}^"*"{COMMENTTAIL}
-COMMENTTAILSTAR "/"|"*"{COMMENTTAILSTAR}|{NOTSTARNOTSLASH}{COMMENTTAIL}
-NOTSTARNOTSLASH ({INPUTCHARACTER}^("*"|"/"))| {LINETERMINATOR}
 LINETERMINATOR  "\n"|"\r"|"\n\r"
-COMMENTTAIL "*"{COMMENTTAILSTAR}|{NOSTAR}
+
 
 
 
@@ -87,18 +83,19 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 %%
 "/*"		    	{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
 <COMMENT>"*/"       {BEGIN 0;col+=yyleng;}
-<COMMENT>"\n"	    {line++;col=1;}
-<COMMENT>"\r"	    {line++;col=1;}
-<COMMENT>"\n\r"	    {line++;col=1;}
+<COMMENT>{LINETERMINATOR}	    {line++;col=1;}
+<COMMENT>"\t"|" "|"\f"	{col+=yyleng;}
 <COMMENT>.	    	{col+=yyleng;}
 <COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
 
 "//" {BEGIN LINECOMMENT;}
-<LINECOMMENT>. {;}
-<LINECOMMENT>\n {BEGIN 0;}
+<LINECOMMENT>{LINETERMINATOR} {BEGIN 0;}
+<LINECOMMENT>"\t"|" "|"\f"	{col+=yyleng;}
+<LINECOMMENT>. {col+=yyleng;}
+
 
 \" {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;aux = yytext;}
-<STRING>"\n"		{;}
+<STRING>"\n"		{col=1;line++;}
 <STRING>\" {BEGIN 0;col+=yyleng;aux = yytext;}
 <STRING>.		{;}
 <STRING><<EOF>>    {printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
@@ -143,10 +140,6 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 {STRINGW}		{if(erro == 1){printf("STRING\n");}			col+=yyleng;}
 {VOID}		{if(erro == 1){printf("VOID\n");}			col+=yyleng;}
 {WHILE} 	{if(erro == 1){printf("WHILE\n");}			col+=yyleng;}
-
-
-
-
 {BOOLIT}		{if(erro == 1){printf("BOOLLIT(%s)\n", yytext);}			col+=yyleng;}
 {REALLIT}		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}			col+=yyleng;}
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
