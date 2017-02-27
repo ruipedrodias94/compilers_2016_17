@@ -90,10 +90,10 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 
 \" {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;aux = yytext;}
-<STRING>{LINETERMINATOR}		{col=1;line++;printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
 <STRING>\" {BEGIN 0;col+=yyleng;aux = yytext;}
-<STRING>.		{;}
+<STRING>{LINETERMINATOR}		{col=1;line++;printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol);BEGIN 0;}
 <STRING><<EOF>>    {printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
+<STRING>.		{;}
 
 {IF}		{if(erro == 1){printf("IF\n");}			col+=yyleng;}
 {AND}		{if(erro == 1){printf("AND\n");}					col+=yyleng;}
