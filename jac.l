@@ -8,6 +8,7 @@
 %x COMMENT
 %x STRING
 %x LINECOMMENT
+
 NUMBER				[0-9]
 NONZERO				[1-9]
 CHARACTER     [a-zA-Z]
@@ -28,7 +29,7 @@ SIGN "+"|"-"
 STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
 INPUTCHARACTER [^\r\n\\\"]
-LINETERMINATOR  \n|\r|(\r\n)
+LINETERMINATOR  "\n"|"\r"|"\r\n"
 LINECOMMENT  "//"([^\n\r])*
 
 
@@ -89,11 +90,12 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 \" {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;}
 <STRING>\" {BEGIN 0;col+=yyleng;}
+<STRING>\\[^fn\\\"] {printf("Line %d, col %d: invalid escape sequence (%s)\n",line,col,yytext);col+=yyleng;}
 <STRING>{LINETERMINATOR}		{col=1;line++;printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol);BEGIN 0;}
 <STRING><<EOF>>    {printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
-<STRING>\\[^fnr\\\"] {printf("Line %d, col %d: illegal escape sequence (%s)\n",line,col,yytext);col+=yyleng;}
 <STRING>. {col+=yyleng;}
 
+{LINECOMMENT} {;}
 {IF}		{if(erro == 1){printf("IF\n");}			col+=yyleng;}
 {AND}		{if(erro == 1){printf("AND\n");}					col+=yyleng;}
 {ASSIGN}		{if(erro == 1){printf("ASSIGN\n");}					col+=yyleng;}
@@ -139,13 +141,13 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 {DECLIT}		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}			col+=yyleng;}
 {ID}		{if(erro == 1){printf("ID(%s)\n", yytext);}			col+=yyleng;}
 {STRLIT} {if(erro == 1){printf("STRLIT(%s)\n", yytext);}			col+=yyleng;}
-{LINECOMMENT} {;}
 
 
 
-"\t"|" "|"\f"	{col+=yyleng;}
+
+\t|" "|\f	{col+=yyleng;}
 {LINETERMINATOR}	{line++;col=1;}
-.              		{printf("Line %d, col %d: illegal character(%s)\n", line , col , yytext);	col+=yyleng;}
+.              		{printf("Line %d, col %d: illegal character (%s)\n", line , col , yytext);	col+=yyleng;}
 
 %%
 int main(int argc, char** argv){
