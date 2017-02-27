@@ -27,9 +27,9 @@ SIGNEDINTEGER {SIGN}?{DIGITS}
 SIGN "+"|"-"
 STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
-INPUTCHARACTER [^\r\n]
-LINETERMINATOR  "\n"|"\r"|"\r\n"
-LINECOMMENT  "//"{INPUTCHARACTER}*
+INPUTCHARACTER [^\r\n\\\"]
+LINETERMINATOR  \n|\r|(\r\n)
+LINECOMMENT  "//"([^\n\r])*
 
 
 ID             ({JAVALETTER}{JAVALETTERORDIGIT}*)
@@ -83,17 +83,16 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 "/*"		    	{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
 <COMMENT>"*/"       {BEGIN 0;col+=yyleng;}
 <COMMENT>{LINETERMINATOR}	    {line++;col=1;}
-<COMMENT>"\t"|" "|"\f"	{col+=yyleng;}
-<COMMENT>.	    	{col+=yyleng;}
 <COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
+<COMMENT>.	    	{col+=yyleng;}
 
 
-
-\" {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;aux = yytext;}
-<STRING>\" {BEGIN 0;col+=yyleng;aux = yytext;}
+\" {BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;}
+<STRING>\" {BEGIN 0;col+=yyleng;}
 <STRING>{LINETERMINATOR}		{col=1;line++;printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol);BEGIN 0;}
 <STRING><<EOF>>    {printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
-<STRING>.		{;}
+<STRING>\\[^fnr\\\"] {printf("Line %d, col %d: illegal escape sequence (%s)\n",line,col,yytext);col+=yyleng;}
+<STRING>. {col+=yyleng;}
 
 {IF}		{if(erro == 1){printf("IF\n");}			col+=yyleng;}
 {AND}		{if(erro == 1){printf("AND\n");}					col+=yyleng;}
@@ -145,8 +144,6 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 
 "\t"|" "|"\f"	{col+=yyleng;}
-
-
 {LINETERMINATOR}	{line++;col=1;}
 .              		{printf("Line %d, col %d: illegal character(%s)\n", line , col , yytext);	col+=yyleng;}
 
