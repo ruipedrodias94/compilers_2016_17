@@ -1,5 +1,4 @@
 
-
 %{
 	int line=1, col=1, auxLine=0, auxCol=0, erro=0;
 	char* aux;
@@ -29,9 +28,7 @@ SIGN "+"|"-"
 STRINGCHARACTER ({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE \\f|\\n|\\r|\\t|\\\\|\\\"
 INPUTCHARACTER [^\r\n\"]
-LINETERMINATOR  "\n"|"\r"|"\n\r"
-
-
+LINETERMINATOR  "\n"|"\r"|"\r\n"
 
 
 ID             ({JAVALETTER}{JAVALETTERORDIGIT}*)
@@ -81,6 +78,7 @@ COMMA          ","
 RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|switch|default|package|synchronized|goto|private|this|break|implements|protected|throw|byte|import|throws|case|enum|instanceof|transient|catch|extends|short|try|char|final|interface|finally|long|strictfp|volatile|const|float|native|super
 
 %%
+
 "/*"		    	{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
 <COMMENT>"*/"       {BEGIN 0;col+=yyleng;}
 <COMMENT>{LINETERMINATOR}	    {line++;col=1;}
@@ -88,8 +86,9 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 <COMMENT>.	    	{col+=yyleng;}
 <COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
 
+
 "//" {BEGIN LINECOMMENT;}
-<LINECOMMENT>{LINETERMINATOR} {BEGIN 0;}
+<LINECOMMENT>{LINETERMINATOR} {BEGIN 0; line++; col=1;}
 <LINECOMMENT>"\t"|" "|"\f"	{col+=yyleng;}
 <LINECOMMENT>. {col+=yyleng;}
 
@@ -147,9 +146,12 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 {STRLIT} {if(erro == 1){printf("STRLIT(%s)\n", yytext);}			col+=yyleng;}
 
 
+	
 "\t"|" "|"\f"	{col+=yyleng;}
-"\n"|"\r"|"\n\r"	{line++; col=1;}
-.               {printf("Line %d, col %d: illegal character(%s)\n",line,col,yytext);			col+=yyleng;}
+
+
+"\n"|"\r"|"\r\n"	{line++;col=1;}
+.              		{printf("Line %d, col %d: illegal character(%s)\n", line , col , yytext);	col+=yyleng;}
 
 %%
 int main(int argc, char** argv){

@@ -13,7 +13,10 @@ class Echo {
                "s\f\g\hg\"f"
                "dasd\f"
                // comentariozao
+               teste
+               #
+               |;
 
-
+               /*CONA*/
           }
-          }
+      }
