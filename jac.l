@@ -84,15 +84,15 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 "/*"		    																{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
 <COMMENT>"*/"       												{BEGIN 0;col+=yyleng;}
-<COMMENT>{LINETERMINATOR}	    							{line++; col=1;}
+<COMMENT>{LINETERMINATOR}	    							{line++; col=1;return LINETERMINATOR;}
 <COMMENT><<EOF>>    												{printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
 <COMMENT>.	    														{col+=yyleng;}
 
 
 \" 																					{BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;}
 <STRING>\" 																	{BEGIN 0;col+=yyleng;}
-<STRING>{ESCAPESEQUENCE}										{col+=yyleng;}
-<STRING>{LINETERMINATOR}										{col=1; line++; printf("Line %d, col %d: unterminated string literal\n", auxLine, auxCol); BEGIN 0;}
+<STRING>{ESCAPESEQUENCE}										{col+=yyleng;return ESCAPESEQUENCE;}
+<STRING>{LINETERMINATOR}										{col=1; line++; printf("Line %d, col %d: unterminated string literal\n", auxLine, auxCol); BEGIN 0;return LINETERMINATOR;}
 <STRING>\\.?			 													{printf("Line %d, col %d: invalid escape sequence (%s)\n",line,col,yytext);col+=yyleng;}
 <STRING><<EOF>>    													{printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
 <STRING>. 																	{col+=yyleng;}
