@@ -8,6 +8,7 @@
 %x COMMENT
 %x STRING
 %x LINECOMMENT
+%x STRINGBAR
 
 NUMBER																			[0-9]
 NONZERO																			[1-9]
@@ -151,8 +152,12 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 %%
 int main(int argc, char** argv){
 	if(argc>1){
-		if(strcmp(argv[1],"-l")==0 || strcmp(argv[1],"-1")==0){
+		if(strcmp(argv[1],"-l")==0){
 			erro = 1;
+			yylex();
+		}
+		else
+		{
 			yylex();
 		}
 	}
