@@ -53,8 +53,104 @@
 %token LINETERMINATOR
 
 %%
-  /*Expressions here*/
-  
+  /*Given grammar in EBNF form*/
+
+  /*Ciclos é 0 ou mais ocorrências e são representados por {}*/
+  Program: CLASS ID OBRACE ProgramCycle CBRACE;
+  ProgramCycle: ProgramCycle FieldDecl
+              | ProgramCycle MethodDecl
+              | ProgramCycle SEMI
+              | %empty
+              ;
+
+  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI;
+  FieldDeclCycle: FieldDeclCycle COMMA ID
+                | %empty
+                ;
+
+  MethodDecl: PUBLIC STATIC MethodHeader MethodBody;
+
+  MethodHeader: Type ID OCURV FormalParams CCURV
+              | Type ID OCURV CCURV
+              | VOID ID OCURV FormalParams CCURV
+              | VOID ID OCURV CCURV
+              ;
+
+  MethodBody: OBRACE MethodBodyCicle CBRACE;
+  MethodBodyCicle: MethodBodyCicle VarDecl
+                  | MethodBodyCicle Statement
+                  | %empty
+                  ;
+
+  FormalParams: Type ID { COMMA Type ID }
+              | STRING OSQUARE CSQUARE ID
+              ;
+
+  VarDecl: Type ID VarDeclCycle SEMI;
+  VarDeclCycle: VarDeclCycle COMMA ID
+              | %empty
+              ;
+
+  Type: BOOL
+      | INT
+      | DOUBLE
+      ;
+
+  Statement: OBRACE StatementCycle CBRACE
+            | IF OCURV Expr CCURV Statement ELSE Statement
+            | IF OCURV Expr CCURV Statement
+            | WHILE OCURV Expr CCURV Statement
+            | DO Statement WHILE OCURV Expr CCURV SEMI
+            | PRINT OCURV Expr CCURV SEMI
+            | PRINT OCURV STRLIT CCURV SEMI
+            | SEMI
+            | Assignment SEMI
+            | MethodInvocation SEMI
+            | ParseArgs SEMI
+            | RETURN SEMI
+            | RETURN Expr SEMI
+            ;
+ StatementCycle: StatementCycle Statement
+              | %empty
+              ;
+
+  Assignment: ID ASSIGN Expr;
+
+  MethodInvocation: ID OCURV CCURV;
+                  | ID OCURV Expr MethodInvocationCycle CCURV
+                  ;
+  MethodInvocationCycle: MethodInvocationCycle COMMA Expr
+                      | %empty
+                      ;
+
+  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV;
+
+  Expr: Assignment
+      | MethodInvocation
+      | ParseArgs
+      | Expr AND Expr
+      | Expr OR Expr
+      | Expr EQ Expr
+      | Expr GEQ Expr
+      | Expr GT Expr
+      | Expr LEQ Expr
+      | Expr LT Expr
+      | Expr NEQ Expr
+      | Expr PLUS Expr
+      | Expr MINUS Expr
+      | Expr STAR Expr
+      | Expr DIV Expr
+      | Expr MOD Expr
+      | PLUS Expr
+      | MINUS Expr
+      | NOT Expr
+      | ID
+      | ID DOTLENGTH
+      | BOOLLIT
+      | DECLIT
+      | REALLIT
+      ;
+
 %%
 
 int main()
