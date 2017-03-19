@@ -45,12 +45,24 @@
 %token STRING
 %token VOID
 %token WHILE
-%token BOOLIT
+%token BOOLLIT
 %token REALLIT
 %token DECLIT
 %token ID
 %token STRLIT
 %token LINETERMINATOR
+
+%right ASSIGN
+%left OR
+%left AND
+%left EQ NEQ
+%left LT LEQ GT GEQ
+%left PLUS MINUS
+%left STAR DIV MOD
+%right NOT SIGN
+%left OCURV CCURV OSQUARE CSQUARE
+%nonassoc IF
+%nonassoc ELSE
 
 %%
   /*Given grammar in EBNF form*/
@@ -76,15 +88,20 @@
               | VOID ID OCURV CCURV
               ;
 
-  MethodBody: OBRACE MethodBodyCicle CBRACE;
-  MethodBodyCicle: MethodBodyCicle VarDecl
-                  | MethodBodyCicle Statement
+  MethodBody: OBRACE MethodBodyCycle CBRACE;
+  MethodBodyCycle: MethodBodyCycle VarDecl
+                  | MethodBodyCycle Statement
                   | %empty
                   ;
 
-  FormalParams: Type ID { COMMA Type ID }
+  FormalParams: Type ID FormalParamsCycle
               | STRING OSQUARE CSQUARE ID
               ;
+  FormalParamsCycle: FormalParamsCycle COMMA Type ID
+                    | %empty
+                    ;
+
+
 
   VarDecl: Type ID VarDeclCycle SEMI;
   VarDeclCycle: VarDeclCycle COMMA ID
@@ -97,8 +114,8 @@
       ;
 
   Statement: OBRACE StatementCycle CBRACE
+            | IF OCURV Expr CCURV Statement %prec IF
             | IF OCURV Expr CCURV Statement ELSE Statement
-            | IF OCURV Expr CCURV Statement
             | WHILE OCURV Expr CCURV Statement
             | DO Statement WHILE OCURV Expr CCURV SEMI
             | PRINT OCURV Expr CCURV SEMI
@@ -141,8 +158,8 @@
       | Expr STAR Expr
       | Expr DIV Expr
       | Expr MOD Expr
-      | PLUS Expr
-      | MINUS Expr
+      | PLUS Expr %prec NOT
+      | MINUS Expr %prec NOT
       | NOT Expr
       | ID
       | ID DOTLENGTH
