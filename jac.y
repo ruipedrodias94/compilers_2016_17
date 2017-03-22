@@ -1,7 +1,7 @@
 %{
   #include <stdio.h>
   int yylex(void);
-  int yyerror(const char *s);
+  void yyerror(const char *s);
 
 %}
 
@@ -170,6 +170,7 @@
 
 %%
 
-int main()
+int main(){
   while (yyparse()==0);
-      return 0;
+  return 0;
+}

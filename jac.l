@@ -1,8 +1,9 @@
 
 %{
+	#include "y.tab.h"
+
 	int line=1, col=1, auxLine=0, auxCol=0, erro=0;
 	char* aux;
-
 
 %}
 %x COMMENT
@@ -91,7 +92,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 \" 																					{BEGIN STRING; auxLine=line; auxCol=col; col+=yyleng;}
 <STRING>\" 																	{BEGIN 0;col+=yyleng;}
-<STRING>{ESCAPESEQUENCE}										{col+=yyleng;return ESCAPESEQUENCE;}
+<STRING>{ESCAPESEQUENCE}										{col+=yyleng; return ESCAPESEQUENCE;}
 <STRING>{LINETERMINATOR}										{col=1; line++; printf("Line %d, col %d: unterminated string literal\n", auxLine, auxCol); BEGIN 0;return LINETERMINATOR;}
 <STRING>\\.?			 													{printf("Line %d, col %d: invalid escape sequence (%s)\n",line,col,yytext);col+=yyleng;}
 <STRING><<EOF>>    													{printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
@@ -139,7 +140,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 {STRING}																		{if(erro == 1){printf("STRING\n");}		 auxCol=col; auxLine=line;	col+=yyleng;return STRING;}
 {VOID}																			{if(erro == 1){printf("VOID\n");}			 auxCol=col; auxLine=line; col+=yyleng;return VOID;}
 {WHILE} 																		{if(erro == 1){printf("WHILE\n");}		 auxCol=col; auxLine=line;	col+=yyleng;return WHILE;}
-{BOOLIT}																		{if(erro == 1){printf("BOOLLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;return BOOLIT;}
+{BOOLIT}																		{if(erro == 1){printf("BOOLLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;return BOOLLIT;}
 {REALLIT}																		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;return REALLIT;}
 {DECLIT}																		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;return DECLIT;}
 {ID}																				{if(erro == 1){printf("ID(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;return ID;}
@@ -169,5 +170,10 @@ int main(int argc, char** argv){
 
 int yywrap()
 {
-return 1;
+	return 1;
+}
+
+ /*Ainda não sei qual o valor a meter na string s*/
+void yyerror (const char *s) {
+	printf ("Line %d, col %d: %s: %s\n", line, col, s, yytext);
 }

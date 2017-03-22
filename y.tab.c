@@ -66,7 +66,7 @@
 
   #include <stdio.h>
   int yylex(void);
-  int yyerror(const char *s);
+  void yyerror(const char *s);
 
 
 #line 73 "y.tab.c" /* yacc.c:339  */
@@ -1685,6 +1685,7 @@ yyreturn:
 #line 171 "jac.y" /* yacc.c:1906  */
 
 
-int main()
+int main(){
   while (yyparse()==0);
-      return 0;
+  return 0;
+}
