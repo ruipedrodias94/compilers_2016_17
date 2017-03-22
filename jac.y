@@ -51,6 +51,7 @@
 %token ID
 %token STRLIT
 %token LINETERMINATOR
+%token ESCAPESEQUENCE
 
 %right ASSIGN
 %left OR
