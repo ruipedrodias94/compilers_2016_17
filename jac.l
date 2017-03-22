@@ -3,7 +3,7 @@
 	#include "y.tab.h"
 
 	int line=1, col=1, auxLine=0, auxCol=0, erro=0;
-	char* aux;
+
 
 %}
 %x COMMENT
@@ -28,8 +28,8 @@ EXPONENTPART 																{EXPONENTINDICATOR}{SIGNEDINTEGER}
 EXPONENTINDICATOR 													e|E
 SIGNEDINTEGER 															{SIGN}?{DIGITS}
 SIGN 																				"+"|"-"
-STRINGCHARACTER 														({ESCAPESEQUENCE}|{INPUTCHARACTER})
 ESCAPESEQUENCE 															\\f|\\n|\\r|\\t|\\\\|\\\"
+STRINGCHARACTER 														({ESCAPESEQUENCE}|{INPUTCHARACTER})
 INPUTCHARACTER 															[^\r\n\\\"]
 LINETERMINATOR  														"\n"|"\r"|"\r\n"
 LINECOMMENT  																"//"([^\n\r])*
@@ -151,6 +151,9 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 .              															{printf("Line %d, col %d: illegal character (%s)\n", line , col , yytext);	col+=yyleng;}
 
 %%
+
+
+
 int main(int argc, char** argv){
 	if(argc>1){
 		if(strcmp(argv[1],"-l")==0){
@@ -163,7 +166,7 @@ int main(int argc, char** argv){
 		}
 	}
 	else{
-		yylex();
+		yyparse();
 	}
 	return 0;
 }
