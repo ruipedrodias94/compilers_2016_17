@@ -197,7 +197,7 @@ int main(int argc, char** argv){
 		}
 	}
 	else{
-    while (yyparse()==0);
+   yyparse();
 	}
 	return 0;
 }
