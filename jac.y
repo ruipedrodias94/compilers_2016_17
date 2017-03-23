@@ -1,5 +1,5 @@
 %{
-  #include <stdio.h>
+   #include <stdio.h>
    #include <string.h>
 
   int yylex(void);
@@ -72,19 +72,23 @@
   /*Given grammar in EBNF form*/
 
   /*Ciclos é 0 ou mais ocorrências e são representados por {}*/
-  Program: CLASS ID OBRACE ProgramCycle CBRACE;
+  Program: CLASS ID OBRACE ProgramCycle CBRACE
+          ;
   ProgramCycle: ProgramCycle FieldDecl
               | ProgramCycle MethodDecl
               | ProgramCycle SEMI
               | %empty
               ;
 
-  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI;
+  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI
+            | error SEMI
+            ;
   FieldDeclCycle: FieldDeclCycle COMMA ID
-                |%empty
+                | %empty
                 ;
 
-  MethodDecl: PUBLIC STATIC MethodHeader MethodBody;
+  MethodDecl: PUBLIC STATIC MethodHeader MethodBody
+            ;
 
   MethodHeader: Type ID OCURV FormalParams CCURV
               | Type ID OCURV CCURV
@@ -92,22 +96,22 @@
               | VOID ID OCURV CCURV
               ;
 
-  MethodBody: OBRACE MethodBodyCycle CBRACE;
+  MethodBody: OBRACE MethodBodyCycle CBRACE
+            ;
   MethodBodyCycle: MethodBodyCycle VarDecl
                   | MethodBodyCycle Statement
-                  |%empty
+                  | %empty
                   ;
 
   FormalParams: Type ID FormalParamsCycle
               | STRING OSQUARE CSQUARE ID
               ;
   FormalParamsCycle: FormalParamsCycle COMMA Type ID
-                    |%empty
+                    | %empty
                     ;
 
-
-
-  VarDecl: Type ID VarDeclCycle SEMI;
+  VarDecl: Type ID VarDeclCycle SEMI
+          ;
   VarDeclCycle: VarDeclCycle COMMA ID
               | %empty
               ;
@@ -136,18 +140,21 @@
               |%empty
               ;
 
-  Assignment: ID ASSIGN Expr;
+  Assignment: ID ASSIGN Expr
+            ;
 
-  MethodInvocation: ID OCURV CCURV;
+  MethodInvocation: ID OCURV CCURV
                   | ID OCURV Expr MethodInvocationCycle CCURV
                   | ID OCURV error CCURV
                   ;
+
   MethodInvocationCycle: MethodInvocationCycle COMMA Expr
                       |%empty
                       ;
 
   ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV
-            | PARSEINT OCURV error CCURV;
+            PARSEINT OCURV error CCURV
+            ;
 
   Expr: Assignment
       | MethodInvocation
@@ -190,7 +197,7 @@ int main(int argc, char** argv){
 		}
 	}
 	else{
-		yyparse();
+    while (yyparse()==0);
 	}
 	return 0;
 }
