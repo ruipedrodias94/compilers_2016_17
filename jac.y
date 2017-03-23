@@ -1,7 +1,10 @@
 %{
   #include <stdio.h>
+   #include <string.h>
+
   int yylex(void);
   void yyerror(const char *s);
+  int erro=0;
 
 %}
 
@@ -73,12 +76,12 @@
   ProgramCycle: ProgramCycle FieldDecl
               | ProgramCycle MethodDecl
               | ProgramCycle SEMI
-              |
+              |%empty
               ;
 
   FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI;
   FieldDeclCycle: FieldDeclCycle COMMA ID
-                |
+                |%empty
                 ;
 
   MethodDecl: PUBLIC STATIC MethodHeader MethodBody;
@@ -92,21 +95,21 @@
   MethodBody: OBRACE MethodBodyCycle CBRACE;
   MethodBodyCycle: MethodBodyCycle VarDecl
                   | MethodBodyCycle Statement
-                  |
+                  |%empty
                   ;
 
   FormalParams: Type ID FormalParamsCycle
               | STRING OSQUARE CSQUARE ID
               ;
   FormalParamsCycle: FormalParamsCycle COMMA Type ID
-                    |
+                    |%empty
                     ;
 
 
 
   VarDecl: Type ID VarDeclCycle SEMI;
   VarDeclCycle: VarDeclCycle COMMA ID
-              |
+              | %empty
               ;
 
   Type: BOOL
@@ -129,7 +132,7 @@
             | RETURN Expr SEMI
             ;
  StatementCycle: StatementCycle Statement
-              |
+              |%empty
               ;
 
   Assignment: ID ASSIGN Expr;
@@ -138,7 +141,7 @@
                   | ID OCURV Expr MethodInvocationCycle CCURV
                   ;
   MethodInvocationCycle: MethodInvocationCycle COMMA Expr
-                      |
+                      |%empty
                       ;
 
   ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV;
@@ -170,3 +173,20 @@
       ;
 
 %%
+
+int main(int argc, char** argv){
+	if(argc>1){
+		if(strcmp(argv[1],"-l")==0){
+			erro = 1;
+			yylex();
+		}
+		else
+		{
+			yylex();
+		}
+	}
+	else{
+		yyparse();
+	}
+	return 0;
+}
