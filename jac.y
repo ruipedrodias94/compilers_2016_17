@@ -80,11 +80,19 @@
               | %empty
               ;
 
+<<<<<<< HEAD
   FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI
             | error SEMI
             ;
   FieldDeclCycle: FieldDeclCycle COMMA ID
                 | %empty
+=======
+  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI;
+            | error SEMI
+            ;
+   FieldDeclCycle: FieldDeclCycle COMMA ID
+                |%empty
+>>>>>>> master
                 ;
 
   MethodDecl: PUBLIC STATIC MethodHeader MethodBody
