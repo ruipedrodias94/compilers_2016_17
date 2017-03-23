@@ -3,7 +3,7 @@
    #include <string.h>
 
   int yylex(void);
-  void yyerror(const char *s);
+  void yyerror(char *s);
   int erro=0;
 
 %}
@@ -53,7 +53,6 @@
 %token DECLIT
 %token ID
 %token STRLIT
-%token LINETERMINATOR
 %token ESCAPESEQUENCE
 
 %right ASSIGN
@@ -80,19 +79,12 @@
               | %empty
               ;
 
-<<<<<<< HEAD
+
   FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI
             | error SEMI
             ;
   FieldDeclCycle: FieldDeclCycle COMMA ID
                 | %empty
-=======
-  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI;
-            | error SEMI
-            ;
-   FieldDeclCycle: FieldDeclCycle COMMA ID
-                |%empty
->>>>>>> master
                 ;
 
   MethodDecl: PUBLIC STATIC MethodHeader MethodBody
@@ -161,7 +153,7 @@
                       ;
 
   ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV
-            PARSEINT OCURV error CCURV
+           | PARSEINT OCURV error CCURV
             ;
 
   Expr: Assignment

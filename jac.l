@@ -52,7 +52,7 @@ PRINT          (System"."out"."println)
 PUBLIC         public
 RETURN         return
 STATIC         static
-STRING        String
+STRING         String
 VOID           void
 WHILE          while
 OCURV          "("
@@ -84,7 +84,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 "/*"		    																{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
 <COMMENT>"*/"       												{BEGIN 0;col+=yyleng;}
-<COMMENT>{LINETERMINATOR}	    							{line++; col=1; return LINETERMINATOR;}
+<COMMENT>{LINETERMINATOR}	    							{line++; col=1; }
 <COMMENT><<EOF>>    												{printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
 <COMMENT>.	    														{col+=yyleng;}
 
@@ -92,7 +92,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 \" 																					{BEGIN STRING_STAT; auxLine=line; auxCol=col; col+=yyleng;}
 <STRING_STAT>\" 																	{BEGIN 0;col+=yyleng;}
 <STRING_STAT>{ESCAPESEQUENCE}										{col+=yyleng; return ESCAPESEQUENCE;}
-<STRING_STAT>{LINETERMINATOR}										{col=1; line++; printf("Line %d, col %d: unterminated string literal\n", auxLine, auxCol); BEGIN 0; return LINETERMINATOR;}
+<STRING_STAT>{LINETERMINATOR}										{col=1; line++; printf("Line %d, col %d: unterminated string literal\n", auxLine, auxCol); BEGIN 0;}
 <STRING_STAT>\\.?			 													{printf("Line %d, col %d: invalid escape sequence (%s)\n",line,col,yytext);col+=yyleng;}
 <STRING_STAT><<EOF>>    													{printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol); return *yytext;}
 <STRING_STAT>. 																	{col+=yyleng;}
@@ -146,7 +146,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 {STRLIT} 																		{if(erro == 1){printf("STRLIT(%s)\n", yytext);}	  auxCol=col; auxLine=line;		col+=yyleng;return STRLIT;}
 
 \t|" "|\f																		{col+=yyleng; auxCol=col; auxLine=line;}
-{LINETERMINATOR}														{line++;col=1;return LINETERMINATOR; auxCol=col; auxLine=line; return LINETERMINATOR;}
+{LINETERMINATOR}														{line++;col=1; auxCol=col; auxLine=line; }
 .              															{printf("Line %d, col %d: illegal character (%s)\n", line , col , yytext);	col+=yyleng;}
 
 %%
