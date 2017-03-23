@@ -1,9 +1,8 @@
 
 %{
 	#include "y.tab.h"
-
-	int line=1, col=1, auxLine=0, auxCol=0, erro=0;
-
+	 int line=1, col=1, auxLine=0, auxCol=0;
+	 extern int erro;
 
 %}
 %x COMMENT
@@ -153,23 +152,6 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 %%
 
 
-
-int main(int argc, char** argv){
-	if(argc>1){
-		if(strcmp(argv[1],"-l")==0){
-			erro = 1;
-			yylex();
-		}
-		else
-		{
-			yylex();
-		}
-	}
-	else{
-		yyparse();
-	}
-	return 0;
-}
 
 int yywrap()
 {

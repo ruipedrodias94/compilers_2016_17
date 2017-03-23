@@ -76,7 +76,7 @@
   ProgramCycle: ProgramCycle FieldDecl
               | ProgramCycle MethodDecl
               | ProgramCycle SEMI
-              |%empty
+              | %empty
               ;
 
   FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI;
@@ -130,6 +130,7 @@
             | ParseArgs SEMI
             | RETURN SEMI
             | RETURN Expr SEMI
+            | error SEMI
             ;
  StatementCycle: StatementCycle Statement
               |%empty
@@ -139,12 +140,14 @@
 
   MethodInvocation: ID OCURV CCURV;
                   | ID OCURV Expr MethodInvocationCycle CCURV
+                  | ID OCURV error CCURV
                   ;
   MethodInvocationCycle: MethodInvocationCycle COMMA Expr
                       |%empty
                       ;
 
-  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV;
+  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV
+            | PARSEINT OCURV error CCURV;
 
   Expr: Assignment
       | MethodInvocation
@@ -170,6 +173,7 @@
       | BOOLLIT
       | DECLIT
       | REALLIT
+      | OCURV error CCURV
       ;
 
 %%
