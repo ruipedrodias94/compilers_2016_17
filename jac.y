@@ -80,7 +80,9 @@
               ;
 
   FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI;
-  FieldDeclCycle: FieldDeclCycle COMMA ID
+            | error SEMI
+            ;
+   FieldDeclCycle: FieldDeclCycle COMMA ID
                 |%empty
                 ;
 
@@ -95,7 +97,7 @@
   MethodBody: OBRACE MethodBodyCycle CBRACE;
   MethodBodyCycle: MethodBodyCycle VarDecl
                   | MethodBodyCycle Statement
-                  |%empty
+                  | %empty
                   ;
 
   FormalParams: Type ID FormalParamsCycle
