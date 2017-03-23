@@ -5,6 +5,7 @@
   int yylex(void);
   void yyerror(char *s);
   int erro=0;
+  int syntax_flag = 0;
 
 %}
 
@@ -189,14 +190,17 @@ int main(int argc, char** argv){
 	if(argc>1){
 		if(strcmp(argv[1],"-l")==0){
 			erro = 1;
+      syntax_flag = 0;
 			yylex();
 		}
 		else
 		{
+      syntax_flag = 0;
 			yylex();
 		}
 	}
 	else{
+    syntax_flag = 1;
    yyparse();
 	}
 	return 0;
