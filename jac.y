@@ -1,7 +1,7 @@
 %{
    #include <stdio.h>
    #include <string.h>
-
+   #include "estruturas.h"
   int yylex(void);
   void yyerror(char *s);
   int erro=0;
