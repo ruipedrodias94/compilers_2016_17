@@ -86,7 +86,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 "/*"		    																{BEGIN COMMENT; auxLine=line; auxCol=col; col+=yyleng;}
 <COMMENT>"*/"       												{BEGIN 0;col+=yyleng;}
 <COMMENT>{LINETERMINATOR}	    							{line++; col=1; }
-<COMMENT><<EOF>>    												{printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol); return *yytext;}
+<COMMENT><<EOF>>    												{printf("Line %d, col %d: unterminated comment\n",auxLine,auxCol);auxCol=col; auxLine=line;	col+=yyleng; return *yytext;}
 <COMMENT>.	    														{col+=yyleng;}
 
 
@@ -148,7 +148,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 
 \t|" "|\f																		{col+=yyleng; auxCol=col; auxLine=line;}
 {LINETERMINATOR}														{line++;col=1; auxCol=col; auxLine=line; }
-.              															{printf("Line %d, col %d: illegal character (%s)\n", line , col , yytext);auxCol=col; auxLine=line;		col+=yyleng;}
+.              															{printf("Line %d, col %d: illegal character (%s)\n", auxLine , auxCol , yytext);auxCol=col; auxLine=line;		col+=yyleng;}
 
 %%
 
