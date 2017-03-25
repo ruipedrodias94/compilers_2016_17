@@ -1,7 +1,7 @@
 %{
    #include <stdio.h>
    #include <string.h>
-   #include "estruturas.h"
+   /*#include "estruturas.h"*/
   int yylex(void);
   void yyerror(char *s);
   int erro=0;
@@ -200,7 +200,7 @@ int main(int argc, char** argv){
 		}
 	}
 	else{
-    syntax_flag = 1;
+   syntax_flag = 1;
    yyparse();
 	}
 	return 0;
