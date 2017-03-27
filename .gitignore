@@ -31,3 +31,13 @@
 # Debug files
 *.dSYM/
 *.su
+
+jac
+
+*.zip
+
+lex\.yy\.c
+
+y\.tab\.c
+
+y\.tab\.h
