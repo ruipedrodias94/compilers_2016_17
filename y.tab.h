@@ -85,12 +85,12 @@ extern int yydebug;
     STRING = 295,
     VOID = 296,
     WHILE = 297,
-    BOOLLIT = 298,
-    REALLIT = 299,
-    DECLIT = 300,
-    ID = 301,
-    STRLIT = 302,
-    LINETERMINATOR = 303,
+    ESCAPESEQUENCE = 298,
+    BOOLLIT = 299,
+    REALLIT = 300,
+    DECLIT = 301,
+    ID = 302,
+    STRLIT = 303,
     SIGN = 304
   };
 #endif
@@ -135,17 +135,28 @@ extern int yydebug;
 #define STRING 295
 #define VOID 296
 #define WHILE 297
-#define BOOLLIT 298
-#define REALLIT 299
-#define DECLIT 300
-#define ID 301
-#define STRLIT 302
-#define LINETERMINATOR 303
+#define ESCAPESEQUENCE 298
+#define BOOLLIT 299
+#define REALLIT 300
+#define DECLIT 301
+#define ID 302
+#define STRLIT 303
 #define SIGN 304
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 12 "jac.y" /* yacc.c:1909  */
+
+    char* token;
+    struct node* _node;
+
+#line 157 "y.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

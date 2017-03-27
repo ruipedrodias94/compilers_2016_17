@@ -11,7 +11,7 @@
 
 %union{
     char* token;
-    struct node* node;
+    struct node* _node;
 }
 
 
@@ -57,12 +57,13 @@
 %token WHILE
 %token ESCAPESEQUENCE
 
-%token<token> BOOLLIT
-%token<token> REALLIT
-%token<token> DECLIT
-%token<token> ID
-%token<token> STRLIT
+%token <token> BOOLLIT
+%token <token> REALLIT
+%token <token> DECLIT
+%token <token> ID
+%token <token> STRLIT
 
+%type <_node> Program ProgramCycle FieldDecl FieldDeclCycle MethodDecl MethodHeader MethodBody MethodBodyCycle FormalParams FormalParamsCycle VarDecl VarDeclCycle Type Statement StatementCycle Assignment MethodInvocation MethodInvocationCycle ParseArgs Expr
 
 %right ASSIGN
 %left OR
@@ -80,116 +81,116 @@
   /*Given grammar in EBNF form*/
 
   /*Ciclos é 0 ou mais ocorrências e são representados por {}*/
-  Program: CLASS ID OBRACE ProgramCycle CBRACE
+  Program: CLASS ID OBRACE ProgramCycle CBRACE                                  {;}
           ;
-  ProgramCycle: ProgramCycle FieldDecl
-              | ProgramCycle MethodDecl
-              | ProgramCycle SEMI
-              | %empty
+  ProgramCycle: ProgramCycle FieldDecl                                          {;}
+              | ProgramCycle MethodDecl                                         {;}
+              | ProgramCycle SEMI                                               {;}
+              | %empty                                                          {;}
               ;
 
 
-  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI
-            | error SEMI
+  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI                          {;}
+            | error SEMI                                                        {;}
             ;
-  FieldDeclCycle: FieldDeclCycle COMMA ID
-                | %empty
+  FieldDeclCycle: FieldDeclCycle COMMA ID                                       {;}
+                | %empty                                                        {;}
                 ;
 
-  MethodDecl: PUBLIC STATIC MethodHeader MethodBody
+  MethodDecl: PUBLIC STATIC MethodHeader MethodBody                             {;}
             ;
 
-  MethodHeader: Type ID OCURV FormalParams CCURV
-              | Type ID OCURV CCURV
-              | VOID ID OCURV FormalParams CCURV
-              | VOID ID OCURV CCURV
+  MethodHeader: Type ID OCURV FormalParams CCURV                                {;}
+              | Type ID OCURV CCURV                                             {;}
+              | VOID ID OCURV FormalParams CCURV                                {;}
+              | VOID ID OCURV CCURV                                             {;}
               ;
 
-  MethodBody: OBRACE MethodBodyCycle CBRACE
+  MethodBody: OBRACE MethodBodyCycle CBRACE                                     {;}
             ;
-  MethodBodyCycle: MethodBodyCycle VarDecl
-                  | MethodBodyCycle Statement
-                  | %empty
+  MethodBodyCycle: MethodBodyCycle VarDecl                                      {;}
+                  | MethodBodyCycle Statement                                   {;}
+                  | %empty                                                      {;}
                   ;
 
-  FormalParams: Type ID FormalParamsCycle
-              | STRING OSQUARE CSQUARE ID
+  FormalParams: Type ID FormalParamsCycle                                       {;}
+              | STRING OSQUARE CSQUARE ID                                       {;}
               ;
-  FormalParamsCycle: FormalParamsCycle COMMA Type ID
-                    | %empty
+  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {;}
+                    | %empty                                                    {;}
                     ;
 
-  VarDecl: Type ID VarDeclCycle SEMI
+  VarDecl: Type ID VarDeclCycle SEMI                                            {;}
           ;
-  VarDeclCycle: VarDeclCycle COMMA ID
-              | %empty
+  VarDeclCycle: VarDeclCycle COMMA ID                                           {;}
+              | %empty                                                          {;}
               ;
 
-  Type: BOOL
-      | INT
-      | DOUBLE
+  Type: BOOL                                                                    {;}
+      | INT                                                                     {;}
+      | DOUBLE                                                                  {;}
       ;
 
-  Statement: OBRACE StatementCycle CBRACE
-            | IF OCURV Expr CCURV Statement %prec IF
-            | IF OCURV Expr CCURV Statement ELSE Statement
-            | WHILE OCURV Expr CCURV Statement
-            | DO Statement WHILE OCURV Expr CCURV SEMI
-            | PRINT OCURV Expr CCURV SEMI
-            | PRINT OCURV STRLIT CCURV SEMI
-            | SEMI
-            | Assignment SEMI
-            | MethodInvocation SEMI
-            | ParseArgs SEMI
-            | RETURN SEMI
-            | RETURN Expr SEMI
-            | error SEMI
+  Statement: OBRACE StatementCycle CBRACE                                       {;}
+            | IF OCURV Expr CCURV Statement %prec IF                            {;}
+            | IF OCURV Expr CCURV Statement ELSE Statement                      {;}
+            | WHILE OCURV Expr CCURV Statement                                  {;}
+            | DO Statement WHILE OCURV Expr CCURV SEMI                          {;}
+            | PRINT OCURV Expr CCURV SEMI                                       {;}
+            | PRINT OCURV STRLIT CCURV SEMI                                     {;}
+            | SEMI                                                              {;}
+            | Assignment SEMI                                                   {;}
+            | MethodInvocation SEMI                                             {;}
+            | ParseArgs SEMI                                                    {;}
+            | RETURN SEMI                                                       {;}
+            | RETURN Expr SEMI                                                  {;}
+            | error SEMI                                                        {;}
             ;
- StatementCycle: StatementCycle Statement
-              |%empty
+ StatementCycle: StatementCycle Statement                                       {;}
+              |%empty                                                           {;}
               ;
 
-  Assignment: ID ASSIGN Expr
+  Assignment: ID ASSIGN Expr                                                    {;}
             ;
 
-  MethodInvocation: ID OCURV CCURV
-                  | ID OCURV Expr MethodInvocationCycle CCURV
-                  | ID OCURV error CCURV
+  MethodInvocation: ID OCURV CCURV                                              {;}
+                  | ID OCURV Expr MethodInvocationCycle CCURV                   {;}
+                  | ID OCURV error CCURV                                        {;}
                   ;
 
-  MethodInvocationCycle: MethodInvocationCycle COMMA Expr
-                      |%empty
+  MethodInvocationCycle: MethodInvocationCycle COMMA Expr                       {;}
+                      |%empty                                                   {;}
                       ;
 
-  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV
-           | PARSEINT OCURV error CCURV
+  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {;}
+           | PARSEINT OCURV error CCURV                                         {;}
             ;
 
-  Expr: Assignment
-      | MethodInvocation
-      | ParseArgs
-      | Expr AND Expr
-      | Expr OR Expr
-      | Expr EQ Expr
-      | Expr GEQ Expr
-      | Expr GT Expr
-      | Expr LEQ Expr
-      | Expr LT Expr
-      | Expr NEQ Expr
-      | Expr PLUS Expr
-      | Expr MINUS Expr
-      | Expr STAR Expr
-      | Expr DIV Expr
-      | Expr MOD Expr
-      | PLUS Expr %prec NOT
-      | MINUS Expr %prec NOT
-      | NOT Expr
-      | ID
-      | ID DOTLENGTH
-      | BOOLLIT
-      | DECLIT
-      | REALLIT
-      | OCURV error CCURV
+  Expr: Assignment                                                              {;}
+      | MethodInvocation                                                        {;}
+      | ParseArgs                                                               {;}
+      | Expr AND Expr                                                           {;}
+      | Expr OR Expr                                                            {;}
+      | Expr EQ Expr                                                            {;}
+      | Expr GEQ Expr                                                           {;}
+      | Expr GT Expr                                                            {;}
+      | Expr LEQ Expr                                                           {;}
+      | Expr LT Expr                                                            {;}
+      | Expr NEQ Expr                                                           {;}
+      | Expr PLUS Expr                                                          {;}
+      | Expr MINUS Expr                                                         {;}
+      | Expr STAR Expr                                                          {;}
+      | Expr DIV Expr                                                           {;}
+      | Expr MOD Expr                                                           {;}
+      | PLUS Expr %prec NOT                                                     {;}
+      | MINUS Expr %prec NOT                                                    {;}
+      | NOT Expr                                                                {;}
+      | ID                                                                      {;}
+      | ID DOTLENGTH                                                            {;}
+      | BOOLLIT                                                                 {;}
+      | DECLIT                                                                  {;}
+      | REALLIT                                                                 {;}
+      | OCURV error CCURV                                                       {;}
       ;
 
 %%
