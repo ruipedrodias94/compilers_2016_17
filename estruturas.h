@@ -11,13 +11,13 @@ typedef enum {type_Program, type_FieldDecl,  type_VarDecl, type_MethodDecl, type
 
 /*This is not a tree, it's more like a list of lists*/
 /*Node*/
-typedef struct Node Node;
-typedef struct node {
+typedef struct node Node;
+struct node {
     NodeType node_type;
     char* token;
     Node* son;
     Node* brother;
-}Node;
+};
 
 
 Node* createNode(NodeType node_type, char* token, Node* son, Node* brother);

@@ -1,13 +1,19 @@
 %{
    #include <stdio.h>
    #include <string.h>
-   /*#include "estruturas.h"*/
+   #include "estruturas.h"
   int yylex(void);
   void yyerror(char *s);
   int erro=0;
   int syntax_flag = 0;
 
 %}
+
+%union{
+    char* token;
+    struct node* node;
+}
+
 
 %token IF
 %token AND
@@ -49,12 +55,14 @@
 %token STRING
 %token VOID
 %token WHILE
-%token BOOLLIT
-%token REALLIT
-%token DECLIT
-%token ID
-%token STRLIT
 %token ESCAPESEQUENCE
+
+%token<token> BOOLLIT
+%token<token> REALLIT
+%token<token> DECLIT
+%token<token> ID
+%token<token> STRLIT
+
 
 %right ASSIGN
 %left OR

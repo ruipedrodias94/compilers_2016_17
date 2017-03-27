@@ -10,7 +10,7 @@ if [ $? -eq 0 ]; then
   echo "running..."
   ./jac  < Echo.ja
   #echo "zippin..."
-  #zip -r jac.zip jac.l
+  zip -r jac.zip jac.l jac.y estruturas.h tree_functions.c
 else
   echo "error compiling..."
   exit 1

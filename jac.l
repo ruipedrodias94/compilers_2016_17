@@ -1,7 +1,7 @@
 
 %{
 	#include "y.tab.h"
-	 int line=1, col=1, auxLine=0, auxCol=0;
+	 int line=1, col=1, auxLine=1, auxCol=1;
 	 extern int erro;
 	 extern int syntax_flag;
 
@@ -95,7 +95,7 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 <STRING_STAT>{ESCAPESEQUENCE}										{col+=yyleng;}
 <STRING_STAT>{LINETERMINATOR}										{col=1; line++; printf("Line %d, col %d: unterminated string literal\n", auxLine, auxCol); BEGIN 0;}
 <STRING_STAT>\\.?			 													{printf("Line %d, col %d: invalid escape sequence (%s)\n",line,col,yytext);col+=yyleng;}
-<STRING_STAT><<EOF>>    													{printf("Line %d, col %d: unterminated string literal\n",auxLine,auxCol);return *yytext;}
+<STRING_STAT><<EOF>>    												{printf("Line %d, col %d: unterminated string literal\n",auxLine, auxCol); col+=yyleng; return *yytext;}
 <STRING_STAT>. 																	{col+=yyleng;}
 
 
@@ -140,11 +140,11 @@ RESERVED       assert|System|Integer|null|"++"|"--"|abstract|continue|for|new|sw
 {STRING}																		{if(erro == 1){printf("STRING\n");}		 auxCol=col; auxLine=line;	col+=yyleng;if(syntax_flag!=0){return STRING;}}
 {VOID}																			{if(erro == 1){printf("VOID\n");}			 auxCol=col; auxLine=line; col+=yyleng;if(syntax_flag!=0){return VOID;}}
 {WHILE} 																		{if(erro == 1){printf("WHILE\n");}		 auxCol=col; auxLine=line;	col+=yyleng;if(syntax_flag!=0){return WHILE;}}
-{BOOLLIT}																		{if(erro == 1){printf("BOOLLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;if(syntax_flag!=0){return BOOLLIT;}}
-{REALLIT}																		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;if(syntax_flag!=0){return REALLIT;}}
-{DECLIT}																		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;if(syntax_flag!=0){return DECLIT;}}
-{ID}																				{if(erro == 1){printf("ID(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng;if(syntax_flag!=0){ return ID;}}
-{STRLIT} 																		{if(erro == 1){printf("STRLIT(%s)\n", yytext);}	  auxCol=col; auxLine=line;		col+=yyleng;if(syntax_flag!=0){return STRLIT;}}
+{BOOLLIT}																		{if(erro == 1){printf("BOOLLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng; if(syntax_flag!=0){ yylval.token = (char*)strdup(yytext); return BOOLLIT;}}
+{REALLIT}																		{if(erro == 1){printf("REALLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng; if(syntax_flag!=0){ yylval.token = (char*)strdup(yytext); return REALLIT;}}
+{DECLIT}																		{if(erro == 1){printf("DECLIT(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng; if(syntax_flag!=0){ yylval.token = (char*)strdup(yytext); return DECLIT;}}
+{ID}																				{if(erro == 1){printf("ID(%s)\n", yytext);}		 auxCol=col; auxLine=line;	col+=yyleng; if(syntax_flag!=0){ yylval.token = (char*)strdup(yytext); return ID;}}
+{STRLIT} 																		{if(erro == 1){printf("STRLIT(%s)\n", yytext);}	  auxCol=col; auxLine=line;		col+=yyleng; if(syntax_flag!=0){ yylval.token = (char*)strdup(yytext); return STRLIT;}}
 
 \t|" "|\f																		{col+=yyleng; auxCol=col; auxLine=line;}
 {LINETERMINATOR}														{line++;col=1; auxCol=col; auxLine=line; }

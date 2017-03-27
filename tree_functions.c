@@ -1,4 +1,4 @@
-
+#include "estruturas.h"
 
 char* tokens[] = {"Program", "FieldDecl", " VarDecl", "MethodDecl", "MethodHeader", "MethodParams", "ParamDecl",
                   "MethodBody", "StringArray", "Block", "DoWhile", "If", "Print", "Return", "While", "Assign", "Call",
@@ -9,7 +9,7 @@ char* tokens[] = {"Program", "FieldDecl", " VarDecl", "MethodDecl", "MethodHeade
 /*Create Node*/
 Node* createNode(NodeType node_type, char* token, Node* son, Node* brother){
   Node* node = malloc(sizeof(Node));
-  node->node_type;
+  node->node_type = node_type;
   if (token != NULL) {
     node->token = strdup(token);
   } else {
@@ -58,7 +58,7 @@ void printList(Node* root, int high) {
       for(i=0; i < high; i++){
         printf(".");
       }
-      printf("%s(%s)\n",getNode_type(root->node_type),root->node_type);
+      printf("%s(%s)\n",getNode_type(root->node_type), root->token);
     }else{
       for(i=0; i < high; i++){
           printf(".");
