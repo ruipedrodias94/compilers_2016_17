@@ -124,10 +124,11 @@
                     | %empty                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
                     ;
 
-  VarDecl: Type ID VarDeclCycle SEMI                                            {aux_node = createNode(type_Id,$2,NULL,$1);insertBrother(aux_node,$3);$$ = createNode(type_VarDecl,NULL,NULL,aux_node);}
+  VarDecl: VarDeclCycle SEMI                                            {aux_node = createNode(type_VarDecl,NULL,$1,NULL);$$ = aux_node;}
           ;
-  VarDeclCycle: VarDeclCycle COMMA ID                                           {aux_node = createNode(type_Id,$3,NULL,NULL); $$ = createNode(type_VarDecl,NULL,aux_node,NULL);}
-              | %empty                                                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
+
+  VarDeclCycle: VarDeclCycle COMMA ID                                           {aux_node = createNode(type_Id,$3,NULL,$1);$$ = aux_node;}
+              | Type ID                                                         {$$ = createNode(type_Id,$2,NULL,$1); $$ = aux_node;}
               ;
 
   Type: BOOL                                                                    {$$ = createNode(type_Bool,$1,NULL,NULL);}
