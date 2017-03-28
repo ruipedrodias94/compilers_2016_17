@@ -1,9 +1,9 @@
 #include "estruturas.h"
 
-char* tokens[] = {"Program", "FieldDecl", " VarDecl", "MethodDecl", "MethodHeader", "MethodParams", "ParamDecl",
+char* tokens[] = {"Program", "FieldDecl", "VarDecl", "MethodDecl", "MethodHeader", "MethodParams", "ParamDecl",
                   "MethodBody", "StringArray", "Block", "DoWhile", "If", "Print", "Return", "While", "Assign", "Call",
                   "ParseArgs", "Or", "And", "Eq", "Neq", "Lt", "Gt", "Leq", "Geq", "Add", "Sub", "Mul", "Div", "Mod", "Not", "Minus",
-                  "Plus", "Length", "Bool", "BoolLit", "Double", "DecLit", "Id", "Int", "RealLit", "StrLit", "Void"};
+                  "Plus", "Length", "Bool", "BoolLit", "Double", "DecLit", "Id", "Int", "RealLit", "StrLit", "Void","Null"};
 
 
 /*Create Node*/
@@ -60,11 +60,12 @@ void printList(Node* root, int high) {
       }
       printf("%s(%s)\n",getNode_type(root->node_type), root->token);
     }else{
+      if(root->node_type!=type_Null){
       for(i=0; i < high; i++){
           printf(".");
       }
       printf("%s\n",getNode_type(root->node_type) );
-    }
+    }}
 
     /*As it is a son, prints 2 more (.)*/
     printList(root->son, high + 2);
