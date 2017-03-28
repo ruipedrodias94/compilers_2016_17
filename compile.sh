@@ -4,7 +4,7 @@
 echo "compiling..."
 yacc -d jac.y
 lex jac.l
-gcc  -o jac lex.yy.c y.tab.c
+gcc  -o jac lex.yy.c y.tab.c tree_functions.c
 
 if [ $? -eq 0 ]; then
   echo "running..."
