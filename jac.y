@@ -95,11 +95,11 @@
               ;
 
 
-  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI                          {aux_node = createNode(type_FieldDecl,NULL,$5,NULL);insertBrother($5,createNode(type_Id,$4,NULL,$3)); $$ = aux_node;}
+  FieldDecl: PUBLIC STATIC FieldDeclCycle SEMI                                  {$$=$3;}
             | error SEMI                                                        {aux_node = createNode(type_Error,NULL,NULL,NULL);$$ = aux_node;}
             ;
-  FieldDeclCycle: FieldDeclCycle COMMA ID                                       {aux_node = createNode(type_Id,$3,NULL,$1);$$=aux_node;}
-                | %empty                                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
+  FieldDeclCycle: FieldDeclCycle COMMA ID                                       {aux_node = createNode(aux_node2->node_type,NULL,NULL,createNode(type_Id,$3,NULL,NULL)); insertBrother($1,createNode(type_FieldDecl,NULL,aux_node,NULL)); $$ = $1;}
+                | Type ID                                                       {aux_node2 = $1;aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node); $$ = createNode(type_FieldDecl,NULL,$1,NULL);}
                 ;
 
   MethodDecl: PUBLIC STATIC MethodHeader MethodBody                             {insertBrother($3,$4); $$ = createNode(type_MethodDecl,NULL,$3,NULL);}
