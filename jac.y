@@ -105,10 +105,10 @@
   MethodDecl: PUBLIC STATIC MethodHeader MethodBody                             {insertBrother($3,$4); $$ = createNode(type_MethodDecl,NULL,$3,NULL);}
             ;
 
-  MethodHeader: Type ID OCURV FormalParams CCURV                                {aux_node = createNode(type_Id,$2,NULL,$1);insertBrother(aux_node,createNode(type_MethodParams,NULL,$4,NULL));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
-              | Type ID OCURV CCURV                                             {aux_node = createNode(type_Id,$2,NULL,$1);$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
+  MethodHeader: Type ID OCURV FormalParams CCURV                                {aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node);insertBrother($1,createNode(type_MethodParams,NULL,$4,NULL));$$ = createNode(type_MethodHeader,NULL,$1,NULL);}
+              | Type ID OCURV CCURV                                             {aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node);insertBrother($1,createNode(type_MethodParams,NULL,NULL,NULL));$$ = createNode(type_MethodHeader,NULL,$1,NULL);}
               | VOID ID OCURV FormalParams CCURV                                {aux_node = createNode(type_Void,$1,NULL,createNode(type_Id,$2,NULL,createNode(type_MethodParams,NULL,$4,NULL)));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
-              | VOID ID OCURV CCURV                                             {aux_node = createNode(type_Void,$1,NULL,createNode(type_Id,$2,NULL,NULL));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
+              | VOID ID OCURV CCURV                                             {aux_node = createNode(type_Void,$1,NULL,createNode(type_Id,$2,NULL,NULL));insertBrother(aux_node,createNode(type_MethodParams,NULL,NULL,NULL));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
               ;
 
   MethodBody: OBRACE MethodBodyCycle CBRACE                                     {aux_node = createNode(type_MethodBody,NULL,$2,NULL);$$ = aux_node;}
@@ -118,10 +118,10 @@
                   | %empty                                                      {$$ = createNode(type_Null,NULL,NULL,NULL);}
                   ;
 
-  FormalParams: Type ID FormalParamsCycle                                       {aux_node = createNode(type_Id,$2,NULL,$1);insertBrother(aux_node,$3); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}
+  FormalParams: Type ID FormalParamsCycle                                       {aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node); $$ = createNode(type_ParamDecl,NULL,$1,$3);}
               | STRING OSQUARE CSQUARE ID                                       {aux_node = createNode(type_StringArray,$1,NULL,createNode(type_Id,$4,NULL,NULL)); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}
               ;
-  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {insertBrother($1,$3);aux_node = createNode(type_Id,$4,NULL,NULL);$$ = aux_node;}
+  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {aux_node = createNode(type_ParamDecl,NULL,$3,NULL);insertBrother($3,createNode(type_Id,$4,NULL,NULL));insertBrother($1,aux_node);$$ = $1;}
                     | %empty                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
                     ;
 
