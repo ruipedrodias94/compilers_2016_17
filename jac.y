@@ -190,11 +190,11 @@
       | Expr STAR ExprAux                                                       {insertBrother($1, $3); aux_node = createNode(type_Mul, NULL, $1, NULL);  $$ = aux_node;}
       | Expr DIV ExprAux                                                        {insertBrother($1, $3); aux_node = createNode(type_Div, NULL, $1, NULL);  $$ = aux_node;}
       | Expr MOD ExprAux                                                        {insertBrother($1, $3); aux_node = createNode(type_Mod, NULL, $1, NULL);  $$ = aux_node;}
-      | PLUS ExprAux %prec NOT                                                  {aux_node = createNode(type_Add, $1, $3, NULL); $$ = aux_node;}
-      | MINUS ExprAux %prec NOT                                                 {aux_node = createNode(type_Sub, $1, $3, NULL); $$ = aux_node;}
-      | NOT ExprAux                                                             {aux_node = createNode(type_Not, $1, $3, NULL); $$ = aux_node;}
+      | PLUS ExprAux %prec NOT                                                  {aux_node = createNode(type_Add, NULL, $2, NULL); $$ = aux_node;}
+      | MINUS ExprAux %prec NOT                                                 {aux_node = createNode(type_Sub, NULL, $2, NULL); $$ = aux_node;}
+      | NOT ExprAux                                                             {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}
       | ID                                                                      {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}
-      | ID DOTLENGTH                                                            {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, $2, aux_node, NULL);}
+      | ID DOTLENGTH                                                            {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}
       | BOOLLIT                                                                 {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}
       | DECLIT                                                                  {aux_node = createNode(type_DecLit, $1, NULL, NULL); $$ = aux_node;}
       | REALLIT                                                                 {aux_node = createNode(type_RealLit, $1, NULL, NULL); $$ = aux_node;}
@@ -204,24 +204,24 @@
 
   ExprAux: MethodInvocation                                                     {$$ = $1;}
       | ParseArgs                                                               {$$ = $1;}
-      | ExprAux AND ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_And, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux OR ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Or, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux EQ ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Eq, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux GEQ ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Geq, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux GT ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Gt, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux LEQ ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Lt, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux LT ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Leq, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux NEQ ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Neq, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux PLUS ExprAux                                                    {insertBrother($1, $3); aux_node = createNode(type_Add, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux MINUS ExprAux                                                   {insertBrother($1, $3); aux_node = createNode(type_Sub, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux STAR ExprAux                                                    {insertBrother($1, $3); aux_node = createNode(type_Mul, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux DIV ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Div, $2, $1, NULL);  $$ = aux_node;}
-      | ExprAux MOD ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Mod, $2, $1, NULL);  $$ = aux_node;}
-      | PLUS ExprAux %prec NOT                                                  {aux_node = createNode(type_Add, $1, $3, NULL); $$ = aux_node;}
-      | MINUS ExprAux %prec NOT                                                 {aux_node = createNode(type_Sub, $1, $3, NULL); $$ = aux_node;}
-      | NOT ExprAux                                                             {aux_node = createNode(type_Not, $1, $3, NULL); $$ = aux_node;}
+      | ExprAux AND ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_And, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux OR ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Or, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux EQ ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Eq, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux GEQ ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Geq, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux GT ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Gt, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux LEQ ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Lt, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux LT ExprAux                                                      {insertBrother($1, $3); aux_node = createNode(type_Leq, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux NEQ ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Neq, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux PLUS ExprAux                                                    {insertBrother($1, $3); aux_node = createNode(type_Add, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux MINUS ExprAux                                                   {insertBrother($1, $3); aux_node = createNode(type_Sub, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux STAR ExprAux                                                    {insertBrother($1, $3); aux_node = createNode(type_Mul, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux DIV ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Div, NULL, $1, NULL);  $$ = aux_node;}
+      | ExprAux MOD ExprAux                                                     {insertBrother($1, $3); aux_node = createNode(type_Mod, NULL, $1, NULL);  $$ = aux_node;}
+      | PLUS ExprAux %prec NOT                                                  {aux_node = createNode(type_Add, NULL, $2, NULL); $$ = aux_node;}
+      | MINUS ExprAux %prec NOT                                                 {aux_node = createNode(type_Sub, NULL, $2, NULL); $$ = aux_node;}
+      | NOT ExprAux                                                             {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}
       | ID                                                                      {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}
-      | ID DOTLENGTH                                                            {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, $2, aux_node, NULL);}
+      | ID DOTLENGTH                                                            {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}
       | BOOLLIT                                                                 {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}
       | DECLIT                                                                  {aux_node = createNode(type_DecLit, $1, NULL, NULL); $$ = aux_node;}
       | REALLIT                                                                 {aux_node = createNode(type_RealLit, $1, NULL, NULL); $$ = aux_node;}
