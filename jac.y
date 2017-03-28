@@ -120,13 +120,13 @@
   FormalParams: Type ID FormalParamsCycle                                       {aux_node = createNode(type_Id,$2,NULL,$1);insertBrother(aux_node,$3); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}
               | STRING OSQUARE CSQUARE ID                                       {aux_node = createNode(type_StringArray,$1,NULL,createNode(type_Id,$4,NULL,NULL)); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}
               ;
-  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {insertBrother($1,$3);aux_node = createNode(type_Id,$4,NULL,$1);$$ = aux_node;}
+  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {insertBrother($1,$3);aux_node = createNode(type_Id,$4,NULL,NULL);$$ = aux_node;}
                     | %empty                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
                     ;
 
-  VarDecl: Type ID VarDeclCycle SEMI                                            {aux_node = createNode(type_Id,$2,NULL,$1);insertBrother(aux_node,$3);$$ = createNode(type_VarDecl,NULL,aux_node,NULL);}
+  VarDecl: Type ID VarDeclCycle SEMI                                            {aux_node = createNode(type_Id,$2,NULL,$1);insertBrother(aux_node,$3);$$ = createNode(type_VarDecl,NULL,NULL,aux_node);}
           ;
-  VarDeclCycle: VarDeclCycle COMMA ID                                           {aux_node = createNode(type_Id,$3,NULL,$1); $$ = aux_node;}
+  VarDeclCycle: VarDeclCycle COMMA ID                                           {aux_node = createNode(type_Id,$3,NULL,NULL); $$ = createNode(type_VarDecl,NULL,aux_node,NULL);}
               | %empty                                                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
               ;
 
