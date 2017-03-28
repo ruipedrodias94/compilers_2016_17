@@ -68,7 +68,7 @@
 %token <token> STRLIT
 %token <token> VOID
 
-%type <_node> Program ProgramCycle FieldDecl FieldDeclCycle MethodDecl MethodHeader MethodBody MethodBodyCycle FormalParams FormalParamsCycle VarDecl VarDeclCycle Type Statement StatementCycle Assignment MethodInvocation MethodInvocationCycle ParseArgs Expr
+%type <_node> Program ProgramCycle FieldDecl FieldDeclCycle MethodDecl MethodHeader MethodBody MethodBodyCycle FormalParams FormalParamsCycle VarDecl VarDeclCycle Type Statement StatementCycle Assignment MethodInvocation MethodInvocationCycle ParseArgs Expr ExprAux
 
 %right ASSIGN
 %left OR
@@ -79,7 +79,7 @@
 %left STAR DIV MOD
 %right NOT SIGN
 %left OCURV CCURV OSQUARE CSQUARE
-%nonassoc IF
+%nonassoc IFX
 %nonassoc ELSE
 
 %%
@@ -137,66 +137,95 @@
       | DOUBLE                                                                  {$$ = createNode(type_Double,$1,NULL,NULL);}
       ;
 
-  Statement: OBRACE StatementCycle CBRACE                                       {;}
-            | IF OCURV Expr CCURV Statement %prec IF                            {;}
-            | IF OCURV Expr CCURV Statement ELSE Statement                      {;}
-            | WHILE OCURV Expr CCURV Statement                                  {;}
-            | DO Statement WHILE OCURV Expr CCURV SEMI                          {;}
-            | PRINT OCURV Expr CCURV SEMI                                       {;}
-            | PRINT OCURV STRLIT CCURV SEMI                                     {;}
-            | SEMI                                                              {;}
-            | Assignment SEMI                                                   {;}
-            | MethodInvocation SEMI                                             {;}
-            | ParseArgs SEMI                                                    {;}
-            | RETURN SEMI                                                       {;}
-            | RETURN Expr SEMI                                                  {;}
-            | error SEMI                                                        {;}
+  Statement: OBRACE StatementCycle CBRACE                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | IF OCURV Expr CCURV Statement %prec IFX                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | IF OCURV Expr CCURV Statement ELSE Statement                      {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | WHILE OCURV Expr CCURV Statement                                  {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | DO Statement WHILE OCURV Expr CCURV SEMI                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | PRINT OCURV Expr CCURV SEMI                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | PRINT OCURV STRLIT CCURV SEMI                                     {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | SEMI                                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | Assignment SEMI                                                   {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | MethodInvocation SEMI                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | ParseArgs SEMI                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | RETURN SEMI                                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | RETURN Expr SEMI                                                  {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | error SEMI                                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
             ;
- StatementCycle: StatementCycle Statement                                       {;}
-              |%empty                                                           {;}
+
+ StatementCycle: StatementCycle Statement                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+              |%empty                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
               ;
 
-  Assignment: ID ASSIGN Expr                                                    {;}
+  Assignment: ID ASSIGN Expr                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
             ;
 
-  MethodInvocation: ID OCURV CCURV                                              {;}
-                  | ID OCURV Expr MethodInvocationCycle CCURV                   {;}
-                  | ID OCURV error CCURV                                        {;}
+  MethodInvocation: ID OCURV CCURV                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
+                  | ID OCURV Expr MethodInvocationCycle CCURV                   {$$ = createNode(type_Null,NULL,NULL,NULL);}
+                  | ID OCURV error CCURV                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
                   ;
 
-  MethodInvocationCycle: MethodInvocationCycle COMMA Expr                       {;}
-                      |%empty                                                   {;}
+  MethodInvocationCycle: MethodInvocationCycle COMMA Expr                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+                      |%empty                                                   {$$ = createNode(type_Null,NULL,NULL,NULL);}
                       ;
 
-  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {;}
-           | PARSEINT OCURV error CCURV                                         {;}
+  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+           | PARSEINT OCURV error CCURV                                         {$$ = createNode(type_Null,NULL,NULL,NULL);}
             ;
 
-  Expr: Assignment                                                              {;}
-      | MethodInvocation                                                        {;}
-      | ParseArgs                                                               {;}
-      | Expr AND Expr                                                           {;}
-      | Expr OR Expr                                                            {;}
-      | Expr EQ Expr                                                            {;}
-      | Expr GEQ Expr                                                           {;}
-      | Expr GT Expr                                                            {;}
-      | Expr LEQ Expr                                                           {;}
-      | Expr LT Expr                                                            {;}
-      | Expr NEQ Expr                                                           {;}
-      | Expr PLUS Expr                                                          {;}
-      | Expr MINUS Expr                                                         {;}
-      | Expr STAR Expr                                                          {;}
-      | Expr DIV Expr                                                           {;}
-      | Expr MOD Expr                                                           {;}
-      | PLUS Expr %prec NOT                                                     {;}
-      | MINUS Expr %prec NOT                                                    {;}
-      | NOT Expr                                                                {;}
-      | ID                                                                      {;}
-      | ID DOTLENGTH                                                            {;}
-      | BOOLLIT                                                                 {;}
-      | DECLIT                                                                  {;}
-      | REALLIT                                                                 {;}
-      | OCURV error CCURV                                                       {;}
+  Expr: Assignment                                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | MethodInvocation                                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ParseArgs                                                               {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr AND ExprAux                                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr OR ExprAux                                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr EQ ExprAux                                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr GEQ ExprAux                                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr GT ExprAux                                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr LEQ ExprAux                                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr LT ExprAux                                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr NEQ ExprAux                                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr PLUS ExprAux                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr MINUS ExprAux                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr STAR ExprAux                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr DIV ExprAux                                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | Expr MOD ExprAux                                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | PLUS ExprAux %prec NOT                                                     {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | MINUS ExprAux %prec NOT                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | NOT ExprAux                                                                {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ID                                                                      {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ID DOTLENGTH                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | BOOLLIT                                                                 {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | DECLIT                                                                  {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | REALLIT                                                                 {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | OCURV error CCURV                                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | OCURV Expr CCURV                                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      ;
+
+  ExprAux: MethodInvocation                                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ParseArgs                                                               {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux AND ExprAux                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux OR ExprAux                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux EQ ExprAux                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux GEQ ExprAux                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux GT ExprAux                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux LEQ ExprAux                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux LT ExprAux                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux NEQ ExprAux                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux PLUS ExprAux                                                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux MINUS ExprAux                                                         {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux STAR ExprAux                                                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux DIV ExprAux                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ExprAux MOD ExprAux                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | PLUS ExprAux %prec NOT                                                     {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | MINUS ExprAux %prec NOT                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | NOT ExprAux                                                                {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ID                                                                      {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | ID DOTLENGTH                                                            {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | BOOLLIT                                                                 {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | DECLIT                                                                  {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | REALLIT                                                                 {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | OCURV error CCURV                                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+      | OCURV ExprAux CCURV                                                     {$$ = createNode(type_Null,NULL,NULL,NULL);}
       ;
 
 %%
@@ -208,6 +237,11 @@ int main(int argc, char** argv){
       syntax_flag = 0;
 			yylex();
 		}
+    else if(strcmp(argv[1],"-t")==0){
+    syntax_flag = 1;
+    yyparse();
+    printList(root,0);
+    }
 		else
 		{
       syntax_flag = 0;
@@ -217,7 +251,6 @@ int main(int argc, char** argv){
 	else{
    syntax_flag = 1;
    yyparse();
-   printList(root,0);
 	}
 	return 0;
 }
