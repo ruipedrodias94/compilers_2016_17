@@ -7,6 +7,10 @@
   int erro=0;
   int syntax_flag = 0;
 
+  Node* root = NULL ;
+  Node* aux_node = NULL;
+
+
 %}
 
 %union{
@@ -22,7 +26,6 @@
 %token CLASS
 %token CCURV
 %token CBRACE
-%token COMMA
 %token CSQUARE
 %token DIV
 %token DO
@@ -52,16 +55,17 @@
 %token SEMI
 %token STAR
 %token STATIC
-%token STRING
-%token VOID
 %token WHILE
 %token ESCAPESEQUENCE
 
+%token <token> STRING
+%token <token> COMMA
 %token <token> BOOLLIT
 %token <token> REALLIT
 %token <token> DECLIT
 %token <token> ID
 %token <token> STRLIT
+%token <token> VOID
 
 %type <_node> Program ProgramCycle FieldDecl FieldDeclCycle MethodDecl MethodHeader MethodBody MethodBodyCycle FormalParams FormalParamsCycle VarDecl VarDeclCycle Type Statement StatementCycle Assignment MethodInvocation MethodInvocationCycle ParseArgs Expr
 
@@ -81,49 +85,49 @@
   /*Given grammar in EBNF form*/
 
   /*Ciclos é 0 ou mais ocorrências e são representados por {}*/
-  Program: CLASS ID OBRACE ProgramCycle CBRACE                                  {;}
+  Program: CLASS ID OBRACE ProgramCycle CBRACE                                  {aux_node = createNode(type_Id,$2,NULL,$4);root = createNode(type_Program,NULL,aux_node,NULL);}
           ;
-  ProgramCycle: ProgramCycle FieldDecl                                          {;}
-              | ProgramCycle MethodDecl                                         {;}
-              | ProgramCycle SEMI                                               {;}
-              | %empty                                                          {;}
+  ProgramCycle: ProgramCycle FieldDecl                                          {insertBrother($2,$1);$$=$2;}
+              | ProgramCycle MethodDecl                                         {insertBrother($2,$1);$$=$2;}
+              | ProgramCycle SEMI                                               {$$ = $1;}
+              | %empty                                                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
               ;
 
 
-  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI                          {;}
-            | error SEMI                                                        {;}
+  FieldDecl: PUBLIC STATIC Type ID FieldDeclCycle SEMI                          {aux_node = createNode(type_Id,$4,NULL,$5); $$ = aux_node;}
+            | error SEMI                                                        {aux_node = createNode(type_Error,NULL,NULL,NULL);$$ = aux_node;}
             ;
-  FieldDeclCycle: FieldDeclCycle COMMA ID                                       {;}
-                | %empty                                                        {;}
+  FieldDeclCycle: FieldDeclCycle COMMA ID                                       {aux_node = createNode(type_Id,$3,NULL,$1);$$=aux_node;}
+                | %empty                                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
                 ;
 
-  MethodDecl: PUBLIC STATIC MethodHeader MethodBody                             {;}
+  MethodDecl: PUBLIC STATIC MethodHeader MethodBody                             {insertBrother($4,$3); $$ = createNode(type_MethodDecl,NULL,$4,NULL);}
             ;
 
-  MethodHeader: Type ID OCURV FormalParams CCURV                                {;}
-              | Type ID OCURV CCURV                                             {;}
-              | VOID ID OCURV FormalParams CCURV                                {;}
-              | VOID ID OCURV CCURV                                             {;}
+  MethodHeader: Type ID OCURV FormalParams CCURV                                {aux_node = createNode(type_MethodParams,NULL,$4,createNode(type_Id,$2,NULL,$1));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
+              | Type ID OCURV CCURV                                             {aux_node = createNode(type_Id,$2,NULL,$1);$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
+              | VOID ID OCURV FormalParams CCURV                                {aux_node = createNode(type_MethodParams,NULL,$4,createNode(type_Id,$2,NULL,createNode(type_Void,$1,NULL,NULL))); $$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
+              | VOID ID OCURV CCURV                                             {aux_node = createNode(type_Void,$1,NULL,createNode(type_Id,$2,NULL,NULL));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}
               ;
 
-  MethodBody: OBRACE MethodBodyCycle CBRACE                                     {;}
+  MethodBody: OBRACE MethodBodyCycle CBRACE                                     {aux_node = createNode(type_MethodBody,NULL,$2,NULL);$$ = aux_node;}
             ;
-  MethodBodyCycle: MethodBodyCycle VarDecl                                      {;}
-                  | MethodBodyCycle Statement                                   {;}
-                  | %empty                                                      {;}
+  MethodBodyCycle: MethodBodyCycle VarDecl                                      {insertBrother($1,$2);$$ = $1;}
+                  | MethodBodyCycle Statement                                   {insertBrother($1,$2);$$ = $1;}
+                  | %empty                                                      {$$ = createNode(type_Null,NULL,NULL,NULL);}
                   ;
 
-  FormalParams: Type ID FormalParamsCycle                                       {;}
-              | STRING OSQUARE CSQUARE ID                                       {;}
+  FormalParams: Type ID FormalParamsCycle                                       {aux_node = createNode(type_Id,$2,NULL,$1);insertBrother(aux_node,$3); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}
+              | STRING OSQUARE CSQUARE ID                                       {aux_node = createNode(type_StringArray,$1,NULL,createNode(type_Id,$4,NULL,NULL)); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}
               ;
-  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {;}
-                    | %empty                                                    {;}
+  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {insertBrother($1,$3);aux_node = createNode(type_Id,$4,NULL,$1);$$ = aux_node;}
+                    | %empty                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
                     ;
 
-  VarDecl: Type ID VarDeclCycle SEMI                                            {;}
+  VarDecl: Type ID VarDeclCycle SEMI                                            {aux_node = createNode(type_Id,$2,NULL,$3); insertBrother(aux_node,$1);$$ = createNode(type_VarDecl,NULL,aux_node,NULL);}
           ;
-  VarDeclCycle: VarDeclCycle COMMA ID                                           {;}
-              | %empty                                                          {;}
+  VarDeclCycle: VarDeclCycle COMMA ID                                           {aux_node = createNode(type_Id,$3,NULL,$1); $$ = aux_node;}
+              | %empty                                                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
               ;
 
   Type: BOOL                                                                    {;}
@@ -211,6 +215,7 @@ int main(int argc, char** argv){
 	else{
    syntax_flag = 1;
    yyparse();
+   printList(root,0);
 	}
 	return 0;
 }
