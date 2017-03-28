@@ -10,6 +10,7 @@
   Node* root = NULL ;
   Node* aux_node = NULL;
   Node* aux_node2 = NULL;
+  Node* aux_node3 = NULL;
 
 
 %}
@@ -68,7 +69,7 @@
 %token <token> STRLIT
 %token <token> VOID
 
-%type <_node> Program ProgramCycle FieldDecl FieldDeclCycle MethodDecl MethodHeader MethodBody MethodBodyCycle FormalParams FormalParamsCycle VarDecl VarDeclCycle Type Statement StatementCycle Assignment MethodInvocation MethodInvocationCycle ParseArgs Expr ExprAux
+%type <_node> Program ProgramCycle FieldDecl FieldDeclCycle MethodDecl MethodHeader MethodBody MethodBodyCycle FormalParams FormalParamsCycle VarDecl VarDeclCycle Type StatementCycle Assignment MethodInvocation MethodInvocationCycle ParseArgs Expr ExprAux Statement
 
 %right ASSIGN
 %left OR
@@ -137,23 +138,23 @@
       | DOUBLE                                                                  {$$ = createNode(type_Double,$1,NULL,NULL);}
       ;
 
-  Statement: OBRACE StatementCycle CBRACE                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | IF OCURV Expr CCURV Statement %prec IFX                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | IF OCURV Expr CCURV Statement ELSE Statement                      {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | WHILE OCURV Expr CCURV Statement                                  {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | DO Statement WHILE OCURV Expr CCURV SEMI                          {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | PRINT OCURV Expr CCURV SEMI                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | PRINT OCURV STRLIT CCURV SEMI                                     {$$ = createNode(type_Null,NULL,NULL,NULL);}
+  Statement: OBRACE StatementCycle CBRACE                                       {if(checkBlock($2)==1){$$=createNode(type_Block,NULL,$2,NULL);}else{$$ = $2;}}
+            | IF OCURV Expr CCURV Statement %prec IFX                           {if(checkBlock($5)!=0){insertBrother($3,createNode(type_Block,NULL,$5,NULL));}else{insertBrother($3,$5);};$$ = createNode(type_If,NULL,$3,NULL);}
+            | IF OCURV Expr CCURV Statement ELSE Statement                      {if(checkBlock($7)!=0){aux_node = createNode(type_Block,NULL,$7,NULL);}else{aux_node = $7;} if(checkBlock($5)!=0){aux_node3 = createNode(type_Block,NULL,$5,NULL);}else{aux_node3 = $5;};insertBrother(aux_node,aux_node3);insertBrother(aux_node3,$3); $$ = createNode(type_If,NULL,aux_node,NULL);}
+            | WHILE OCURV Expr CCURV Statement                                  {if(checkBlock($5)==1){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node=$5;};insertBrother(aux_node,$3);$$ = createNode(type_While,NULL,aux_node,NULL);}
+            | DO Statement WHILE OCURV Expr CCURV SEMI                          {if(checkBlock($2)==1){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node=$2;};insertBrother(aux_node,$5);$$ = createNode(type_DoWhile,NULL,aux_node,NULL);}
+            | PRINT OCURV Expr CCURV SEMI                                       {$$ = createNode(type_Print,NULL,$3,NULL);}
+            | PRINT OCURV STRLIT CCURV SEMI                                     {aux_node = createNode(type_StrLit,$3,NULL,NULL);$$ = createNode(type_Print,NULL,aux_node,NULL);}
             | SEMI                                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | Assignment SEMI                                                   {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | MethodInvocation SEMI                                             {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | ParseArgs SEMI                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | RETURN SEMI                                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | RETURN Expr SEMI                                                  {$$ = createNode(type_Null,NULL,NULL,NULL);}
-            | error SEMI                                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
+            | Assignment SEMI                                                   {$$ = $1;}
+            | MethodInvocation SEMI                                             {$$ = $1;}
+            | ParseArgs SEMI                                                    {$$ = $1;}
+            | RETURN SEMI                                                       {$$ = createNode(type_Return,NULL,NULL,NULL);}
+            | RETURN Expr SEMI                                                  {$$ = createNode(type_Return,NULL,$2,NULL);}
+            | error SEMI                                                        {$$ = createNode(type_Error,NULL,NULL,NULL);}
             ;
 
- StatementCycle: StatementCycle Statement                                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
+ StatementCycle: StatementCycle Statement                                       {if(checkBlock($2)==1){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node = $2;};insertBrother(aux_node,$1);$$ = aux_node;}
               |%empty                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
               ;
 

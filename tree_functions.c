@@ -48,6 +48,20 @@ void insertBrother(Node* this, Node* brother) {
   }
 }
 
+//check node to make block
+int checkBlock(Node* this) {
+  int n_brothers = 0;
+  while (this->brother != NULL) {
+    n_brothers++;
+    if(n_brothers>=2)
+    {
+      return 1;
+    }
+    this = this->brother;
+  }
+  return 0;
+}
+
 /*Print tree*/
 void printList(Node* root, int high) {
   int i;
