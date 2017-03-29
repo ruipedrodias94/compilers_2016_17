@@ -170,36 +170,12 @@
                       |%empty                                                   {if(flag_error == 0) {$$ = createNode(type_Null,NULL,NULL,NULL);}}
                       ;
 
-  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {if(flag_error == 0) {aux_node = createNode(type_Id,$3,NULL,$5);$$ = createNode(type_ParseArgs,NULL,aux_node,NULL);}}
+  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {if(flag_error == 0) {aux_node = createNode(type_Id,$3,NULL,NULL);insertBrother(aux_node,$5);$$ = createNode(type_ParseArgs,NULL,aux_node,NULL);}}
            | PARSEINT OCURV error CCURV                                         {if(flag_error == 0) {$$ = createNode(type_Error,NULL,NULL,NULL);}}
             ;
 
   Expr: Assignment                                                              {if(flag_error == 0) {$$ = $1;}}
-      | MethodInvocation                                                        {if(flag_error == 0) {$$ = $1;}}
-      | ParseArgs                                                               {if(flag_error == 0) {$$ = $1;}}
-      | Expr AND ExprAux                                                        {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_And, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr OR ExprAux                                                         {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Or, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr EQ ExprAux                                                         {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Eq, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr GEQ ExprAux                                                        {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Geq, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr GT ExprAux                                                         {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Gt, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr LT ExprAux                                                         {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Leq, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr LEQ ExprAux                                                        {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Lt, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr NEQ ExprAux                                                        {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Neq, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr PLUS ExprAux                                                       {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Add, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr MINUS ExprAux                                                      {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Sub, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr STAR ExprAux                                                       {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Mul, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr DIV ExprAux                                                        {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Div, NULL, $1, NULL);  $$ = aux_node;}}
-      | Expr MOD ExprAux                                                        {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Mod, NULL, $1, NULL);  $$ = aux_node;}}
-      | PLUS ExprAux %prec NOT                                                  {if(flag_error == 0) {aux_node = createNode(type_Plus, NULL, $2, NULL); $$ = aux_node;}}
-      | MINUS ExprAux %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Minus, NULL, $2, NULL); $$ = aux_node;}}
-      | NOT ExprAux   %prec NOT                                                         {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
-      | ID                                                                      {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}}
-      | ID DOTLENGTH                                                            {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}}
-      | BOOLLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}}
-      | DECLIT                                                                  {if(flag_error == 0) {aux_node = createNode(type_DecLit, $1, NULL, NULL); $$ = aux_node;}}
-      | REALLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_RealLit, $1, NULL, NULL); $$ = aux_node;}}
-      | OCURV error CCURV                                                       {if(flag_error == 0) {aux_node = createNode(type_Error, NULL, NULL, NULL); $$ = aux_node;}}
-      | OCURV Expr CCURV                                                        {if(flag_error == 0) {$$ = $2;}}
+      | ExprAux                                                                 {if(flag_error == 0) {$$ = $1;}}
       ;
 
   ExprAux: MethodInvocation                                                     {if(flag_error == 0) {$$ = $1;}}
@@ -219,14 +195,14 @@
       | ExprAux MOD ExprAux                                                     {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Mod, NULL, $1, NULL);  $$ = aux_node;}}
       | PLUS ExprAux %prec NOT                                                  {if(flag_error == 0) {aux_node = createNode(type_Plus, NULL, $2, NULL); $$ = aux_node;}}
       | MINUS ExprAux %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Minus, NULL, $2, NULL); $$ = aux_node;}}
-      | NOT ExprAux   %prec NOT                                                         {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
+      | NOT ExprAux   %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
       | ID                                                                      {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}}
       | ID DOTLENGTH                                                            {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}}
+      | OCURV ExprAux CCURV                                                     {if(flag_error == 0) {$$ = $2;}}
       | BOOLLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}}
       | DECLIT                                                                  {if(flag_error == 0) {aux_node = createNode(type_DecLit, $1, NULL, NULL); $$ = aux_node;}}
       | REALLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_RealLit, $1, NULL, NULL); $$ = aux_node;}}
       | OCURV error CCURV                                                       {if(flag_error == 0) {aux_node = createNode(type_Error, NULL, NULL, NULL); $$ = aux_node;}}
-      | OCURV ExprAux CCURV                                                     {if(flag_error == 0) {$$ = $2;}}
       ;
 
 %%
