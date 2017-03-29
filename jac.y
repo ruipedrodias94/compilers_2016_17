@@ -139,8 +139,8 @@
       ;
 
   Statement: OBRACE StatementCycle CBRACE                                       {if(checkBlock($2)==1){$$=createNode(type_Block,NULL,$2,NULL);}else{$$ = $2;}}
-            | IF OCURV Expr CCURV Statement %prec IFX                           {if(checkBlock($5)!=0){insertBrother($3,createNode(type_Block,NULL,$5,NULL));}else{insertBrother($3,$5);};$$ = createNode(type_If,NULL,$3,NULL);}
-            | IF OCURV Expr CCURV Statement ELSE Statement                      {if(checkBlock($7)!=0){aux_node = createNode(type_Block,NULL,$7,NULL);}else{aux_node = $7;} if(checkBlock($5)!=0){aux_node3 = createNode(type_Block,NULL,$5,NULL);}else{aux_node3 = $5;};insertBrother(aux_node,aux_node3);insertBrother(aux_node3,$3); $$ = createNode(type_If,NULL,aux_node,NULL);}
+            | IF OCURV Expr CCURV Statement %prec IFX                           {if(checkBlock($5)==1){insertBrother($3,createNode(type_Block,NULL,$5,NULL));}else{insertBrother($3,$5);};$$ = createNode(type_If,NULL,$3,NULL);}
+            | IF OCURV Expr CCURV Statement ELSE Statement                      {if(checkBlock($7)==1){aux_node = createNode(type_Block,NULL,$7,NULL);}else{aux_node = $7;} if(checkBlock($5)==1){aux_node3 = createNode(type_Block,NULL,$5,NULL);}else{aux_node3 = $5;};insertBrother(aux_node,aux_node3);insertBrother(aux_node3,$3); $$ = createNode(type_If,NULL,aux_node,NULL);}
             | WHILE OCURV Expr CCURV Statement                                  {if(checkBlock($5)==1){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node=$5;};insertBrother(aux_node,$3);$$ = createNode(type_While,NULL,aux_node,NULL);}
             | DO Statement WHILE OCURV Expr CCURV SEMI                          {if(checkBlock($2)==1){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node=$2;};insertBrother(aux_node,$5);$$ = createNode(type_DoWhile,NULL,aux_node,NULL);}
             | PRINT OCURV Expr CCURV SEMI                                       {$$ = createNode(type_Print,NULL,$3,NULL);}
@@ -158,7 +158,7 @@
               |%empty                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
               ;
 
-  Assignment: ID ASSIGN Expr                                                    {$$ = createNode(type_Null,NULL,NULL,NULL);}
+  Assignment: ID ASSIGN Expr                                                    {aux_node = createNode(type_Id,$1,NULL,NULL);insertBrother(aux_node,$3);$$ = createNode(type_Assign,NULL,aux_node,NULL);}
             ;
 
   MethodInvocation: ID OCURV CCURV                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
@@ -170,8 +170,8 @@
                       |%empty                                                   {$$ = createNode(type_Null,NULL,NULL,NULL);}
                       ;
 
-  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
-           | PARSEINT OCURV error CCURV                                         {$$ = createNode(type_Null,NULL,NULL,NULL);}
+  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {aux_node = createNode(type_Id,$3,NULL,$5);$$ = createNode(type_ParseArgs,NULL,aux_node,NULL);}
+           | PARSEINT OCURV error CCURV                                         {$$ = createNode(type_Error,NULL,NULL,NULL);}
             ;
 
   Expr: Assignment                                                              {$$ = $1;}
