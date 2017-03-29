@@ -4,6 +4,7 @@
 	 int line=1, col=1, auxLine=1, auxCol=1;
 	 extern int erro;
 	 extern int syntax_flag;
+	 int flag_error = 0;
 
 %}
 %x COMMENT
@@ -161,5 +162,6 @@ int yywrap()
 
  /*Ainda não sei qual o valor a meter na string s*/
 void yyerror (const char *s) {
+	flag_error = 1;
 	printf ("Line %d, col %d: %s: %s\n", auxLine, auxCol, s, yytext);
 }
