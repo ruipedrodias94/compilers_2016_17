@@ -139,9 +139,9 @@
       ;
 
   Statement: OBRACE StatementCycle CBRACE                                       {if(checkBlock($2)==1){$$=createNode(type_Block,NULL,$2,NULL);}else{$$ = $2;}}
-            | IF OCURV Expr CCURV Statement %prec IFX                           {if(checkBlock($5)==1){insertBrother($3,createNode(type_Block,NULL,$5,NULL));}else{insertBrother($3,$5);};$$ = createNode(type_If,NULL,$3,NULL);}
-            | IF OCURV Expr CCURV Statement ELSE Statement                      {if(checkBlock($7)==1){aux_node = createNode(type_Block,NULL,$7,NULL);}else{aux_node = $7;} if(checkBlock($5)==1){aux_node3 = createNode(type_Block,NULL,$5,NULL);}else{aux_node3 = $5;};insertBrother(aux_node,aux_node3);insertBrother(aux_node3,$3); $$ = createNode(type_If,NULL,aux_node,NULL);}
-            | WHILE OCURV Expr CCURV Statement                                  {if(checkBlock($5)==1){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node=$5;};insertBrother(aux_node,$3);$$ = createNode(type_While,NULL,aux_node,NULL);}
+            | IF OCURV Expr CCURV Statement %prec IFX                           {if(checkBlock($5)==1){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node = $5;};insertBrother($3,aux_node);$$ = createNode(type_If,NULL,$3,NULL);}
+            | IF OCURV Expr CCURV Statement ELSE Statement                      {if(checkBlock($7)==1){aux_node3 = createNode(type_Block,NULL,$7,NULL);}else{aux_node3 = $7;}if(checkBlock($5)==1){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node = $5;} insertBrother($3,aux_node); insertBrother(aux_node,aux_node3);$$ = createNode(type_If,NULL,$3,NULL);}
+            | WHILE OCURV Expr CCURV Statement                                  {if(checkBlock($5)==1){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node=$5;};insertBrother($3,aux_node);$$ = createNode(type_While,NULL,$3,NULL);}
             | DO Statement WHILE OCURV Expr CCURV SEMI                          {if(checkBlock($2)==1){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node=$2;};insertBrother(aux_node,$5);$$ = createNode(type_DoWhile,NULL,aux_node,NULL);}
             | PRINT OCURV Expr CCURV SEMI                                       {$$ = createNode(type_Print,NULL,$3,NULL);}
             | PRINT OCURV STRLIT CCURV SEMI                                     {aux_node = createNode(type_StrLit,$3,NULL,NULL);$$ = createNode(type_Print,NULL,aux_node,NULL);}
@@ -154,16 +154,16 @@
             | error SEMI                                                        {$$ = createNode(type_Error,NULL,NULL,NULL);}
             ;
 
- StatementCycle: StatementCycle Statement                                       {if(checkBlock($2)==1){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node = $2;};insertBrother(aux_node,$1);$$ = aux_node;}
+ StatementCycle: StatementCycle Statement                                       {if(checkBlock($2)==1){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node = $2;};insertBrother($1,aux_node);$$ = $1;}
               |%empty                                                           {$$ = createNode(type_Null,NULL,NULL,NULL);}
               ;
 
   Assignment: ID ASSIGN Expr                                                    {aux_node = createNode(type_Id,$1,NULL,NULL);insertBrother(aux_node,$3);$$ = createNode(type_Assign,NULL,aux_node,NULL);}
             ;
 
-  MethodInvocation: ID OCURV CCURV                                              {$$ = createNode(type_Null,NULL,NULL,NULL);}
-                  | ID OCURV Expr MethodInvocationCycle CCURV                   {$$ = createNode(type_Null,NULL,NULL,NULL);}
-                  | ID OCURV error CCURV                                        {$$ = createNode(type_Null,NULL,NULL,NULL);}
+  MethodInvocation: ID OCURV CCURV                                              {$$ = createNode(type_Id,$1,NULL,NULL);}
+                  | ID OCURV Expr MethodInvocationCycle CCURV                   {aux_node = createNode(type_Id,$1,NULL,NULL); insertBrother($3,$4);insertBrother(aux_node,$3);$$ = aux_node;}
+                  | ID OCURV error CCURV                                        {$$ = createNode(type_Error,NULL,NULL,NULL);}
                   ;
 
   MethodInvocationCycle: MethodInvocationCycle COMMA Expr                       {$$ = createNode(type_Null,NULL,NULL,NULL);}
