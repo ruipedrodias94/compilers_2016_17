@@ -51,15 +51,15 @@ void insertBrother(Node* this, Node* brother) {
 //check node to make block
 int checkBlock(Node* this) {
   int n_brothers = 0;
-  while (this->brother != NULL && this != NULL) {
-    if(this->brother->node_type!=type_Null){
+  Node* temp = this;
+  while (temp != NULL) {
+    if(temp->node_type != type_Null){
       n_brothers++;
     }
-    this = this->brother;
+    temp = temp->brother;
   }
   return n_brothers;
 }
-
 
 
 /*Print tree*/
