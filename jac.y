@@ -12,7 +12,7 @@
   Node* aux_node = NULL;
   Node* aux_node2 = NULL;
   Node* aux_node3 = NULL;
-
+  Node* aux_node4 = NULL;
 
 %}
 
@@ -140,10 +140,80 @@
       ;
 
   Statement: OBRACE StatementCycle CBRACE                                       {if(flag_error == 0) {$$ = $2;}}
-            | IF OCURV Expr CCURV Statement %prec IFX                           {if(flag_error == 0) {aux_node = createNode(type_Block,NULL,NULL,NULL);aux_node3 = createNode(type_Block,NULL,$5,NULL);insertBrother(aux_node3,aux_node);insertBrother($3,aux_node3);$$ = createNode(type_If,NULL,$3,NULL);}}
-            | IF OCURV Expr CCURV Statement ELSE Statement                      {if(flag_error == 0) {if(checkBlock($7)>=2){aux_node3 = createNode(type_Block,NULL,$7,NULL);}else{aux_node3 = $7;}if(checkBlock($5)>=2){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node = $5;} insertBrother(aux_node,aux_node3);insertBrother($3,aux_node);$$ = createNode(type_If,NULL,$3,NULL);}}
-            | WHILE OCURV Expr CCURV Statement                                  {if(flag_error == 0) {if(checkBlock($5)>=2){aux_node = createNode(type_Block,NULL,$5,NULL);}else if(checkBlock($5)==0){aux_node = createNode(type_Block,NULL,NULL,NULL);}else{aux_node = $5;};insertBrother($3,aux_node);$$ = createNode(type_While,NULL,$3,NULL);}}
-            | DO Statement WHILE OCURV Expr CCURV SEMI                          {if(flag_error == 0) {if(checkBlock($2)>=2){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node=$2;};insertBrother(aux_node,$5);$$ = createNode(type_DoWhile,NULL,aux_node,NULL);}}
+            | IF OCURV Expr CCURV Statement %prec IFX                           {if(flag_error == 0) {aux_node = createNode(type_If,NULL,$3,NULL);
+              if($5!=NULL){if($5->brother!=NULL){aux_node = createNode(type_Block,NULL,$5,NULL);insertBrother($3,aux_node);aux_node2 = createNode(type_Block,NULL,NULL,NULL);insertSon($$,$5);}else{insertBrother($3,$5);aux_node2 = createNode(type_Block,NULL,NULL,NULL);insertBrother($5,aux_node2);}}else{
+              aux_node2 = createNode(type_Block,NULL,NULL,NULL);insertBrother($3,aux_node2);aux_node3 = createNode(type_Block,NULL,NULL,NULL);insertBrother($3,aux_node3);}}$$ = aux_node;}
+
+
+
+            | IF OCURV Expr CCURV Statement ELSE Statement                      {if(flag_error == 0) {aux_node = createNode(type_If,NULL,NULL,NULL);insertSon(aux_node,$3);
+                                                                                  if($5!=NULL)
+                                                                                  {
+                                                                                    if($5->brother!=NULL)
+                                                                                    {
+                                                                                      aux_node3 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                      insertBrother($3, aux_node3);
+                                                                                      insertSon(aux_node3,$5);
+                                                                                    }else{
+                                                                                      insertBrother($3,$5);
+                                                                                    }
+                                                                                  }else{
+                                                                                    aux_node2 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                    insertBrother($3,aux_node2);
+                                                                                  }
+                                                                                  if($7!=NULL)
+                                                                                  {
+                                                                                    if($7->brother!=NULL)
+                                                                                    {
+                                                                                      aux_node4 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                      insertBrother($3,aux_node4);
+                                                                                      insertSon(aux_node4,$7);
+                                                                                    }
+                                                                                    else{
+                                                                                      insertBrother($3,$7);
+                                                                                    }
+                                                                                  }else{
+                                                                                    aux_node4 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                    insertBrother($3,aux_node4);
+                                                                                  } $$ = aux_node;}}
+            | WHILE OCURV Expr CCURV Statement                                  {if(flag_error == 0){aux_node = createNode(type_While,NULL,NULL,NULL);
+                                                                                insertSon(aux_node,$3);
+                                                                                if($5!=NULL)
+                                                                                {
+                                                                                  if($5->brother!=NULL)
+                                                                                  {
+                                                                                    aux_node3 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                    insertSon(aux_node3,$5);
+                                                                                    insertBrother($3,aux_node3);
+                                                                                  }else
+                                                                                  {
+                                                                                    insertBrother($3,$5);
+
+                                                                                  }
+                                                                                }else
+                                                                                {
+                                                                                  aux_node2 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                  insertBrother($3,aux_node2);
+                                                                                } $$ = aux_node;}}
+
+            | DO Statement WHILE OCURV Expr CCURV SEMI                          {if(flag_error == 0) {aux_node = createNode(type_DoWhile,NULL,NULL,NULL);
+                                                                                if($2!=NULL)
+                                                                                {
+                                                                                  if($2->brother!=NULL)
+                                                                                  {
+                                                                                    aux_node3 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                    insertSon(aux_node3,$2);
+                                                                                    insertBrother(aux_node3,$5);
+                                                                                    insertSon(aux_node,aux_node3);
+                                                                                  }else{
+                                                                                    insertBrother($2,$5);
+                                                                                    insertSon(aux_node,$2);
+                                                                                  }
+                                                                                  }else{
+                                                                                    aux_node2 = createNode(type_Block,NULL,NULL,NULL);
+                                                                                    insertBrother(aux_node2,$5);
+                                                                                    insertSon(aux_node,aux_node2);
+                                                                                    } $$ = aux_node;}}
             | PRINT OCURV Expr CCURV SEMI                                       {if(flag_error == 0) {$$ = createNode(type_Print,NULL,$3,NULL);}}
             | PRINT OCURV STRLIT CCURV SEMI                                     {if(flag_error == 0) {aux_node = createNode(type_StrLit,$3,NULL,NULL);$$ = createNode(type_Print,NULL,aux_node,NULL);}}
             | SEMI                                                              {if(flag_error == 0) {$$ = createNode(type_Null,NULL,NULL,NULL);}}
@@ -193,7 +263,7 @@
       | Expr MOD ExprAux                                                        {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Mod, NULL, $1, NULL);  $$ = aux_node;}}
       | PLUS ExprAux %prec NOT                                                  {if(flag_error == 0) {aux_node = createNode(type_Plus, NULL, $2, NULL); $$ = aux_node;}}
       | MINUS ExprAux %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Minus, NULL, $2, NULL); $$ = aux_node;}}
-      | NOT ExprAux                                                             {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
+      | NOT ExprAux   %prec NOT                                                         {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
       | ID                                                                      {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}}
       | ID DOTLENGTH                                                            {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}}
       | BOOLLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}}
@@ -220,7 +290,7 @@
       | ExprAux MOD ExprAux                                                     {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Mod, NULL, $1, NULL);  $$ = aux_node;}}
       | PLUS ExprAux %prec NOT                                                  {if(flag_error == 0) {aux_node = createNode(type_Plus, NULL, $2, NULL); $$ = aux_node;}}
       | MINUS ExprAux %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Minus, NULL, $2, NULL); $$ = aux_node;}}
-      | NOT ExprAux                                                             {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
+      | NOT ExprAux   %prec NOT                                                         {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
       | ID                                                                      {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}}
       | ID DOTLENGTH                                                            {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}}
       | BOOLLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}}
@@ -242,7 +312,10 @@ int main(int argc, char** argv){
     else if(strcmp(argv[1],"-t")==0){
     syntax_flag = 1;
     yyparse();
+    if(flag_error == 0){
     printList(root,0);
+    }
+
     }
 		else
 		{
@@ -252,10 +325,7 @@ int main(int argc, char** argv){
 	}
 	else{
    syntax_flag = 1;
-   if(flag_error == 0)
-    {
       yyparse();
-    }
 	}
 	return 0;
 }

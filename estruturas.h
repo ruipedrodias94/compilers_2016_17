@@ -26,3 +26,6 @@ void insertBrother(Node* this, Node* brother);
 void printList(Node* root, int high);
 char* getNode_type(NodeType node_type);
 int checkBlock(Node* this);
+void insertSon(Node* n, Node* son );
+int is_null(Node* n);
+void insertSon(Node* n, Node* son );

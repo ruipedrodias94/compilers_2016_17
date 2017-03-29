@@ -20,6 +20,19 @@ Node* createNode(NodeType node_type, char* token, Node* son, Node* brother){
   return node;
 }
 
+void insertSon(Node* n, Node* son )
+{
+  if(!is_null(n))
+  {
+    if(n->son == NULL)
+    {
+      n->son = son;
+    }
+    else{
+      insertSon(n->son,son);
+    }
+  }
+}
 /*Delete Node*/
 void deleteNode(Node* this) {
   if (this == NULL) {
@@ -59,6 +72,18 @@ int checkBlock(Node* this) {
     temp = temp->brother;
   }
   return n_brothers;
+}
+
+int is_null(Node* n)
+{
+  if(n->node_type!=type_Null)
+  {
+    return 0;
+  }
+  else
+  {
+    return 1;
+  }
 }
 
 
