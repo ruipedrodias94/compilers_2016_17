@@ -8,7 +8,7 @@ gcc  -o jac lex.yy.c y.tab.c tree_functions.c
 
 if [ $? -eq 0 ]; then
   echo "running..."
-  ./jac  < Echo.ja
+  #./jac  < Echo.ja
   #echo "zippin..."
   zip -r jac.zip jac.l jac.y estruturas.h tree_functions.c
 else

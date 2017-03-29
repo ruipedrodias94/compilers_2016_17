@@ -25,3 +25,4 @@ void deleteNode(Node* this);
 void insertBrother(Node* this, Node* brother);
 void printList(Node* root, int high);
 char* getNode_type(NodeType node_type);
+int checkBlock(Node* this);
