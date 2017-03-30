@@ -198,7 +198,7 @@
       | NOT ExprAux   %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
       | ID                                                                      {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}}
       | ID DOTLENGTH                                                            {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}}
-      | OCURV ExprAux CCURV                                                     {if(flag_error == 0) {$$ = $2;}}
+      | OCURV Expr CCURV                                                        {if(flag_error == 0) {$$ = $2;}}
       | BOOLLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}}
       | DECLIT                                                                  {if(flag_error == 0) {aux_node = createNode(type_DecLit, $1, NULL, NULL); $$ = aux_node;}}
       | REALLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_RealLit, $1, NULL, NULL); $$ = aux_node;}}
