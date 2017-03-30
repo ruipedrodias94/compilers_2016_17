@@ -116,3 +116,23 @@ void printList(Node* root, int high) {
 char* getNode_type(NodeType node_type){
   return tokens[node_type];
 }
+
+void free_tree(Node* root)
+{
+  if(root == NULL)
+  {
+    return;
+  }
+  free_tree(root->son);
+  free_tree(root->brother);
+
+  free(root->token);
+  if(root->son != NULL)
+  {
+    free(root->son);
+  }
+  if(root->brother)
+  {
+    free(root->brother);
+  }
+}

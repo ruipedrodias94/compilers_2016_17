@@ -29,3 +29,4 @@ int checkBlock(Node* this);
 void insertSon(Node* n, Node* son );
 int is_null(Node* n);
 void insertSon(Node* n, Node* son );
+void free_tree(Node* root);
