@@ -25,7 +25,7 @@
 %token IF
 %token AND
 %token ASSIGN
-%token <token> BOOL
+%token BOOL
 %token CLASS
 %token CCURV
 %token CBRACE
@@ -33,12 +33,12 @@
 %token DIV
 %token DO
 %token DOTLENGTH
-%token <token> DOUBLE
+%token DOUBLE
 %token ELSE
 %token EQ
 %token GEQ
 %token GT
-%token <token> INT
+%token INT
 %token LT
 %token LEQ
 %token MINUS
@@ -68,10 +68,11 @@
 %token <token> DECLIT
 %token <token> ID
 %token <token> STRLIT
-%token <token> VOID
+%token VOID
 
 %type <_node> Program ProgramCycle FieldDecl FieldDeclCycle MethodDecl MethodHeader MethodBody MethodBodyCycle FormalParams FormalParamsCycle VarDecl VarDeclCycle Type StatementCycle Assignment MethodInvocation MethodInvocationCycle ParseArgs Expr ExprAux Statement
 
+%start Program
 %right ASSIGN
 %left OR
 %left AND
@@ -79,8 +80,9 @@
 %left LT LEQ GT GEQ
 %left PLUS MINUS
 %left STAR DIV MOD
-%right NOT SIGN
-%left OCURV CCURV OSQUARE CSQUARE
+%right NOT
+%right PRECEDENCE
+%left OBRACE OCURV CCURV OSQUARE CSQUARE CBRACE
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -88,7 +90,7 @@
   /*Given grammar in EBNF form*/
 
   /*Ciclos é 0 ou mais ocorrências e são representados por {}*/
-  Program: CLASS ID OBRACE ProgramCycle CBRACE                                  {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,$4);root = createNode(type_Program,NULL,aux_node,NULL);}}
+  Program: CLASS ID OBRACE ProgramCycle CBRACE                                  {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,$4);free($2);root = createNode(type_Program,NULL,aux_node,NULL);}}
           ;
   ProgramCycle: ProgramCycle FieldDecl                                          {if(flag_error == 0) {insertBrother($1,$2);$$=$1;}}
               | ProgramCycle MethodDecl                                         {if(flag_error == 0) {insertBrother($1,$2);$$=$1;}}
@@ -100,17 +102,17 @@
   FieldDecl: PUBLIC STATIC FieldDeclCycle SEMI                                  {if(flag_error == 0) {$$=$3;}}
             | error SEMI                                                        {if(flag_error == 0) {aux_node = createNode(type_Error,NULL,NULL,NULL);$$ = aux_node;}}
             ;
-  FieldDeclCycle: FieldDeclCycle COMMA ID                                       {if(flag_error == 0) {aux_node = createNode(aux_node2->node_type,NULL,NULL,createNode(type_Id,$3,NULL,NULL)); insertBrother($1,createNode(type_FieldDecl,NULL,aux_node,NULL)); $$ = $1;}}
-                | Type ID                                                       {if(flag_error == 0) {aux_node2 = $1;aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node); $$ = createNode(type_FieldDecl,NULL,$1,NULL);}}
+  FieldDeclCycle: FieldDeclCycle COMMA ID                                       {if(flag_error == 0) {aux_node = createNode(aux_node2->node_type,NULL,NULL,createNode(type_Id,$3,NULL,NULL));free($3);insertBrother($1,createNode(type_FieldDecl,NULL,aux_node,NULL)); $$ = $1;}}
+                | Type ID                                                       {if(flag_error == 0) {aux_node2 = $1;aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node);free($2);$$ = createNode(type_FieldDecl,NULL,$1,NULL);}}
                 ;
 
   MethodDecl: PUBLIC STATIC MethodHeader MethodBody                             {if(flag_error == 0) {insertBrother($3,$4); $$ = createNode(type_MethodDecl,NULL,$3,NULL);}}
             ;
 
-  MethodHeader: Type ID OCURV FormalParams CCURV                                {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node);insertBrother($1,createNode(type_MethodParams,NULL,$4,NULL));$$ = createNode(type_MethodHeader,NULL,$1,NULL);}}
-              | Type ID OCURV CCURV                                             {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node);insertBrother($1,createNode(type_MethodParams,NULL,NULL,NULL));$$ = createNode(type_MethodHeader,NULL,$1,NULL);}}
-              | VOID ID OCURV FormalParams CCURV                                {if(flag_error == 0) {aux_node = createNode(type_Void,$1,NULL,createNode(type_Id,$2,NULL,createNode(type_MethodParams,NULL,$4,NULL)));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}}
-              | VOID ID OCURV CCURV                                             {if(flag_error == 0) {aux_node = createNode(type_Void,$1,NULL,createNode(type_Id,$2,NULL,NULL));insertBrother(aux_node,createNode(type_MethodParams,NULL,NULL,NULL));$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}}
+  MethodHeader: Type ID OCURV FormalParams CCURV                                {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,NULL);free($2);insertBrother($1,aux_node);insertBrother($1,createNode(type_MethodParams,NULL,$4,NULL));$$ = createNode(type_MethodHeader,NULL,$1,NULL);}}
+              | Type ID OCURV CCURV                                             {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,NULL);free($2);insertBrother($1,aux_node);insertBrother($1,createNode(type_MethodParams,NULL,NULL,NULL));$$ = createNode(type_MethodHeader,NULL,$1,NULL);}}
+              | VOID ID OCURV FormalParams CCURV                                {if(flag_error == 0) {aux_node = createNode(type_Void,NULL,NULL,createNode(type_Id,$2,NULL,createNode(type_MethodParams,NULL,$4,NULL)));free($2);$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}}
+              | VOID ID OCURV CCURV                                             {if(flag_error == 0) {aux_node = createNode(type_Void,NULL,NULL,createNode(type_Id,$2,NULL,NULL));insertBrother(aux_node,createNode(type_MethodParams,NULL,NULL,NULL));free($2);$$ = createNode(type_MethodHeader,NULL,aux_node,NULL);}}
               ;
 
   MethodBody: OBRACE MethodBodyCycle CBRACE                                     {if(flag_error == 0) {aux_node = createNode(type_MethodBody,NULL,$2,NULL);$$ = aux_node;}}
@@ -120,23 +122,23 @@
                   | %empty                                                      {if(flag_error == 0) {$$ = createNode(type_Null,NULL,NULL,NULL);}}
                   ;
 
-  FormalParams: Type ID FormalParamsCycle                                       {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node); $$ = createNode(type_ParamDecl,NULL,$1,$3);}}
-              | STRING OSQUARE CSQUARE ID                                       {if(flag_error == 0) {aux_node = createNode(type_StringArray,NULL,NULL,createNode(type_Id,$4,NULL,NULL)); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}}
+  FormalParams: Type ID FormalParamsCycle                                       {if(flag_error == 0) {aux_node = createNode(type_Id,$2,NULL,NULL);free($2);insertBrother($1,aux_node); $$ = createNode(type_ParamDecl,NULL,$1,$3);}}
+              | STRING OSQUARE CSQUARE ID                                       {if(flag_error == 0) {aux_node = createNode(type_StringArray,NULL,NULL,createNode(type_Id,$4,NULL,NULL));free($4); $$ = createNode(type_ParamDecl,NULL,aux_node,NULL);}}
               ;
-  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {if(flag_error == 0) {aux_node = createNode(type_ParamDecl,NULL,$3,NULL);insertBrother($3,createNode(type_Id,$4,NULL,NULL));insertBrother($1,aux_node);$$ = $1;}}
+  FormalParamsCycle: FormalParamsCycle COMMA Type ID                            {if(flag_error == 0) {aux_node = createNode(type_ParamDecl,NULL,$3,NULL);insertBrother($3,createNode(type_Id,$4,NULL,NULL));free($4);insertBrother($1,aux_node);$$ = $1;}}
                     | %empty                                                    {if(flag_error == 0) {$$ = createNode(type_Null,NULL,NULL,NULL);}}
                     ;
 
   VarDecl: VarDeclCycle SEMI                                                    {if(flag_error == 0) {$$ = $1;}}
           ;
 
-  VarDeclCycle: VarDeclCycle COMMA ID                                           {if(flag_error == 0) {aux_node = createNode(aux_node2->node_type,NULL,NULL,createNode(type_Id,$3,NULL,NULL)); insertBrother($1,createNode(type_VarDecl,NULL,aux_node,NULL)); $$ = $1;}}
-              | Type ID                                                         {if(flag_error == 0) {aux_node2 = $1;aux_node = createNode(type_Id,$2,NULL,NULL);insertBrother($1,aux_node); $$ = createNode(type_VarDecl,NULL,$1,NULL);}}
+  VarDeclCycle: VarDeclCycle COMMA ID                                           {if(flag_error == 0) {aux_node = createNode(aux_node2->node_type,NULL,NULL,createNode(type_Id,$3,NULL,NULL));free($3);insertBrother($1,createNode(type_VarDecl,NULL,aux_node,NULL)); $$ = $1;}}
+              | Type ID                                                         {if(flag_error == 0) {aux_node2 = $1;aux_node = createNode(type_Id,$2,NULL,NULL);free($2);insertBrother($1,aux_node); $$ = createNode(type_VarDecl,NULL,$1,NULL);}}
               ;
 
-  Type: BOOL                                                                    {if(flag_error == 0) {$$ = createNode(type_Bool,$1,NULL,NULL);}}
-      | INT                                                                     {if(flag_error == 0) {$$ = createNode(type_Int,$1,NULL,NULL);}}
-      | DOUBLE                                                                  {if(flag_error == 0) {$$ = createNode(type_Double,$1,NULL,NULL);}}
+  Type: BOOL                                                                    {if(flag_error == 0) {$$ = createNode(type_Bool,NULL,NULL,NULL);}}
+      | INT                                                                     {if(flag_error == 0) {$$ = createNode(type_Int,NULL,NULL,NULL);}}
+      | DOUBLE                                                                  {if(flag_error == 0) {$$ = createNode(type_Double,NULL,NULL,NULL);}}
       ;
 
       Statement: OBRACE StatementCycle CBRACE                                       {if(flag_error == 0) {$$ = $2;}}
@@ -158,19 +160,19 @@
               |%empty                                                           {if(flag_error == 0) {$$ = createNode(type_Null,NULL,NULL,NULL);}}
               ;
 
-  Assignment: ID ASSIGN Expr                                                    {if(flag_error == 0) {aux_node = createNode(type_Id,$1,NULL,NULL);insertBrother(aux_node,$3);$$ = createNode(type_Assign,NULL,aux_node,NULL);}}
+  Assignment: ID ASSIGN Expr                                                    {if(flag_error == 0) {aux_node = createNode(type_Id,$1,NULL,NULL);free($1);insertBrother(aux_node,$3);$$ = createNode(type_Assign,NULL,aux_node,NULL);}}
             ;
 
-  MethodInvocation: ID OCURV CCURV                                              {if(flag_error == 0) {aux_node = createNode(type_Id,$1,NULL,NULL); $$ = createNode(type_Call,NULL,aux_node,NULL);}}
-                  | ID OCURV Expr MethodInvocationCycle CCURV                   {if(flag_error == 0) {aux_node = createNode(type_Id,$1,NULL,NULL); insertBrother(aux_node, $3); insertBrother($3, $4); $$ = createNode(type_Call, NULL, aux_node, NULL);}}
-                  | ID OCURV error CCURV                                        {if(flag_error == 0) {$$ = createNode(type_Error,NULL,NULL,NULL);}}
+  MethodInvocation: ID OCURV CCURV                                              {if(flag_error == 0) {aux_node = createNode(type_Id,$1,NULL,NULL);free($1);$$ = createNode(type_Call,NULL,aux_node,NULL);}}
+                  | ID OCURV Expr MethodInvocationCycle CCURV                   {if(flag_error == 0) {aux_node = createNode(type_Id,$1,NULL,NULL);free($1);insertBrother(aux_node, $3); insertBrother($3, $4); $$ = createNode(type_Call, NULL, aux_node, NULL);}}
+                  | ID OCURV error CCURV                                        {free($1);if(flag_error == 0) {$$ = createNode(type_Error,NULL,NULL,NULL);}}
                   ;
 
   MethodInvocationCycle: MethodInvocationCycle COMMA Expr                       {if(flag_error == 0) {insertBrother($1,$3); $$ = $1;}}
                       |%empty                                                   {if(flag_error == 0) {$$ = createNode(type_Null,NULL,NULL,NULL);}}
                       ;
 
-  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {if(flag_error == 0) {aux_node = createNode(type_Id,$3,NULL,NULL);insertBrother(aux_node,$5);$$ = createNode(type_ParseArgs,NULL,aux_node,NULL);}}
+  ParseArgs: PARSEINT OCURV ID OSQUARE Expr CSQUARE CCURV                       {if(flag_error == 0) {aux_node = createNode(type_Id,$3,NULL,NULL);free($3);insertBrother(aux_node,$5);$$ = createNode(type_ParseArgs,NULL,aux_node,NULL);}}
            | PARSEINT OCURV error CCURV                                         {if(flag_error == 0) {$$ = createNode(type_Error,NULL,NULL,NULL);}}
             ;
 
@@ -193,11 +195,11 @@
       | ExprAux STAR ExprAux                                                    {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Mul, NULL, $1, NULL);  $$ = aux_node;}}
       | ExprAux DIV ExprAux                                                     {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Div, NULL, $1, NULL);  $$ = aux_node;}}
       | ExprAux MOD ExprAux                                                     {if(flag_error == 0) {insertBrother($1, $3); aux_node = createNode(type_Mod, NULL, $1, NULL);  $$ = aux_node;}}
-      | PLUS ExprAux %prec NOT                                                  {if(flag_error == 0) {aux_node = createNode(type_Plus, NULL, $2, NULL); $$ = aux_node;}}
-      | MINUS ExprAux %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Minus, NULL, $2, NULL); $$ = aux_node;}}
-      | NOT ExprAux   %prec NOT                                                 {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
-      | ID                                                                      {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = aux_node;}}
-      | ID DOTLENGTH                                                            {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL); $$ = createNode(type_Length, NULL, aux_node, NULL);}}
+      | PLUS ExprAux %prec PRECEDENCE                                                  {if(flag_error == 0) {aux_node = createNode(type_Plus, NULL, $2, NULL); $$ = aux_node;}}
+      | MINUS ExprAux %prec PRECEDENCE                                                 {if(flag_error == 0) {aux_node = createNode(type_Minus, NULL, $2, NULL); $$ = aux_node;}}
+      | NOT ExprAux   %prec PRECEDENCE                                                 {if(flag_error == 0) {aux_node = createNode(type_Not, NULL, $2, NULL); $$ = aux_node;}}
+      | ID                                                                      {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL);free($1);$$ = aux_node;}}
+      | ID DOTLENGTH                                                            {if(flag_error == 0) {aux_node = createNode(type_Id, $1, NULL, NULL);free($1); $$ = createNode(type_Length, NULL, aux_node, NULL);}}
       | OCURV Expr CCURV                                                        {if(flag_error == 0) {$$ = $2;}}
       | BOOLLIT                                                                 {if(flag_error == 0) {aux_node = createNode(type_BoolLit, $1, NULL, NULL); $$ = aux_node;}}
       | DECLIT                                                                  {if(flag_error == 0) {aux_node = createNode(type_DecLit, $1, NULL, NULL); $$ = aux_node;}}
@@ -220,7 +222,7 @@ int main(int argc, char** argv){
     if(flag_error == 0){
     printList(root,0);
     }
-
+      free_tree(root);
     }
 		else
 		{
@@ -231,6 +233,7 @@ int main(int argc, char** argv){
 	else{
    syntax_flag = 1;
       yyparse();
+        free_tree(root);
 	}
 	return 0;
 }
