@@ -142,10 +142,10 @@
       ;
 
       Statement: OBRACE StatementCycle CBRACE                                       {if(flag_error == 0) {$$ = $2;}}
-                 | IF OCURV Expr CCURV Statement %prec IFX                           {if(flag_error == 0) {aux_node = createNode(type_Block,NULL,NULL,NULL);aux_node3 = createNode(type_Block,NULL,$5,NULL);insertBrother(aux_node3,aux_node);insertBrother($3,aux_node3);$$ = createNode(type_If,NULL,$3,NULL);}}
-                 | IF OCURV Expr CCURV Statement ELSE Statement                      {if(flag_error == 0) {if(checkBlock($7)>=2){aux_node3 = createNode(type_Block,NULL,$7,NULL);}else{aux_node3 = $7;}if(checkBlock($5)>=2){aux_node = createNode(type_Block,NULL,$5,NULL);}else{aux_node = $5;} insertBrother(aux_node,aux_node3);insertBrother($3,aux_node);$$ = createNode(type_If,NULL,$3,NULL);}}
+                 | IF OCURV Expr CCURV Statement %prec IFX                           {if(flag_error == 0) {aux_node = createNode(type_Block,NULL,NULL,NULL);if(checkBlock($5)>=2){aux_node3 = createNode(type_Block,NULL,$5,NULL);}else if(checkBlock($5)==0){aux_node3 = createNode(type_Block,NULL,NULL,NULL);}else{aux_node3 = $5;};insertBrother(aux_node3,aux_node);insertBrother($3,aux_node3);$$ = createNode(type_If,NULL,$3,NULL);}}
+                 | IF OCURV Expr CCURV Statement ELSE Statement                      {if(flag_error == 0) {if(checkBlock($7)>=2){aux_node3 = createNode(type_Block,NULL,$7,NULL);}else if(checkBlock($7)==0){aux_node3 = createNode(type_Block,NULL,NULL,NULL);}else{aux_node3 = $7;}if(checkBlock($5)>=2){aux_node = createNode(type_Block,NULL,$5,NULL);}else if(checkBlock($5)==0){aux_node = createNode(type_Block,NULL,NULL,NULL);}else{aux_node = $5;} insertBrother(aux_node,aux_node3);insertBrother($3,aux_node);$$ = createNode(type_If,NULL,$3,NULL);}}
                  | WHILE OCURV Expr CCURV Statement                                  {if(flag_error == 0) {if(checkBlock($5)>=2){aux_node = createNode(type_Block,NULL,$5,NULL);}else if(checkBlock($5)==0){aux_node = createNode(type_Block,NULL,NULL,NULL);}else{aux_node = $5;};insertBrother($3,aux_node);$$ = createNode(type_While,NULL,$3,NULL);}}
-                 | DO Statement WHILE OCURV Expr CCURV SEMI                          {if(flag_error == 0) {if(checkBlock($2)>=2){aux_node = createNode(type_Block,NULL,$2,NULL);}else{aux_node=$2;};insertBrother(aux_node,$5);$$ = createNode(type_DoWhile,NULL,aux_node,NULL);}}
+                 | DO Statement WHILE OCURV Expr CCURV SEMI                          {if(flag_error == 0) {if(checkBlock($2)>=2){aux_node = createNode(type_Block,NULL,$2,NULL);}else if(checkBlock($2)==0){aux_node = createNode(type_Block,NULL,NULL,NULL);}else{aux_node=$2;};insertBrother(aux_node,$5);$$ = createNode(type_DoWhile,NULL,aux_node,NULL);}}
                  | PRINT OCURV Expr CCURV SEMI                                       {if(flag_error == 0) {$$ = createNode(type_Print,NULL,$3,NULL);}}
                  | PRINT OCURV STRLIT CCURV SEMI                                     {if(flag_error == 0) {aux_node = createNode(type_StrLit,$3,NULL,NULL);$$ = createNode(type_Print,NULL,aux_node,NULL);}}
                  | SEMI                                                              {if(flag_error == 0) {$$ = createNode(type_Null,NULL,NULL,NULL);}}
@@ -223,7 +223,11 @@ int main(int argc, char** argv){
     printList(root,0);
     }
       free_tree(root);
-    }
+    }else if(strcmp(argv[1],"-2")==0){
+      syntax_flag = 1;
+         yyparse();
+         free_tree(root);
+   	}
 		else
 		{
       syntax_flag = 0;
@@ -233,7 +237,7 @@ int main(int argc, char** argv){
 	else{
    syntax_flag = 1;
       yyparse();
-        free_tree(root);
+      free_tree(root);
 	}
 	return 0;
 }
