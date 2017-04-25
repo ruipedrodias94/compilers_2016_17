@@ -1,0 +1,12 @@
+TODO:
+
+- Uma espécie de verificação ou o crl da AST.
+- Criar métodos de verificação para cada inserção.
+- Seguindo o pensamento do Pisco, seria como ASTtoTable, ou a merda que ele lá tem.
+
+- So... Temos de criar a tabela, que neste caso será uma linked list.
+(Falta verificar a integridade do nó. Ou seja, quantos tipos o mano pode ter, etc.)
+-- Cada nó da linked list vai ter o nome, e o type de cada variável.
+
+
+- Como é que vamos fazer essa vericação/transposição?
