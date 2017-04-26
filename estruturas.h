@@ -1,3 +1,7 @@
+
+#ifndef ESTRUTURAS_H
+#define ESTRUTURAS_H
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -30,3 +34,5 @@ void insertSon(Node* n, Node* son );
 int is_null(Node* n);
 void insertSon(Node* n, Node* son );
 void free_tree(Node* root);
+
+#endif
