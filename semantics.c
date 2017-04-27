@@ -1,19 +1,20 @@
 #include "semantics.h"
 #include "sym_tab.h"
 #include "estruturas.h"
+#include <stdio.h>
 
 
 void check_ast_to_table(Node *root){
+  
+}
 
-  /*Tentativa de inserção na tabela*/
-  if (root != NULL) {
-    printf("Pelo menos entra crl\n");
-    var_tab* newel = insert_el(root->token , getNode_type(root->node_type));
-
-    if(newel==NULL) {
-        printf("Symbol %s already defined!\n", root->token);
-    }
-    check_ast_to_table(root->brother);
-    check_ast_to_table(root->son);
+void check_ast(Node* root){
+  Node* node_aux;
+  node_aux = root;
+  int i = 0;
+  while (node_aux!= NULL) {
+    printf("TENHO NODE: %d ---- %s;\n", i, node_aux->token);
+    node_aux = node_aux->brother;
+    i++;
   }
 }

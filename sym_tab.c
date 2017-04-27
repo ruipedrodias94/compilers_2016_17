@@ -4,7 +4,14 @@
 #include <malloc.h>
 #include "sym_tab.h"
 
-var_tab *symtab;
+var_tab* symtab;
+
+char *types {"Class", "Method"};
+
+/*Get Node Type*/
+char* getTable_type(table_type table_type){
+  return types[table_type];
+}
 
 //Insere um novo identificador na cauda de uma lista ligada de simbolo
 var_tab *insert_el(char *str, char *t)
@@ -25,7 +32,6 @@ var_tab *insert_el(char *str, char *t)
 		for(aux=symtab; aux; previous=aux, aux=aux->next)
 			if(strcmp(aux->name, str)==0)
 				return NULL;
-
 		previous->next=newSymbol;	//adiciona ao final da lista
 	}
 	else	//symtab tem um elemento -> o novo simbolo
@@ -39,5 +45,5 @@ void show_table()
   var_tab *aux;
   printf("\n");
   for(aux=symtab; aux; aux=aux->next)
-	 printf("symbol %s, type %s\n", aux->name, aux->type);
+	   printf("symbol %s, type %s\n", aux->name, aux->type);
 }
