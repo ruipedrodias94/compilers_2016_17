@@ -223,9 +223,16 @@ int main(int argc, char** argv){
     else if(strcmp(argv[1],"-t")==0){
       syntax_flag = 1;
       yyparse();
+      if(flag_error == 0){
+        printList(root,0);
+      }
 
+    free_tree(root);
+
+  }else if(strcmp(argv[1],"-s")==0){
+      syntax_flag = 1;
+      yyparse();
       check_ast_to_table(root);
-
       show_table();
       if(flag_error == 0){
         printList(root,0);

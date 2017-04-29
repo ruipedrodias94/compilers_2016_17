@@ -5,6 +5,7 @@
 
 tab_of_tabs *general;
 
+
 void check_ast_to_table(Node *root){
   Node* node_aux;
   Node* node_aux2;
@@ -24,10 +25,10 @@ void check_ast_to_table(Node *root){
       node_aux2 = node_aux;
       while (node_aux2 != NULL) {
         if (node_aux2->node_type == type_FieldDecl) {
-          printf("Encontrei um FieldDecl Vou entrar e inserir\n");
+
           node_aux3 = node_aux2->son;
-          general->tabela = insert_el(node_aux3->brother->token, getNode_type(node_aux3->node_type), "NULL");
-          printf("NODE AUX3 %s\n", getNode_type(node_aux3->node_type) );
+          var_tab *tab = insert_el(node_aux3->brother->token, getNode_type(node_aux3->node_type), "NULL");
+          general->tabela = tab;
           node_aux3 = NULL;
         }
         node_aux2 = node_aux2->brother;

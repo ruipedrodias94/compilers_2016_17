@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <malloc.h>
 #include "sym_tab.h"
 
 var_tab* symtab;
-tab_of_tabs *tabela;
+tab_of_tabs* tabela;
 
 char *types[] = {"Class", "Method", "Global"};
 
@@ -33,14 +32,17 @@ var_tab *insert_el(char *token, char *type, char *flags_params)
 
 	if(symtab)	//Se table ja tem elementos
 	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
-		for(aux=symtab; aux; previous=aux, aux=aux->next)
+
+    for(aux=symtab; aux; previous=aux, aux=aux->next)
 			if(strcmp(aux->name, token)==0)
 				return NULL;
 		previous->next=newSymbol1;	//adiciona ao final da lista
+
 	}
 	else	//symtab tem um elemento -> o novo simbolo
 		symtab=newSymbol1;
-	return newSymbol1;
+    /*O prof estava a retornar o newSymbol1 em vez da symtab*/
+	return symtab;
 }
 
 tab_of_tabs *insert_el_header(char *token, Table_type table_type){
@@ -72,9 +74,11 @@ void show_table()
   var_tab *aux2;
   printf("\n");
   for(aux=tabela; aux; aux=aux->next)
-	  printf("===== %s %s Symbol Table =====\n", getTable_type(aux->table_type), aux->header);
-
-    for (aux2 = tabela->tabela; aux2; aux2 = aux2->next) {
-      printf("%s\t%s\n", aux2->name, aux2->type);
-    }
+	{
+      printf("===== %s %s Symbol Table =====\n", getTable_type(aux->table_type), aux->header);
+      for (aux2 = tabela->tabela; aux2; aux2 = aux2->next) {
+        printf("%s\t%s\t\n", aux2->name, aux2->type);
+      }
+      printf("\n");
+  }
 }
