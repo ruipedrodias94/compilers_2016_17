@@ -1,5 +1,6 @@
 class gcd2 {
 public static int gcd;
+public static int vag;
 public static void main(String[] args) {
 int a, b;
 if (args.length >= 2) {

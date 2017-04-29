@@ -5,6 +5,7 @@
    #include "semantics.h"
    #include "sym_tab.h"
 
+
   int yylex(void);
   void yyerror(char *s);
   int erro=0;
@@ -222,8 +223,9 @@ int main(int argc, char** argv){
     else if(strcmp(argv[1],"-t")==0){
       syntax_flag = 1;
       yyparse();
+
       check_ast_to_table(root);
-      printf("Grande print da tabelha: \n");
+
       show_table();
       if(flag_error == 0){
         printList(root,0);

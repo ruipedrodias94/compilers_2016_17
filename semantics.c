@@ -3,17 +3,36 @@
 #include "estruturas.h"
 #include <stdio.h>
 
+tab_of_tabs *general;
 
 void check_ast_to_table(Node *root){
-  
-}
-
-void check_ast(Node* root){
   Node* node_aux;
+  Node* node_aux2;
+  Node* node_aux3;
   node_aux = root;
-  int i = 0;
-  while (node_aux!= NULL) {
-    printf("TENHO NODE: %d ---- %s;\n", i, node_aux->token);
+  int i = 1;
+  while (node_aux != NULL) {
+    if (node_aux->node_type == type_Program) {
+      /*Se for do tipo programa, podemos passar para os filhos dele,
+      pois agora só teremos mais dois tipos de filhos:
+      - FieldDecl e MethodDecl*/
+      node_aux = node_aux->son;
+      /*Criamos uma tab_of_tabs em que o header inicial será o class*/
+      general = insert_el_header(node_aux->token, type_Class);
+
+      /*No auxiliar*/
+      node_aux2 = node_aux;
+      while (node_aux2 != NULL) {
+        if (node_aux2->node_type == type_FieldDecl) {
+          printf("Encontrei um FieldDecl Vou entrar e inserir\n");
+          node_aux3 = node_aux2->son;
+          general->tabela = insert_el(node_aux3->brother->token, getNode_type(node_aux3->node_type), "NULL");
+          printf("NODE AUX3 %s\n", getNode_type(node_aux3->node_type) );
+          node_aux3 = NULL;
+        }
+        node_aux2 = node_aux2->brother;
+      }
+    }
     node_aux = node_aux->brother;
     i++;
   }
