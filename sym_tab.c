@@ -65,7 +65,7 @@ tab_of_tabs *insert_el_header(char *token, Table_type table_type){
 	}
 	else	//symtab tem um elemento -> o novo simbolo
 		tabela = newSymbol;
-	return newSymbol;
+	return tabela;
 }
 
 void show_table()
