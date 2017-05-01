@@ -43,7 +43,6 @@ node_ insere_lista_nodes(node_ lista, char *name, char *type)
         aux = aux-> next;
     if ((novo_no = (node_) malloc (sizeof(node_)))!= NULL)
     {
-
         novo_no->name = (char*) malloc(strlen(name));
         novo_no->name = name;
         novo_no->type = (char*) malloc(strlen(type));
@@ -83,14 +82,18 @@ void imprime_lista (tab_ lista)
   tab_ l = lista->next;
   while (l!=NULL)
   {
-    printf("NO1:%s \n", l->name);
+    printf("===== %s %s Symbol Table ===== \n", l->type, l->name);
     node_ aux = l->node;
     aux = aux->next;
     while(aux!=NULL)
     {
-      printf("NO2: %s \n", aux->name);
+      printf("%s\t%s\t \n", aux->name, aux->type);
       aux = aux->next;
     }
     l=l->next;
   }
 }
+
+/*Fazer os métodos de obter os parâmetros*/
+
+/*Fazer o método de meter os parametros com letra minuscula*/
