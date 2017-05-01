@@ -90,6 +90,7 @@ void imprime_lista (tab_ lista)
       printf("%s\t%s\t \n", aux->name, aux->type);
       aux = aux->next;
     }
+    printf("\n");
     l=l->next;
   }
 }

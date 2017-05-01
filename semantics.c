@@ -38,6 +38,33 @@ void check_ast_to_table(Node *root){
           /*Criação das novas tabelas*/
           node_ nn2 = cria_lista_nodes();
           insere_lista_tab(tabela, methodHeader_son->brother->token, "Method", "", nn2);
+
+          /*Entrar no method body para podermos ir às variaveis*/
+          while (methodDecl_son != NULL) {
+            if (methodDecl_son->node_type == type_MethodBody) {
+              printf("TEMOS CARALHO:\n");
+              break;
+            }
+            methodDecl_son = methodDecl_son->brother;
+          }
+
+          /*Supostamente este no methodDecl_son = MethodBody quando aqui chega, contudo
+          quando faço ->son dá-me null... MERDA*/
+          
+          Node *varDecl = methodDecl_son->son;
+          printf("%s\n", varDecl->token);
+          while (varDecl != NULL) {
+            if (varDecl->node_type == type_VarDecl) {
+              /* code */
+            }
+            Node *varDecl_son = varDecl->son;
+            printf("UI VAMOS INSERIR: %s\n", varDecl_son->brother->token);
+            insere_lista_nodes(nn2, varDecl_son->brother->token, getNode_type(varDecl_son->node_type));
+            printf("BEM INSERIDO METE PROXIMO\n");
+            varDecl_son = NULL;
+            varDecl = varDecl->brother;
+          }
+
           methodDecl_son = NULL;
           methodHeader_son = NULL;
         }
