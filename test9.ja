@@ -1,0 +1,26 @@
+class block{
+	public static void block(int block, double block){
+		{}
+		{;}
+		{;;}
+		{;;;}
+		{;;;;}
+		
+		{
+		a = 3;
+		}
+
+		{
+		b = 1;
+		;
+		}
+
+		{
+		c = 1;
+		c = 2;
+		}
+		if(a == 3){x = 3; x= 7;}
+		if (sopa);
+		while(a==3){x = 3;}
+	};
+}

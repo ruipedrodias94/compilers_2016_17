@@ -22,6 +22,6 @@ typedef struct ltab_ {
 node_ cria_lista_nodes (void);
 tab_ cria_lista_tab (void);
 node_ insere_lista_nodes(node_ lista, char *name, char *type);
-void imprime_lista (node_ lista);
+void imprime_lista (tab_ lista);
 
 #endif

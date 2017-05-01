@@ -58,15 +58,16 @@ tab_ insere_lista_tab (tab_ lista, char *name, char *type, char *params, node_ n
     tab_ aux = lista;
     tab_ novo_no = NULL;
 
-    while (aux -> next !=  NULL)
+    while (aux -> next !=  NULL){
         aux = aux-> next;
+      }
     if ((novo_no = (tab_) malloc (sizeof(tab_)))!= NULL)
     {
       aux->name = (char *)malloc(sizeof(char) + strlen(name));
       aux->name = name;
       aux->type = (char *)malloc(sizeof(char) + strlen(type));
       aux->type = type;
-      aux->params = (char *)malloc(sizeof(char) + strlen(params));  
+      aux->params = (char *)malloc(sizeof(char) + strlen(params));
       aux->node = (node_) malloc(sizeof(_node));
       aux->node = node;
       aux->next = NULL;
@@ -75,10 +76,10 @@ tab_ insere_lista_tab (tab_ lista, char *name, char *type, char *params, node_ n
     return lista;
 }
 
-void imprime_lista (node_ lista)
+void imprime_lista (tab_ lista)
 {
-  node_ l = lista->next;
-  while (l)
+  tab_ l = lista;
+  while (l->next!=NULL)
   {
     printf("%s \n", l->name);
     l=l->next;

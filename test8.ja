@@ -1,0 +1,17 @@
+class soma{
+	public static void v(int paam, double sopa, boolean artur){
+		int a,b,c,d;
+		a = -3;
+		b = -2;
+		c = 1;
+		d = 3;
+		System.out.println(a);
+		System.out.println("a");
+		return (a+b+c*d);
+		{
+		;
+		while(a==3){}
+		;
+		}
+	};
+}
