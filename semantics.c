@@ -19,24 +19,21 @@ void check_ast_to_table(Node *root){
     {
       //Program
       Node *program_son = program->son;
-
+      printf("CONA: %s\n", program_son->token);
       insere_lista_tab(tabela, program_son->token, "Class", "", nn);
 
-
-      while(program_son!=NULL)
+      while(program_son != NULL)
       {
         if(program_son->node_type == type_FieldDecl)
         {
+          printf("Entra FIELD\n");
           Node *fieldDecl_son = program_son->son;
           printf("TOKEN: FIELD CARALHO %s\n", fieldDecl_son->brother->token);
           insere_lista_nodes(nn, fieldDecl_son->brother->token, getNode_type(fieldDecl_son->node_type));
           fieldDecl_son = NULL;
+        } else if(program_son->node_type == type_MethodDecl){
+          printf("GOSTO DE CONA\n");
         }
-        else if(program_son->node_type == type_MethodDecl){
-          printf("NODE DE METODO CARALHO\n");
-          program_son = NULL;
-        }
-        printf("TOKEN: %s\n", getNode_type(program_son->brother->node_type));
         program_son = program_son->brother;
       }
     }
