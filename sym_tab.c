@@ -1,84 +1,61 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
 #include "sym_tab.h"
 
-var_tab* symtab;
-tab_of_tabs* tabela;
-
-char *types[] = {"Class", "Method", "Global"};
-
-/*Get Node Type*/
-char *getTable_type(Table_type table_type){
-  return types[table_type];
+node_ cria_lista_nodes (void)
+  {
+    node_ aux;
+    aux = (node_) malloc (sizeof (_node));
+    if (aux != NULL) {
+      aux->name = (char *)malloc(sizeof(char)+1);
+      strcpy(aux->name, "");
+      aux->type = (char *)malloc(sizeof(char)+1);
+      strcpy(aux->type, "");
+      aux->next = NULL;
+    }
+    return aux;
 }
 
-//Insere um novo identificador na cauda de uma lista ligada de simbolo
-var_tab *insert_el(char *token, char *type, char *flags_params)
+tab_ cria_lista_tab (void)
+  {
+    tab_ aux;
+    aux = (tab_) malloc (sizeof (_tab));
+    if (aux != NULL) {
+      aux->name = (char *)malloc(sizeof(char)+1);
+      strcpy(aux->name, "");
+      aux->type = (char *)malloc(sizeof(char)+1);
+      strcpy(aux->type, "");
+      aux->next = NULL;
+    }
+    return aux;
+}
+
+node_ insere_lista_nodes(node_ lista, char *name, char *type)
 {
-	var_tab *newSymbol1 = (var_tab*) malloc(sizeof(var_tab));
-	var_tab *aux;
-	var_tab *previous;
-  newSymbol1->name = (char *)malloc(sizeof(char) + strlen(token));
-	strcpy(newSymbol1->name, token);
-  newSymbol1->type = (char *) malloc(sizeof(char)+strlen(type));
-	strcpy(newSymbol1->type, type);
-  newSymbol1->flags_params = (char *) malloc(sizeof(char)+strlen(flags_params));
-  if (strcmp(flags_params, "NULL")) {
-    newSymbol1->flags_params = NULL;
-  }
-  strcpy(newSymbol1->flags_params, flags_params);
-	newSymbol1->next = NULL;
+    node_ aux = lista;
+    node_ novo_no = NULL;
 
-	if(symtab)	//Se table ja tem elementos
-	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
-
-    for(aux=symtab; aux; previous=aux, aux=aux->next)
-			if(strcmp(aux->name, token)==0)
-				return NULL;
-		previous->next=newSymbol1;	//adiciona ao final da lista
-
-	}
-	else	//symtab tem um elemento -> o novo simbolo
-		symtab=newSymbol1;
-    /*O prof estava a retornar o newSymbol1 em vez da symtab*/
-	return symtab;
+    while (aux -> next !=  NULL)
+        aux = aux-> next;
+    if ((novo_no = (node_) malloc (sizeof(node_)))!= NULL)
+    {
+        novo_no->name = (char*) malloc(sizeof(char) + strlen(name));
+        strcpy(novo_no->name, name);
+        novo_no->type = (char*) malloc(sizeof(char) + strlen(type));
+        strcpy(novo_no->type, type);
+        novo_no -> next = NULL;
+    }
+    aux->next = novo_no;
+    return lista;
 }
 
-tab_of_tabs *insert_el_header(char *token, Table_type table_type){
-  tab_of_tabs *newSymbol = (tab_of_tabs*) malloc(sizeof(tab_of_tabs));
-	tab_of_tabs *aux;
-	tab_of_tabs *previous;
-  newSymbol->header = (char*) malloc(sizeof(char)+strlen(token));
-	strcpy(newSymbol->header, token);
-
-  newSymbol->table_type = table_type;
-  newSymbol->tabela = NULL;
-	newSymbol->next = NULL;
-
-	if(tabela)	//Se table ja tem elementos
-	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
-		for(aux=tabela; aux; previous=aux, aux=aux->next)
-			if(strcmp(aux->header, token)==0)
-				return NULL;
-		previous->next=newSymbol;	//adiciona ao final da lista
-	}
-	else	//symtab tem um elemento -> o novo simbolo
-		tabela = newSymbol;
-	return tabela;
-}
-
-void show_table()
+void imprime_lista (node_ lista)
 {
-  tab_of_tabs *aux;
-  var_tab *aux2;
-  printf("\n");
-  for(aux=tabela; aux; aux=aux->next)
-	{
-      printf("===== %s %s Symbol Table =====\n", getTable_type(aux->table_type), aux->header);
-      for (aux2 = tabela->tabela; aux2; aux2 = aux2->next) {
-        printf("%s\t%s\t\n", aux2->name, aux2->type);
-      }
-      printf("\n");
+  node_ l = lista->next;
+  while (l)
+  {
+    printf("%s \n", l->name);
+    l=l->next;
   }
 }

@@ -1,36 +1,26 @@
 #ifndef SYM_TAB_H
 #define SYM_TAB_H
 
-/*Tabela de simbolos*/
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+/*Implementação slides de PPP PQP*/
 
-/*A minha ideia seria criar dois tipos de tabelas
-- Program, que vai gerar a tabela do tipo Class Symbol Table
-- Method, que vai gerar a tabela do tipo Symbol Table*/
-typedef enum {type_Class, type_Method, type_Global_Var} Table_type;
-
-typedef struct var_tab1 {
+typedef struct lnode_ * node_;
+typedef struct lnode_ {
   char *name;
   char *type;
-  char *flags_params;
-  struct var_tab1 *next;
-} var_tab;
+  node_ next;
+} _node;
 
-/*Lista de listas, para que possamos ter uma lista de tabelas.*/
-/*Ainda nao pensei isto a fundo, ainda estou a ver como poderei aprofundar isto*/
-typedef struct tab_of_tabs1 {
-  char *header;
-  var_tab *tabela;
-  Table_type table_type;
-  struct tab_of_tabs1 *next;
-}tab_of_tabs;
+typedef struct ltab_ * tab_;
+typedef struct ltab_ {
+  char *name;
+  char *type;
+  char *params;
+  node_ node;
+  tab_ next;
+} _tab;
 
-
-var_tab *insert_el(char *token, char *type, char *flags_params);
-void show_table();
-tab_of_tabs *insert_el_header(char *token, Table_type table_type);
-char *getTable_type(Table_type table_type);
+node_ cria_lista_nodes (void);
+node_ insere_lista_nodes(node_ lista, char *name, char *type);
+void imprime_lista (node_ lista);
 
 #endif
