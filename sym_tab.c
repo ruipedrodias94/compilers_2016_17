@@ -22,13 +22,13 @@ tab_ cria_lista_tab (void)
     tab_ aux;
     aux = (tab_) malloc (sizeof (_tab));
     if (aux != NULL) {
-      aux->name = (char *)malloc(sizeof(char)+1);
+      aux->name = (char *)malloc(sizeof(char)*2);
       strcpy(aux->name, "");
-      aux->type = (char *)malloc(sizeof(char)+1);
+      aux->type = (char *)malloc(sizeof(char)*2);
       strcpy(aux->type, "");
-      aux->params = (char *)malloc(sizeof(char)+1);
+      aux->params = (char *)malloc(sizeof(char)*2);
       strcpy(aux->params, "");
-      aux->node = NULL;
+      aux->node = (node_) malloc(sizeof(_node));
       aux->next = NULL;
     }
     return aux;
@@ -55,20 +55,20 @@ node_ insere_lista_nodes(node_ lista, char *name, char *type)
 
 tab_ insere_lista_tab (tab_ lista, char *name, char *type, char *params, node_ node)
 {
-    node_ aux = lista;
-    node_ novo_no = NULL;
+    tab_ aux = lista;
+    tab_ novo_no = NULL;
 
     while (aux -> next !=  NULL)
         aux = aux-> next;
-    if ((novo_no = (node_) malloc (sizeof(node_)))!= NULL)
+    if ((novo_no = (tab_) malloc (sizeof(tab_)))!= NULL)
     {
       aux->name = (char *)malloc(sizeof(char) + strlen(name));
-      strcpy(aux->name, name);
+      aux->name = name;
       aux->type = (char *)malloc(sizeof(char) + strlen(type));
-      strcpy(aux->type, type);
-      aux->params = (char *)malloc(sizeof(char) + strlen(params));
-      strcpy(aux->params, "");
-      aux->node = NULL;
+      aux->type = type;
+      aux->params = (char *)malloc(sizeof(char) + strlen(params));  
+      aux->node = (node_) malloc(sizeof(_node));
+      aux->node = node;
       aux->next = NULL;
     }
     aux->next = novo_no;
