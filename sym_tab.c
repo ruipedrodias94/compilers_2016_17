@@ -37,12 +37,13 @@ tab_ cria_lista_tab (void)
 node_ insere_lista_nodes(node_ lista, char *name, char *type)
 {
     node_ aux = lista;
-    node_ novo_no = NULL;
+    node_ novo_no;
 
     while (aux -> next !=  NULL)
         aux = aux-> next;
     if ((novo_no = (node_) malloc (sizeof(node_)))!= NULL)
     {
+
         novo_no->name = (char*) malloc(strlen(name));
         novo_no->name = name;
         novo_no->type = (char*) malloc(strlen(type));
@@ -58,19 +59,20 @@ tab_ insere_lista_tab (tab_ lista, char *name, char *type, char *params, node_ n
     tab_ aux = lista;
     tab_ novo_no = NULL;
 
-    while (aux -> next !=  NULL){
+    while (aux -> next !=  NULL)
         aux = aux-> next;
-      }
+
     if ((novo_no = (tab_) malloc (sizeof(tab_)))!= NULL)
     {
-      aux->name = (char *)malloc(sizeof(char) + strlen(name));
-      aux->name = name;
-      aux->type = (char *)malloc(sizeof(char) + strlen(type));
-      aux->type = type;
-      aux->params = (char *)malloc(sizeof(char) + strlen(params));
-      aux->node = (node_) malloc(sizeof(_node));
-      aux->node = node;
-      aux->next = NULL;
+
+      novo_no->name = (char *)malloc(sizeof(char) + strlen(name));
+      novo_no->name = name;
+      novo_no->type = (char *)malloc(sizeof(char) + strlen(type));
+      novo_no->type = type;
+      novo_no->params = (char *)malloc(sizeof(char) + strlen(params));
+      novo_no->node = (node_) malloc(sizeof(_node));
+      novo_no->node = node;
+      novo_no->next = NULL;
     }
     aux->next = novo_no;
     return lista;
@@ -78,10 +80,17 @@ tab_ insere_lista_tab (tab_ lista, char *name, char *type, char *params, node_ n
 
 void imprime_lista (tab_ lista)
 {
-  tab_ l = lista;
-  while (l->next!=NULL)
+  tab_ l = lista->next;
+  while (l!=NULL)
   {
-    printf("%s \n", l->name);
+    printf("NO1:%s \n", l->name);
+    node_ aux = l->node;
+    aux = aux->next;
+    while(aux!=NULL)
+    {
+      printf("NO2: %s \n", aux->name);
+      aux = aux->next;
+    }
     l=l->next;
   }
 }
