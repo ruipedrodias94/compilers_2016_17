@@ -32,10 +32,12 @@ void check_ast_to_table(Node *root){
           if(aux_node->node_type == type_FieldDecl)
           {
              field_decl_node = aux_node->son;
+             //adicionar variavel global
+             add_global_symbol(tabela_global, field_decl_node->brother->token,getNode_type(field_decl_node->node_type ));
 
-             add_global_symbol(tabela_global, field_decl_node->brother->token, getNode_type(field_decl_node->node_type));
-
-
+          }
+          else if(aux_node->node_type == type_MethodDecl)
+          {
 
           }
         }

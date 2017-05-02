@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "sym_tab.h"
+#include <ctype.h>
 
 
-
+/*
 node_ cria_lista_nodes (void)
   {
     node_ aux;
@@ -78,13 +79,13 @@ tab_ insere_lista_tab (tab_ lista, char *name, char *type, char *params, node_ n
     aux->next = novo_no;
     return lista;
 }
-
+*/
 
 /* nova funcao imprimir*/
 
 void imprime_lista_2 (tab_ tabela)
 {
-  char *tipo;
+
   tab_ tab_aux = tabela;
   while (tab_aux!=NULL)
   {
@@ -104,7 +105,7 @@ void imprime_lista_2 (tab_ tabela)
 
 
 
-void imprime_lista (tab_ lista)
+/*void imprime_lista (tab_ lista)
 {
   tab_ l = lista;
   while (l!=NULL)
@@ -120,7 +121,7 @@ void imprime_lista (tab_ lista)
     l=l->next;
   }
 }
-
+*/
 /*Fazer os métodos de obter os parâmetros*/
 
 /*Fazer o método de meter os parametros com letra minuscula*/
@@ -138,7 +139,7 @@ tab_ cria_tabela (char *name, char *params )
       aux->name = (char *)malloc(sizeof(char)*2);
       strcpy(aux->name, name);
       aux->type = (char *)malloc(sizeof(char)*2);
-      strcpy(aux->type, "");
+      strcpy(aux->type, "Class");
       aux->params = (char *)malloc(sizeof(char)*2);
       strcpy(aux->params, "");
       aux->node = (tab_) malloc(sizeof(tab_));
@@ -169,7 +170,30 @@ void add_global_symbol(tab_ t, char *name, char *type)
   }
   aux->next = novo_no;
 }
+/*
+void add_global_method(tab_ t, char *name, char *type, char *params)
+{
+  tab_ aux = t->node;
+  tab_ novo_no;
 
+  while(aux->next!=NULL)
+  {
+    aux = aux->next;
+  }
+  if ((novo_no = (tab_) malloc (sizeof(tab_)))!= NULL)
+  {
+
+    novo_no->name = (char *)malloc(sizeof(char) + strlen(name));
+    novo_no->name = name;
+    novo_no->type = (char *)malloc(sizeof(char) + strlen(type));
+    novo_no->type = type;
+    novo_no->params = NULL;
+    novo_no->node = NULL;
+    novo_no->next = NULL;
+  }
+  aux->next = novo_no;
+}
+*/
 char *strlwr(char *str)
 {
   unsigned char *p = (unsigned char *)str;
