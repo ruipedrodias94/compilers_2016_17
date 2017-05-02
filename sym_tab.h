@@ -25,5 +25,7 @@ tab_ cria_tabela (char *name, param_ *params );
 void add_global_symbol(tab_ tabela, char *name, char *type);
 void add_global_method(tab_ tabela, char *name, char *type, char *return_type);
 void imprime_lista (tab_ tabela);
+param_ insert_in_params(param_ param, char *name, char *type);
+void getParams_list(Node *methodParams, param_ param);
 
 #endif

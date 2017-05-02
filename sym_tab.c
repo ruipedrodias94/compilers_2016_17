@@ -24,8 +24,6 @@ void imprime_lista (tab_ tabela)
 }
 
 
-
-
 //Função que cria a primeira tabela que é sempre do tipo Class
 tab_ cria_tabela (char *name, param_ *params )
   {
@@ -45,8 +43,6 @@ tab_ cria_tabela (char *name, param_ *params )
 
 void add_global_symbol(tab_ tabela, char *name, char *type)
 {
-
-
   tab_ aux;
   aux = (tab_) malloc (sizeof (_tab));
   if (aux != NULL) {
@@ -71,7 +67,35 @@ void add_global_symbol(tab_ tabela, char *name, char *type)
     }
     global->next = aux;
   }
+}
 
+
+/*Função que recebe um no type_MethodParams e retorna uma lista ligada de parametros*/
+void getParams_list(Node *methodParams, param_ param) {
+  if (methodParams->node_type == type_MethodParams) {
+    /*O filho será ParamDelc*/
+    Node *paramDelc = methodParams->son;
+    while (paramDelc != NULL) {
+      /*Esta merda esta mal, tem que retorar uma merda que nao sei o que xD*/
+      insert_in_params(parm, paramDelc->brother->token, getNode_type(paramDelc->node_type));
+      paramDelc = paramDelc->brother;
+    }
+  }
+}
+
+/*Função para inserir na lista ligada de parametros*/
+param_ insert_in_params(param_ param, char *name, char *type) {
+  param_ aux;
+  aux = (param_) malloc (sizeof(param_));
+  if (aux != NULL) {
+    aux = aux->next;
+  }
+    aux->name = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->name, name);
+    aux->type = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->type, type);
+    aux->next = NULL;
+    return aux;
 }
 
 void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
