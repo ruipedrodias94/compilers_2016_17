@@ -1,4 +1,4 @@
-#!/bin/s
+#!/bin/sh
 # Um compile top, aqui só para nós
 
 echo "compiling..."
