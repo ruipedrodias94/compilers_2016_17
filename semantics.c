@@ -12,8 +12,10 @@ void check_ast_to_table(Node *root){
   tab_ tabela_global = NULL;
   Node *program;
   Node *aux_node;
+    Node *aux_node2;
   Node *field_decl_node;
   Node *method_header_node;
+  Node * method_body;
   program = root;
 
 
@@ -39,12 +41,27 @@ void check_ast_to_table(Node *root){
             Node *return_type;
             Node *method_name;
             Node * method_type;
+            tab_ tabela_local;
             method_header_node = aux_node->son;
             return_type =  method_header_node->son;
             method_name = return_type->brother;
             method_type = method_name->brother;
+            /*falta inserir os parametros*/
             add_global_method(tabela_global,method_name->token, getNode_type(method_type->node_type),getNode_type(return_type->node_type));
-            add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
+            tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
+            add_local_symbol(tabela_local, "return", getNode_type(return_type->node_type));
+
+            //method body
+            method_body = method_header_node->brother;
+            aux_node2 = method_body->son;
+            while(aux_node2 != NULL)
+            {
+              if(aux_node2->node_type == type_VarDecl)
+              {
+                  add_local_symbol(tabela_local, aux_node2->son->brother->token, getNode_type(aux_node2->son->node_type));
+              }
+              aux_node2 = aux_node2->brother;
+            }
 
 
           }

@@ -135,7 +135,7 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
   }
 }
 
-void add_local_method_table(tab_ tabela, char *name, char *return_type)
+tab_ add_local_method_table(tab_ tabela, char *name, char *return_type)
 {
   tab_ aux;
   aux =  (tab_) malloc (sizeof (_tab));
@@ -155,6 +155,7 @@ void add_local_method_table(tab_ tabela, char *name, char *return_type)
   if(tabela->next == NULL)
   {
     tabela->next = aux;
+    return aux;
   }
   else
   {
@@ -164,8 +165,41 @@ void add_local_method_table(tab_ tabela, char *name, char *return_type)
       global = global->next;
     }
     global->next = aux;
+    return aux;
   }
 }
+
+void add_local_symbol(tab_ tabela, char *name, char *type)
+{
+  tab_ aux;
+  aux =  (tab_) malloc (sizeof (_tab));
+  if(aux != NULL)
+  {
+    aux->name = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->name, name);
+    aux->type = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->type, type);
+    aux->param = NULL;
+    aux->node = NULL;
+    aux->next = NULL;
+  }
+  if(tabela->node == NULL)
+  {
+    tabela->node = aux;
+
+  }
+  else
+  {
+    tab_ global = tabela->node;
+    while(global->next!=NULL)
+    {
+      global = global->next;
+    }
+    global->next = aux;
+
+  }
+}
+
 
 
 
