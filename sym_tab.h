@@ -10,6 +10,7 @@ typedef struct lnode_ {
   node_ next;
 } _node;
 
+
 typedef struct ltab_ * tab_;
 typedef struct ltab_ {
   char *name;
