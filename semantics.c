@@ -27,21 +27,20 @@ void check_ast_to_table(Node *root){
       tabela_global = cria_tabela(program_son->token,NULL);
       aux_node = program_son->brother;
 
+
       while(aux_node != NULL){
 
 
           if(aux_node->node_type == type_FieldDecl)
           {
              field_decl_node = aux_node->son;
-             //adicionar variavel global
-             add_global_symbol(tabela_global, field_decl_node->brother->token,getNode_type(field_decl_node->node_type));
+
 
           }
           else if(aux_node->node_type == type_MethodDecl)
           {
             method_header_node = aux_node->son;
-            printf("method_header_node: %s\n",getNode_type(method_header_node->son->node_type));
-            add_global_method(tabela_global,method_header_node->son->brother->token,getNode_type(method_header_node->son->node_type));
+
           }
 
 
@@ -52,8 +51,8 @@ void check_ast_to_table(Node *root){
 
 
 
-  printf("TABELA\n");
-  imprime_lista_2(tabela_global);
-  printf("FIM TABELA\n");
+
+  imprime_lista(tabela_global);
+
   return;
 }
