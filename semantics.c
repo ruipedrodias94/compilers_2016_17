@@ -32,15 +32,18 @@ void check_ast_to_table(Node *root){
           if(aux_node->node_type == type_FieldDecl)
           {
              field_decl_node = aux_node->son;
-      
              add_global_symbol(tabela_global,field_decl_node->brother->token,getNode_type(field_decl_node->node_type));
-             add_global_symbol(tabela_global,field_decl_node->brother->token,getNode_type(field_decl_node->node_type));
-             add_global_symbol(tabela_global,field_decl_node->brother->token,getNode_type(field_decl_node->node_type));
-
           }
           else if(aux_node->node_type == type_MethodDecl)
           {
+            Node *return_type;
+            Node *method_name;
+            Node * method_type;
             method_header_node = aux_node->son;
+            return_type =  method_header_node->son;
+            method_name = return_type->brother;
+            method_type = method_name->brother;
+            add_global_method(tabela_global,method_name->token, getNode_type(method_type->node_type),getNode_type(return_type->node_type));
 
           }
 

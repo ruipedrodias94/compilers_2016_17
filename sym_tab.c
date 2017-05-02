@@ -73,3 +73,35 @@ void add_global_symbol(tab_ tabela, char *name, char *type)
   }
 
 }
+
+void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
+{
+  tab_ aux;
+  aux =  (tab_) malloc (sizeof (_tab));
+  if(aux != NULL)
+  {
+    aux->name = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->name, name);
+    aux->type = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->type, "Method");
+    aux->param = NULL;
+    aux->node = NULL;
+    aux->return_type =  (char *)malloc(sizeof(char)*2);
+    strcpy(aux->type, return_type);
+    aux->next = NULL;
+  }
+
+  if(tabela->node == NULL)
+  {
+    tabela->node = aux;
+  }
+  else
+  {
+    tab_ global = tabela->node;
+    while(global->next!=NULL)
+    {
+      global = global->next;
+    }
+    global->next = aux;
+  }
+}
