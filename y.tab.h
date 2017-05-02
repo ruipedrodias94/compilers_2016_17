@@ -52,46 +52,47 @@ extern int yydebug;
     CLASS = 262,
     CCURV = 263,
     CBRACE = 264,
-    COMMA = 265,
-    CSQUARE = 266,
-    DIV = 267,
-    DO = 268,
-    DOTLENGTH = 269,
-    DOUBLE = 270,
-    ELSE = 271,
-    EQ = 272,
-    GEQ = 273,
-    GT = 274,
-    INT = 275,
-    LT = 276,
-    LEQ = 277,
-    MINUS = 278,
-    MOD = 279,
-    NEQ = 280,
-    NOT = 281,
-    OBRACE = 282,
-    OCURV = 283,
-    OR = 284,
-    OSQUARE = 285,
-    PARSEINT = 286,
-    PLUS = 287,
-    PRINT = 288,
-    PUBLIC = 289,
-    RESERVED = 290,
-    RETURN = 291,
-    SEMI = 292,
-    STAR = 293,
-    STATIC = 294,
-    STRING = 295,
-    VOID = 296,
-    WHILE = 297,
-    ESCAPESEQUENCE = 298,
-    BOOLLIT = 299,
-    REALLIT = 300,
-    DECLIT = 301,
-    ID = 302,
-    STRLIT = 303,
-    SIGN = 304
+    CSQUARE = 265,
+    DIV = 266,
+    DO = 267,
+    DOTLENGTH = 268,
+    DOUBLE = 269,
+    ELSE = 270,
+    EQ = 271,
+    GEQ = 272,
+    GT = 273,
+    INT = 274,
+    LT = 275,
+    LEQ = 276,
+    MINUS = 277,
+    MOD = 278,
+    NEQ = 279,
+    NOT = 280,
+    OBRACE = 281,
+    OCURV = 282,
+    OR = 283,
+    OSQUARE = 284,
+    PARSEINT = 285,
+    PLUS = 286,
+    PRINT = 287,
+    PUBLIC = 288,
+    RESERVED = 289,
+    RETURN = 290,
+    SEMI = 291,
+    STAR = 292,
+    STATIC = 293,
+    WHILE = 294,
+    ESCAPESEQUENCE = 295,
+    STRING = 296,
+    COMMA = 297,
+    BOOLLIT = 298,
+    REALLIT = 299,
+    DECLIT = 300,
+    ID = 301,
+    STRLIT = 302,
+    VOID = 303,
+    PRECEDENCE = 304,
+    IFX = 305
   };
 #endif
 /* Tokens.  */
@@ -102,58 +103,59 @@ extern int yydebug;
 #define CLASS 262
 #define CCURV 263
 #define CBRACE 264
-#define COMMA 265
-#define CSQUARE 266
-#define DIV 267
-#define DO 268
-#define DOTLENGTH 269
-#define DOUBLE 270
-#define ELSE 271
-#define EQ 272
-#define GEQ 273
-#define GT 274
-#define INT 275
-#define LT 276
-#define LEQ 277
-#define MINUS 278
-#define MOD 279
-#define NEQ 280
-#define NOT 281
-#define OBRACE 282
-#define OCURV 283
-#define OR 284
-#define OSQUARE 285
-#define PARSEINT 286
-#define PLUS 287
-#define PRINT 288
-#define PUBLIC 289
-#define RESERVED 290
-#define RETURN 291
-#define SEMI 292
-#define STAR 293
-#define STATIC 294
-#define STRING 295
-#define VOID 296
-#define WHILE 297
-#define ESCAPESEQUENCE 298
-#define BOOLLIT 299
-#define REALLIT 300
-#define DECLIT 301
-#define ID 302
-#define STRLIT 303
-#define SIGN 304
+#define CSQUARE 265
+#define DIV 266
+#define DO 267
+#define DOTLENGTH 268
+#define DOUBLE 269
+#define ELSE 270
+#define EQ 271
+#define GEQ 272
+#define GT 273
+#define INT 274
+#define LT 275
+#define LEQ 276
+#define MINUS 277
+#define MOD 278
+#define NEQ 279
+#define NOT 280
+#define OBRACE 281
+#define OCURV 282
+#define OR 283
+#define OSQUARE 284
+#define PARSEINT 285
+#define PLUS 286
+#define PRINT 287
+#define PUBLIC 288
+#define RESERVED 289
+#define RETURN 290
+#define SEMI 291
+#define STAR 292
+#define STATIC 293
+#define WHILE 294
+#define ESCAPESEQUENCE 295
+#define STRING 296
+#define COMMA 297
+#define BOOLLIT 298
+#define REALLIT 299
+#define DECLIT 300
+#define ID 301
+#define STRLIT 302
+#define VOID 303
+#define PRECEDENCE 304
+#define IFX 305
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 12 "jac.y" /* yacc.c:1909  */
+#line 25 "jac.y" /* yacc.c:1915  */
 
     char* token;
     struct node* _node;
 
-#line 157 "y.tab.h" /* yacc.c:1909  */
+#line 159 "y.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;

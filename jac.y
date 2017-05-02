@@ -236,9 +236,9 @@ int main(int argc, char** argv){
       yyparse();
 
       check_ast_to_table(root);
-      
+
       if(flag_error == 0){
-        printList(root,0);
+        //printList(root,0);
       }
 
     free_tree(root);
