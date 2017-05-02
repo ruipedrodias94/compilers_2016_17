@@ -73,19 +73,20 @@ void add_global_symbol(tab_ tabela, char *name, char *type)
 
 
 /*Função que recebe um no type_MethodParams e retorna uma lista ligada de parametros*/
-/*void getParams_list(Node *methodParams, param_ param) {
+param_ getParams_list(Node *methodParams, param_ param) {
+  param_ tabela_params;
   if (methodParams->node_type == type_MethodParams) {
-    O filho será ParamDelc
     Node *paramDelc = methodParams->son;
+
     while (paramDelc != NULL) {
-      Esta merda esta mal, tem que retorar uma merda que nao sei o que xD
-      insert_in_params(parm, paramDelc->brother->token, getNode_type(paramDelc->node_type));
+      tabela_params = insert_in_params(param, paramDelc->brother->token, getNode_type(paramDelc->node_type));
       paramDelc = paramDelc->brother;
     }
   }
+  return tabela_params;
 }
 
-Função para inserir na lista ligada de parametros
+
 param_ insert_in_params(param_ param, char *name, char *type) {
   param_ aux;
   aux = (param_) malloc (sizeof(param_));
@@ -98,7 +99,7 @@ param_ insert_in_params(param_ param, char *name, char *type) {
     strcpy(aux->type, type);
     aux->next = NULL;
     return aux;
-}*/
+}
 
 void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
 {
