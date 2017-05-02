@@ -22,6 +22,7 @@ typedef struct ltab_ {
 } _tab;
 
 tab_ cria_tabela (char *name, param_ *params );
+void add_global_symbol(tab_ tabela, char *name, char *type);
 void imprime_lista (tab_ tabela);
 
 #endif
