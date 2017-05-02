@@ -13,6 +13,7 @@ void check_ast_to_table(Node *root){
   Node *program;
   Node *aux_node;
   Node *field_decl_node;
+  Node *method_header_node;
   program = root;
 
 
@@ -27,20 +28,22 @@ void check_ast_to_table(Node *root){
       aux_node = program_son->brother;
 
       while(aux_node != NULL){
-        if(aux_node != NULL)
-        {
+
+
           if(aux_node->node_type == type_FieldDecl)
           {
              field_decl_node = aux_node->son;
              //adicionar variavel global
-             add_global_symbol(tabela_global, field_decl_node->brother->token,getNode_type(field_decl_node->node_type ));
+             add_global_symbol(tabela_global, field_decl_node->brother->token,getNode_type(field_decl_node->node_type));
 
           }
           else if(aux_node->node_type == type_MethodDecl)
           {
-
+            method_header_node = aux_node->son;
+            printf("method_header_node: %s\n",getNode_type(method_header_node->son->node_type));
+            add_global_method(tabela_global,method_header_node->son->brother->token,getNode_type(method_header_node->son->node_type));
           }
-        }
+
 
 
         aux_node = aux_node->brother;

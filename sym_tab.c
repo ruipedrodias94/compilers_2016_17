@@ -170,8 +170,8 @@ void add_global_symbol(tab_ t, char *name, char *type)
   }
   aux->next = novo_no;
 }
-/*
-void add_global_method(tab_ t, char *name, char *type, char *params)
+
+void add_global_method(tab_ t, char *name, char *type)
 {
   tab_ aux = t->node;
   tab_ novo_no;
@@ -180,6 +180,7 @@ void add_global_method(tab_ t, char *name, char *type, char *params)
   {
     aux = aux->next;
   }
+
   if ((novo_no = (tab_) malloc (sizeof(tab_)))!= NULL)
   {
 
@@ -193,7 +194,7 @@ void add_global_method(tab_ t, char *name, char *type, char *params)
   }
   aux->next = novo_no;
 }
-*/
+
 char *strlwr(char *str)
 {
   unsigned char *p = (unsigned char *)str;
