@@ -44,6 +44,8 @@ void check_ast_to_table(Node *root){
             method_name = return_type->brother;
             method_type = method_name->brother;
             add_global_method(tabela_global,method_name->token, getNode_type(method_type->node_type),getNode_type(return_type->node_type));
+            add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
+
 
           }
 

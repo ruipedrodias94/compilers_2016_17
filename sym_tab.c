@@ -11,8 +11,10 @@ void imprime_lista (tab_ tabela)
 
   tab_ tab_aux = tabela;
   tab_ table_content;
+  char *print_type;
   while (tab_aux!=NULL)
   {
+
     printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
     table_content = tab_aux->node;
     while(table_content!=NULL)
@@ -110,7 +112,7 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
     aux->name = (char *)malloc(sizeof(char)*2);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, "Method");
+    strcpy(aux->type, type);
     aux->param = NULL;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
@@ -132,6 +134,41 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
     global->next = aux;
   }
 }
+
+void add_local_method_table(tab_ tabela, char *name, char *return_type)
+{
+  tab_ aux;
+  aux =  (tab_) malloc (sizeof (_tab));
+  if(aux != NULL)
+  {
+    aux->name = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->name, name);
+    aux->type = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->type, "Method");
+    aux->param = NULL;
+    aux->node = NULL;
+    aux->return_type =  (char *)malloc(sizeof(char)*2);
+    strcpy(aux->return_type, toLoweCase(return_type));
+    aux->next = NULL;
+  }
+
+  if(tabela->next == NULL)
+  {
+    tabela->next = aux;
+  }
+  else
+  {
+    tab_ global = tabela->next;
+    while(global->next!=NULL)
+    {
+      global = global->next;
+    }
+    global->next = aux;
+  }
+}
+
+
+
 
 
 /*TO LOWER CASE*/
