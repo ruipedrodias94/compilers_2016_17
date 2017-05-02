@@ -3,6 +3,8 @@
 #include <string.h>
 #include "sym_tab.h"
 
+
+
 node_ cria_lista_nodes (void)
   {
     node_ aux;
@@ -28,7 +30,7 @@ tab_ cria_lista_tab (void)
       strcpy(aux->type, "");
       aux->params = (char *)malloc(sizeof(char)*2);
       strcpy(aux->params, "");
-      aux->node = (node_) malloc(sizeof(_node));
+      aux->node = (tab_) malloc(sizeof(_node));
       aux->next = NULL;
     }
     return aux;
@@ -82,12 +84,13 @@ tab_ insere_lista_tab (tab_ lista, char *name, char *type, char *params, node_ n
 
 void imprime_lista_2 (tab_ tabela)
 {
+  char *tipo;
   tab_ tab_aux = tabela;
   while (tab_aux!=NULL)
   {
     printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
 
-    node_ aux = tab_aux->node->next;
+    tab_ aux = tab_aux->node->next;
     while(aux!=NULL)
     {
       printf("%s\t%s\t \n", aux->name, aux->type);
@@ -138,7 +141,7 @@ tab_ cria_tabela (char *name, char *params )
       strcpy(aux->type, "");
       aux->params = (char *)malloc(sizeof(char)*2);
       strcpy(aux->params, "");
-      aux->node = (node_) malloc(sizeof(_node));
+      aux->node = (tab_) malloc(sizeof(tab_));
       aux->next = NULL;
     }
     return aux;
@@ -146,22 +149,35 @@ tab_ cria_tabela (char *name, char *params )
 
 void add_global_symbol(tab_ t, char *name, char *type)
 {
-  node_ aux = t->node;
-  node_ novo_no;
+  tab_ aux = t->node;
+  tab_ novo_no;
 
   while(aux->next!=NULL)
   {
     aux = aux->next;
   }
-  if ((novo_no = (node_) malloc (sizeof(node_)))!= NULL)
+  if ((novo_no = (tab_) malloc (sizeof(tab_)))!= NULL)
   {
-      novo_no->name = (char*) malloc(strlen(name));
-      novo_no->name = name;
-      novo_no->type = (char*) malloc(strlen(type));
-      novo_no->type = type;
-      novo_no ->next = NULL;
+
+    novo_no->name = (char *)malloc(sizeof(char) + strlen(name));
+    novo_no->name = name;
+    novo_no->type = (char *)malloc(sizeof(char) + strlen(type));
+    novo_no->type = type;
+    novo_no->params = NULL;
+    novo_no->node = NULL;
+    novo_no->next = NULL;
   }
   aux->next = novo_no;
+}
 
+char *strlwr(char *str)
+{
+  unsigned char *p = (unsigned char *)str;
 
+  while (*p) {
+     *p = tolower((unsigned char)*p);
+      p++;
+  }
+
+  return str;
 }
