@@ -5,6 +5,28 @@
 #include "estruturas.h"
 #include <ctype.h>
 
+char* get_param_string(tab_ table_content)
+{
+   char *param_string = "";
+
+  //ir buscar os parametros
+  param_ aux = table_content->param->next;
+  int count = 1;
+  while(aux!=NULL){
+    if(count>1)
+      {
+        param_string = concat(param_string,",");
+      }
+      param_string = concat(param_string,aux->type);
+
+  count++;
+  aux = aux->next;
+}
+param_string = concat("(",param_string);
+param_string = concat(param_string,")");
+
+return param_string;
+}
 
 void imprime_lista (tab_ tabela)
 {
@@ -21,38 +43,25 @@ void imprime_lista (tab_ tabela)
     table_content = tab_aux->node;
 
     while(table_content!=NULL)
-    {  char *param_string = "";
-      if(strcmp(table_content->type,"Method")==0){
-      //ir buscar os parametros
-      param_ aux = table_content->param->next;
-      int count = 1;
-      while(aux!=NULL){
-        if(count>1)
-          {
-            param_string = concat(param_string,",");
-          }
-          param_string = concat(param_string,aux->type);
-
-
-
-      count++;
-      aux = aux->next;
-
-    }
-    param_string = concat("(",param_string);
-    param_string = concat(param_string,")");
+    {
+       char *param_string = "";
+        if(strcmp(table_content->type,"Method")==0){
+        param_string = get_param_string(table_content);
         printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
-  }
-  else{
-    printf("%s\t%s\t%s\t%s\n",table_content->name,"",table_content->type,"");
-  }
+      }
+      else{
+        printf("%s\t%s\t%s\t%s\n",table_content->name,"",table_content->type,"");
+      }
 
       table_content = table_content->next;
-    }
-    printf("\n");
-  }else{
-    printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
+  }
+  }else
+  {
     table_content = tab_aux->node;
+    //char *param_s  = "";
+    char *param_s  = get_param_string(tab_aux);
+    printf("===== %s %s%s Symbol Table ===== \n", tab_aux->type, tab_aux->name,param_s);
+
     while(table_content!=NULL)
     {
       printf("%s\t%s\t%s\t%s\n",table_content->name,"",table_content->type,table_content->flag);
@@ -61,10 +70,9 @@ void imprime_lista (tab_ tabela)
 
   }
 
-
+  printf("\n");
   tab_aux = tab_aux->next;
   }
-  printf("\n");
 }
 
 
@@ -245,7 +253,7 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
   }
 }
 
-tab_ add_local_method_table(tab_ tabela, char *name, char *return_type)
+tab_ add_local_method_table(tab_ tabela, char *name, char *return_type, param_ params)
 {
   tab_ aux;
   aux =  (tab_) malloc (sizeof (_tab));
@@ -255,7 +263,7 @@ tab_ add_local_method_table(tab_ tabela, char *name, char *return_type)
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
     strcpy(aux->type, "Method");
-    aux->param = NULL;
+    aux->param = params;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
     strcpy(aux->return_type, toLoweCase(return_type));

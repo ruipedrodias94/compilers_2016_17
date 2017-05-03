@@ -25,9 +25,10 @@ typedef struct ltab_ {
 } _tab;
 
 tab_ cria_tabela (char *name, param_ params );
+char* get_param_string(tab_ table_content);
 void add_global_symbol(tab_ tabela, char *name, char *type);
 void add_global_method(tab_ tabela, char *name, char *type, char *return_type, param_ params);
-tab_ add_local_method_table(tab_ tabela, char *name, char *return_type);
+tab_ add_local_method_table(tab_ tabela, char *name, char *return_type, param_ params);
 void add_local_symbol(tab_ tabela, char *name, char *type, char *flag);
 void insere_params_symbol_list(tab_ tabela, param_ list);
 void imprime_lista (tab_ tabela);

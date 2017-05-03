@@ -56,7 +56,7 @@ void check_ast_to_table(Node *root){
             param_ params_method = getParams_list(param_decl);
             //imprime_params(params_method);
             add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type), getNode_type(return_type->node_type),params_method);
-            tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
+            tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type),params_method);
             add_local_symbol(tabela_local, "return", getNode_type(return_type->node_type),"");
             insere_params_symbol_list(tabela_local,params_method);
 
