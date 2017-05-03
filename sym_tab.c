@@ -11,7 +11,7 @@ void imprime_lista (tab_ tabela)
 
   tab_ tab_aux = tabela;
   tab_ table_content;
-  char * param_string = "";
+  char *param_string = "(";
   param_ buce;
   while (tab_aux!=NULL)
   {
@@ -19,19 +19,34 @@ void imprime_lista (tab_ tabela)
     if(strcmp(tab_aux->type,"Class")==0){
 
     printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
-    table_content = tab_aux->next;
+    table_content = tab_aux->node;
     buce = tab_aux->param;
 
     while(table_content!=NULL)
     {
+      if(strcmp(table_content->type,"Method")==0){
+      printf("NOME: %s\n",table_content->name);
+      //ir buscar os parametros
+      param_ aux = table_content->param->next;
+      char *param_string = "(";
+      while(aux!=NULL){
+        if(strcmp(aux->name,"args")==0)
+        {
+          param_string = concat(param_string,"String[]");
+        }
+      aux = aux->next;
+    }
+    printf("PARAM STRING: %s\n",param_string);
 
+  }
+      /*
       if(strcmp(table_content->type,"Method")==0){
         if(table_content->param!=NULL)
         {
           printf("TEM PARAMS");
 
           strcpy(param_string,"(");
-          param_ lista_param = table_content->param->next;
+          param_ lista_param = table_content->param;
           while(lista_param!=NULL)
           {
               if(strcmp(lista_param->name,"args")==0)
@@ -48,7 +63,7 @@ void imprime_lista (tab_ tabela)
           break;
         }
       printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
-    }
+    }*/
       table_content = table_content->next;
     }
     printf("\n");
@@ -81,7 +96,7 @@ param_ cria_tabela_params ()
     aux = (param_) malloc (sizeof (_param));
     if (aux != NULL) {
       aux->name = (char *)malloc(sizeof(char)*2);
-      strcpy(aux->name, "");
+      strcpy(aux->name, "header");
       aux->type = (char *)malloc(sizeof(char)*2);
       strcpy(aux->type, "");
       aux->next = NULL;
@@ -197,13 +212,13 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
 {
   tab_ aux;
   aux =  (tab_) malloc (sizeof (_tab));
+
   if(aux != NULL)
   {
     aux->name = (char *)malloc(sizeof(char)*2);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
     strcpy(aux->type, "Method");
-    aux->param = (param_) malloc (sizeof (_param));
     aux->param = params;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
@@ -214,6 +229,8 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
   if(tabela->node == NULL)
   {
     tabela->node = aux;
+    printf("AQUISSS \n");
+    imprime_params (tabela->node->param);
   }
   else
   {
@@ -223,6 +240,8 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
       global = global->next;
     }
     global->next = aux;
+    printf("AQUISSS2222 \n");
+    imprime_params (global->next->param);
   }
 }
 
@@ -235,7 +254,7 @@ tab_ add_local_method_table(tab_ tabela, char *name, char *return_type)
     aux->name = (char *)malloc(sizeof(char)*2);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, "Method");
+    strcpy(aux->type, "Method2");
     aux->param = NULL;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
@@ -304,4 +323,13 @@ char *toLoweCase(char *string){
     aux[i] = tolower(string[i]);
   }
   return aux;
+}
+
+char* concat(const char *s1, const char *s2)
+{
+    char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the zero-terminator
+    //in real code you would check for errors in malloc here
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
 }

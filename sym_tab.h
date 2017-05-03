@@ -32,6 +32,7 @@ void imprime_lista (tab_ tabela);
 void insert_in_params(param_ param_list,char *name, char *type);
 param_ getParams_list(Node *methodParams);
 char *toLoweCase(char *string);
+char* concat(const char *s1, const char *s2);
 param_ cria_tabela_params ();
 int getNumberOfParams(Node *paramDelc);
 void imprime_params(param_ tab);

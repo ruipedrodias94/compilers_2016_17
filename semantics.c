@@ -62,8 +62,13 @@ void check_ast_to_table(Node *root){
             if (params_method != NULL) {
               printf("DEU ALGUMA COISA?\n");
             }
-            imprime_params(params_method);
-            add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type), getNode_type(return_type->node_type), params_method);
+            //imprime_params(params_method);
+            param_ *ponteiro;
+            ponteiro = &(params_method);
+            param_ cópia_param;
+            cópia_param = &(**ponteiro);
+            printf("SS: %s",cópia_param->next->name);
+            add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type), getNode_type(return_type->node_type),params_method);
             tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
             add_local_symbol(tabela_local, "return", getNode_type(return_type->node_type));
 
