@@ -17,19 +17,21 @@ void imprime_lista (tab_ tabela)
   {
 
     if(strcmp(tab_aux->type,"Class")==0){
+
     printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
     table_content = tab_aux->next;
     buce = tab_aux->param;
 
     while(table_content!=NULL)
     {
+
       if(strcmp(table_content->type,"Method")==0){
         if(table_content->param!=NULL)
         {
           printf("TEM PARAMS");
 
           strcpy(param_string,"(");
-          param_ lista_param = table_content->param;
+          param_ lista_param = table_content->param->next;
           while(lista_param!=NULL)
           {
               if(strcmp(lista_param->name,"args")==0)
@@ -169,18 +171,22 @@ void insert_in_params(param_ param_list, char *name, char *type) {
     }
     aux->next = NULL;
   }
-  if(param_list == NULL)
+
+  printf(" dentro do aux: \n");
+  printf("param: %s\n",aux->name);
+  printf("tipo: %s\n",aux->type);
+  if(param_list==NULL)
   {
     param_list = aux;
   }
-  else
-  {
+  else{
     param_ global = param_list;
     while(global->next!=NULL)
     {
       global = global->next;
     }
     global->next = aux;
+
   }
   printf("DONE\n");
 }
@@ -197,6 +203,7 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
     strcpy(aux->type, "Method");
+    aux->param = (param_) malloc (sizeof (_param));
     aux->param = params;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
