@@ -57,7 +57,9 @@ void check_ast_to_table(Node *root){
             //imprime_params(params_method);
             add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type), getNode_type(return_type->node_type),params_method);
             tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
-            add_local_symbol(tabela_local, "return", getNode_type(return_type->node_type));
+            add_local_symbol(tabela_local, "return", getNode_type(return_type->node_type),"");
+            insere_params_symbol_list(tabela_local,params_method);
+
 
             //method body
             method_body = method_header_node->brother;
@@ -66,7 +68,7 @@ void check_ast_to_table(Node *root){
             {
               if(aux_node2->node_type == type_VarDecl)
               {
-                  add_local_symbol(tabela_local, aux_node2->son->brother->token, getNode_type(aux_node2->son->node_type));
+                  add_local_symbol(tabela_local, aux_node2->son->brother->token, getNode_type(aux_node2->son->node_type),"");
               }
               aux_node2 = aux_node2->brother;
             }

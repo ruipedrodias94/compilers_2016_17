@@ -11,7 +11,7 @@ void imprime_lista (tab_ tabela)
 
   tab_ tab_aux = tabela;
   tab_ table_content;
-  param_ buce;
+
   while (tab_aux!=NULL)
   {
 
@@ -19,7 +19,6 @@ void imprime_lista (tab_ tabela)
 
     printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
     table_content = tab_aux->node;
-    buce = tab_aux->param;
 
     while(table_content!=NULL)
     {  char *param_string = "";
@@ -51,6 +50,15 @@ void imprime_lista (tab_ tabela)
       table_content = table_content->next;
     }
     printf("\n");
+  }else{
+    printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
+    table_content = tab_aux->node;
+    while(table_content!=NULL)
+    {
+      printf("%s\t%s\t%s\t%s\n",table_content->name,"",table_content->type,table_content->flag);
+      table_content = table_content->next;
+    }
+
   }
 
 
@@ -156,6 +164,16 @@ void imprime_params(param_ tab){
     aux = aux->next;
   }
 }
+void insere_params_symbol_list(tab_ tabela, param_ list)
+{
+  param_ aux = list;
+  aux = aux->next;
+  while (aux!=NULL) {
+    add_local_symbol(tabela,aux->name, aux->type,"param");
+    aux = aux->next;
+  }
+}
+
 
 void insert_in_params(param_ param_list, char *name, char *type) {
   param_ aux;
@@ -235,7 +253,7 @@ tab_ add_local_method_table(tab_ tabela, char *name, char *return_type)
     aux->name = (char *)malloc(sizeof(char)*2);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, "Method2");
+    strcpy(aux->type, "Method");
     aux->param = NULL;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
@@ -260,7 +278,7 @@ tab_ add_local_method_table(tab_ tabela, char *name, char *return_type)
   }
 }
 
-void add_local_symbol(tab_ tabela, char *name, char *type)
+void add_local_symbol(tab_ tabela, char *name, char *type, char *flag)
 {
   tab_ aux;
   aux =  (tab_) malloc (sizeof (_tab));
@@ -270,6 +288,8 @@ void add_local_symbol(tab_ tabela, char *name, char *type)
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
     strcpy(aux->type, type);
+    aux->flag = (char *)malloc(sizeof(char)*2);
+    strcpy(aux->flag, flag);
     aux->param = NULL;
     aux->node = NULL;
     aux->next = NULL;
