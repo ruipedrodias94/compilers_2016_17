@@ -44,11 +44,16 @@ void imprime_lista (tab_ tabela)
     param_string = concat(param_string,")");
         printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
   }
+  else{
+    printf("%s\t%s\t%s\t%s\n",table_content->name,"",table_content->type,"");
+  }
 
       table_content = table_content->next;
     }
     printf("\n");
   }
+
+
   tab_aux = tab_aux->next;
   }
 }
