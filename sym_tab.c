@@ -11,25 +11,47 @@ void imprime_lista (tab_ tabela)
 
   tab_ tab_aux = tabela;
   tab_ table_content;
-  char *print_type;
+  char * param_string = NULL;
+
   while (tab_aux!=NULL)
   {
 
+    if(strcmp(tab_aux->type,"Class")==0){
     printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
     table_content = tab_aux->node;
     while(table_content!=NULL)
     {
-      printf("%s\t%s\t\n",table_content->name,table_content->type);
+      if(strcmp(table_content->type,"Method")==0){
+        if(table_content->param!=NULL)
+        {
+          printf("TEM PARAMS");
+
+          strcpy(param_string,"(");
+          param_ lista_param = table_content->param;
+          while(lista_param!=NULL)
+          {
+              if(strcmp(lista_param->name,"args")==0)
+              {
+                printf("aqui");
+                strcat(param_string,"String[]");
+              }
+              lista_param = lista_param->next;
+          }
+          strcat(param_string,")");
+        }
+      printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
+    }
       table_content = table_content->next;
     }
     printf("\n");
-    tab_aux = tab_aux->next;
   }
+  tab_aux = tab_aux->next;
+}
 }
 
 
 //Função que cria a primeira tabela que é sempre do tipo Class
-tab_ cria_tabela (char *name, param_ *params )
+tab_ cria_tabela (char *name, param_ params )
   {
     tab_ aux;
     aux = (tab_) malloc (sizeof (_tab));
@@ -40,6 +62,20 @@ tab_ cria_tabela (char *name, param_ *params )
       strcpy(aux->type, "Class");
       aux->param = params;
       aux->node = NULL;
+      aux->next = NULL;
+    }
+    return aux;
+}
+
+param_ cria_tabela_params (char *name, char *type)
+  {
+    param_ aux;
+    aux = (tab_) malloc (sizeof (_tab));
+    if (aux != NULL) {
+      aux->name = (char *)malloc(sizeof(char)*2);
+      strcpy(aux->name, name);
+      aux->type = (char *)malloc(sizeof(char)*2);
+      strcpy(aux->type, type);
       aux->next = NULL;
     }
     return aux;
@@ -75,35 +111,50 @@ void add_global_symbol(tab_ tabela, char *name, char *type)
 
 
 /*Função que recebe um no type_MethodParams e retorna uma lista ligada de parametros*/
-param_ getParams_list(Node *methodParams, param_ param) {
-  param_ tabela_params;
+param_ getParams_list(Node *methodParams) {
+  param_ param_list = NULL;
   if (methodParams->node_type == type_MethodParams) {
     Node *paramDelc = methodParams->son;
 
     while (paramDelc != NULL) {
-      tabela_params = insert_in_params(param, paramDelc->brother->token, getNode_type(paramDelc->node_type));
-      paramDelc = paramDelc->brother;
+      if(paramDelc->node_type == type_ParamDecl){
+      insert_in_params(param_list, paramDelc->son->brother->token, getNode_type(paramDelc->son->node_type));
     }
+    paramDelc = paramDelc->brother;
   }
-  return tabela_params;
+  }
+return param_list;
 }
 
 
-param_ insert_in_params(param_ param, char *name, char *type) {
+void insert_in_params(param_ param_list,char *name, char *type) {
   param_ aux;
-  aux = (param_) malloc (sizeof(param_));
-  if (aux != NULL) {
-    aux = aux->next;
-  }
+  aux = (param_) malloc (sizeof(_param));
+  if(aux != NULL){
     aux->name = (char *)malloc(sizeof(char)*2);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
     strcpy(aux->type, type);
     aux->next = NULL;
-    return aux;
+  }
+  if(param_list == NULL)
+  {
+    param_list = aux;
+  }
+  else
+  {
+    param_ global = param_list;
+    while(global->next!=NULL)
+    {
+      global = global->next;
+    }
+    global->next = aux;
+  }
+
+
 }
 
-void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
+void add_global_method(tab_ tabela, char *name, char *type, char *return_type, param_ params)
 {
   tab_ aux;
   aux =  (tab_) malloc (sizeof (_tab));
@@ -112,11 +163,11 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type)
     aux->name = (char *)malloc(sizeof(char)*2);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, type);
-    aux->param = NULL;
+    strcpy(aux->type, "Method");
+    aux->param = params;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, toLoweCase(return_type));
+    strcpy(aux->return_type, toLoweCase(return_type));
     aux->next = NULL;
   }
 

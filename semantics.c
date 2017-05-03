@@ -15,7 +15,8 @@ void check_ast_to_table(Node *root){
     Node *aux_node2;
   Node *field_decl_node;
   Node *method_header_node;
-  Node * method_body;
+  Node *method_body;
+  Node *method_params;
   program = root;
 
 
@@ -40,14 +41,18 @@ void check_ast_to_table(Node *root){
           {
             Node *return_type;
             Node *method_name;
-            Node * method_type;
+
             tab_ tabela_local;
             method_header_node = aux_node->son;
             return_type =  method_header_node->son;
+
             method_name = return_type->brother;
-            method_type = method_name->brother;
+            method_params = method_name->brother;
+
+
+
             /*falta inserir os parametros*/
-            add_global_method(tabela_global,method_name->token, getNode_type(method_type->node_type),getNode_type(return_type->node_type));
+            add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type),getNode_type(return_type->node_type), getParams_list(method_params));
             tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
             add_local_symbol(tabela_local, "return", getNode_type(return_type->node_type));
 

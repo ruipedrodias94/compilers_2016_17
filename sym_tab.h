@@ -18,19 +18,20 @@ typedef struct ltab_ {
   char *name;
   char *type;
   char *return_type;
-  param_ *param;
+  param_ param;
   tab_ node;
   tab_ next;
 } _tab;
 
-tab_ cria_tabela (char *name, param_ *params );
+tab_ cria_tabela (char *name, param_ params );
 void add_global_symbol(tab_ tabela, char *name, char *type);
-void add_global_method(tab_ tabela, char *name, char *type, char *return_type);
+void add_global_method(tab_ tabela, char *name, char *type, char *return_type, param_ params);
 tab_ add_local_method_table(tab_ tabela, char *name, char *return_type);
 void add_local_symbol(tab_ tabela, char *name, char *type);
 void imprime_lista (tab_ tabela);
-param_ insert_in_params(param_ param, char *name, char *type);
-param_ getParams_list(Node *methodParams, param_ param);
+void insert_in_params(param_ param_list,char *name, char *type);
+param_ getParams_list(Node *methodParams);
 char *toLoweCase(char *string);
+param_ cria_tabela_params ();
 
 #endif
