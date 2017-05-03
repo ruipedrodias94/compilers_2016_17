@@ -11,7 +11,6 @@ void imprime_lista (tab_ tabela)
 
   tab_ tab_aux = tabela;
   tab_ table_content;
-  char *param_string = "(";
   param_ buce;
   while (tab_aux!=NULL)
   {
@@ -25,17 +24,27 @@ void imprime_lista (tab_ tabela)
     while(table_content!=NULL)
     {
       if(strcmp(table_content->type,"Method")==0){
-      printf("NOME: %s\n",table_content->name);
       //ir buscar os parametros
       param_ aux = table_content->param->next;
       char *param_string = "(";
+      int count = 0;
       while(aux!=NULL){
+
         if(strcmp(aux->name,"args")==0)
         {
           param_string = concat(param_string,"String[]");
         }
+        else{
+          param_string = concat(param_string,aux->type);
+        }
+      if(count>0)
+        {
+          param_string = concat(param_string,",");
+        }
+      count++;
       aux = aux->next;
     }
+    param_string = concat(param_string,")");
     printf("PARAM STRING: %s\n",param_string);
 
   }
