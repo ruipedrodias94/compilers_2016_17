@@ -22,57 +22,29 @@ void imprime_lista (tab_ tabela)
     buce = tab_aux->param;
 
     while(table_content!=NULL)
-    {
+    {  char *param_string = "";
       if(strcmp(table_content->type,"Method")==0){
       //ir buscar os parametros
       param_ aux = table_content->param->next;
-      char *param_string = "(";
-      int count = 0;
+      int count = 1;
       while(aux!=NULL){
-
-        if(strcmp(aux->name,"args")==0)
-        {
-          param_string = concat(param_string,"String[]");
-        }
-        else{
+        if(count>1)
+          {
+            param_string = concat(param_string,",");
+          }
           param_string = concat(param_string,aux->type);
-        }
-      if(count>0)
-        {
-          param_string = concat(param_string,",");
-        }
+
+
+
       count++;
       aux = aux->next;
+
     }
+    param_string = concat("(",param_string);
     param_string = concat(param_string,")");
-    printf("PARAM STRING: %s\n",param_string);
-
+        printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
   }
-      /*
-      if(strcmp(table_content->type,"Method")==0){
-        if(table_content->param!=NULL)
-        {
-          printf("TEM PARAMS");
 
-          strcpy(param_string,"(");
-          param_ lista_param = table_content->param;
-          while(lista_param!=NULL)
-          {
-              if(strcmp(lista_param->name,"args")==0)
-              {
-                printf("aqui");
-                strcat(param_string,"String[]");
-              }
-              lista_param = lista_param->next;
-          }
-          strcat(param_string,")");
-        }
-        else{
-          printf("FODEU: \n");
-          break;
-        }
-      printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
-    }*/
       table_content = table_content->next;
     }
     printf("\n");
@@ -183,7 +155,6 @@ void imprime_params(param_ tab){
 void insert_in_params(param_ param_list, char *name, char *type) {
   param_ aux;
   aux = (param_) malloc (sizeof(_param));
-  printf("INSERT: %s and %s \n", name, type);
   if(aux != NULL){
     aux->name = (char *)malloc(sizeof(char)*2 + strlen(name));
     strcpy(aux->name, name);
@@ -196,9 +167,6 @@ void insert_in_params(param_ param_list, char *name, char *type) {
     aux->next = NULL;
   }
 
-  printf(" dentro do aux: \n");
-  printf("param: %s\n",aux->name);
-  printf("tipo: %s\n",aux->type);
   if(param_list==NULL)
   {
     param_list = aux;
@@ -212,7 +180,6 @@ void insert_in_params(param_ param_list, char *name, char *type) {
     global->next = aux;
 
   }
-  printf("DONE\n");
 }
 
 
@@ -238,8 +205,8 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
   if(tabela->node == NULL)
   {
     tabela->node = aux;
-    printf("AQUISSS \n");
-    imprime_params (tabela->node->param);
+
+
   }
   else
   {
@@ -249,8 +216,8 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
       global = global->next;
     }
     global->next = aux;
-    printf("AQUISSS2222 \n");
-    imprime_params (global->next->param);
+
+
   }
 }
 
