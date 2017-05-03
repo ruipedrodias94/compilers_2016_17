@@ -11,14 +11,16 @@ void imprime_lista (tab_ tabela)
 
   tab_ tab_aux = tabela;
   tab_ table_content;
-  char * param_string = NULL;
-
+  char * param_string = "";
+  param_ buce;
   while (tab_aux!=NULL)
   {
 
     if(strcmp(tab_aux->type,"Class")==0){
     printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
-    table_content = tab_aux->node;
+    table_content = tab_aux->next;
+    buce = tab_aux->param;
+
     while(table_content!=NULL)
     {
       if(strcmp(table_content->type,"Method")==0){
@@ -39,6 +41,10 @@ void imprime_lista (tab_ tabela)
           }
           strcat(param_string,")");
         }
+        else{
+          printf("FODEU: \n");
+          break;
+        }
       printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
     }
       table_content = table_content->next;
@@ -46,7 +52,7 @@ void imprime_lista (tab_ tabela)
     printf("\n");
   }
   tab_aux = tab_aux->next;
-}
+  }
 }
 
 
@@ -67,15 +73,15 @@ tab_ cria_tabela (char *name, param_ params )
     return aux;
 }
 
-param_ cria_tabela_params (char *name, char *type)
+param_ cria_tabela_params ()
   {
     param_ aux;
-    aux = (tab_) malloc (sizeof (_tab));
+    aux = (param_) malloc (sizeof (_param));
     if (aux != NULL) {
       aux->name = (char *)malloc(sizeof(char)*2);
-      strcpy(aux->name, name);
+      strcpy(aux->name, "");
       aux->type = (char *)malloc(sizeof(char)*2);
-      strcpy(aux->type, type);
+      strcpy(aux->type, "");
       aux->next = NULL;
     }
     return aux;
@@ -94,6 +100,7 @@ void add_global_symbol(tab_ tabela, char *name, char *type)
     aux->node = NULL;
     aux->next = NULL;
   }
+
   if(tabela->node==NULL)
   {
     tabela->node = aux;
@@ -109,32 +116,57 @@ void add_global_symbol(tab_ tabela, char *name, char *type)
   }
 }
 
-
-/*Função que recebe um no type_MethodParams e retorna uma lista ligada de parametros*/
-param_ getParams_list(Node *methodParams) {
-  param_ param_list = NULL;
-  if (methodParams->node_type == type_MethodParams) {
-    Node *paramDelc = methodParams->son;
-
+int getNumberOfParams(Node *paramDelc){
+  int i = 0;
+  if (paramDelc->node_type == type_ParamDecl) {
     while (paramDelc != NULL) {
-      if(paramDelc->node_type == type_ParamDecl){
-      insert_in_params(param_list, paramDelc->son->brother->token, getNode_type(paramDelc->son->node_type));
+      if (paramDelc->node_type == type_ParamDecl) {
+        i += 1;
+      }
+      paramDelc = paramDelc->brother;
     }
-    paramDelc = paramDelc->brother;
   }
-  }
-return param_list;
+  return i;
 }
 
+/*Função que recebe um no type_MethodParams e retorna uma lista ligada de parametros*/
 
-void insert_in_params(param_ param_list,char *name, char *type) {
+param_ getParams_list(Node *paramDelc) {
+  param_ param_list = cria_tabela_params();
+
+  if (paramDelc->node_type == type_ParamDecl) {
+    while (paramDelc != NULL) {
+      if(paramDelc->node_type == type_ParamDecl){
+        insert_in_params(param_list, paramDelc->son->brother->token, getNode_type(paramDelc->son->node_type));
+      }
+      paramDelc = paramDelc->brother;
+    }
+  }
+  return param_list;
+}
+
+void imprime_params(param_ tab){
+  param_ aux = tab;
+  aux = aux->next;
+  while (aux!=NULL) {
+    printf("TESTE: %s TESTE: %s\n", aux->name, aux->type);
+    aux = aux->next;
+  }
+}
+
+void insert_in_params(param_ param_list, char *name, char *type) {
   param_ aux;
   aux = (param_) malloc (sizeof(_param));
+  printf("INSERT: %s and %s \n", name, type);
   if(aux != NULL){
-    aux->name = (char *)malloc(sizeof(char)*2);
+    aux->name = (char *)malloc(sizeof(char)*2 + strlen(name));
     strcpy(aux->name, name);
-    aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, type);
+    aux->type = (char *)malloc(sizeof(char)*2 + strlen(type));
+    if (strcmp(type, "StringArray") == 0) {
+      strcpy(aux->type, "String[]");
+    } else {
+        strcpy(aux->type, toLoweCase(type));
+    }
     aux->next = NULL;
   }
   if(param_list == NULL)
@@ -150,9 +182,10 @@ void insert_in_params(param_ param_list,char *name, char *type) {
     }
     global->next = aux;
   }
-
-
+  printf("DONE\n");
 }
+
+
 
 void add_global_method(tab_ tabela, char *name, char *type, char *return_type, param_ params)
 {

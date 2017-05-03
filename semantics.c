@@ -41,6 +41,7 @@ void check_ast_to_table(Node *root){
           {
             Node *return_type;
             Node *method_name;
+            Node *param_decl;
 
             tab_ tabela_local;
             method_header_node = aux_node->son;
@@ -49,10 +50,20 @@ void check_ast_to_table(Node *root){
             method_name = return_type->brother;
             method_params = method_name->brother;
 
-
-
+            if (method_params != NULL) {
+              printf("TEMOS PARAMETROS \n");
+            }
             /*falta inserir os parametros*/
-            add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type),getNode_type(return_type->node_type), getParams_list(method_params));
+            param_decl = method_params->son;
+            int i = getNumberOfParams(param_decl);
+            printf("%d\n", i);
+            i = 0;
+            param_ params_method = getParams_list(param_decl);
+            if (params_method != NULL) {
+              printf("DEU ALGUMA COISA?\n");
+            }
+            imprime_params(params_method);
+            add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type), getNode_type(return_type->node_type), params_method);
             tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type));
             add_local_symbol(tabela_local, "return", getNode_type(return_type->node_type));
 
@@ -68,17 +79,11 @@ void check_ast_to_table(Node *root){
               aux_node2 = aux_node2->brother;
             }
 
-
           }
-
-
 
         aux_node = aux_node->brother;
       }
     }
-
-
-
 
   imprime_lista(tabela_global);
 

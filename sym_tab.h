@@ -33,5 +33,6 @@ void insert_in_params(param_ param_list,char *name, char *type);
 param_ getParams_list(Node *methodParams);
 char *toLoweCase(char *string);
 param_ cria_tabela_params ();
-
+int getNumberOfParams(Node *paramDelc);
+void imprime_params(param_ tab);
 #endif
