@@ -64,6 +64,7 @@ void imprime_lista (tab_ tabela)
 
   tab_aux = tab_aux->next;
   }
+  printf("\n");
 }
 
 
@@ -285,9 +286,9 @@ void add_local_symbol(tab_ tabela, char *name, char *type, char *flag)
   if(aux != NULL)
   {
     aux->name = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->name, name);
+    strcpy(aux->name, toLoweCase(name));
     aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, type);
+    strcpy(aux->type, toLoweCase(type));
     aux->flag = (char *)malloc(sizeof(char)*2);
     strcpy(aux->flag, flag);
     aux->param = NULL;
