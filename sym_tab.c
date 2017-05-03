@@ -288,7 +288,12 @@ void add_local_symbol(tab_ tabela, char *name, char *type, char *flag)
     aux->name = (char *)malloc(sizeof(char)*2);
     strcpy(aux->name, toLoweCase(name));
     aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, toLoweCase(type));
+    if(strcmp(type,"String[]")!=0){
+      strcpy(aux->type, toLoweCase(type));}
+    else
+    {
+      strcpy(aux->type, type);
+    }
     aux->flag = (char *)malloc(sizeof(char)*2);
     strcpy(aux->flag, flag);
     aux->param = NULL;
