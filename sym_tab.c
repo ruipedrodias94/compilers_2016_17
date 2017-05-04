@@ -155,13 +155,16 @@ int getNumberOfParams(Node *paramDelc){
 
 param_ getParams_list(Node *paramDelc) {
   param_ param_list = cria_tabela_params();
-
-  if (paramDelc->node_type == type_ParamDecl) {
-    while (paramDelc != NULL) {
-      if(paramDelc->node_type == type_ParamDecl){
-        insert_in_params(param_list, paramDelc->son->brother->token, getNode_type(paramDelc->son->node_type));
+  Node *aux = paramDelc;
+  
+  if (aux != NULL) {
+    if (aux->node_type == type_ParamDecl) {
+      while (aux != NULL) {
+        if(aux->node_type == type_ParamDecl){
+          insert_in_params(param_list, aux->son->brother->token, getNode_type(aux->son->node_type));
+        }
+        aux = aux->brother;
       }
-      paramDelc = paramDelc->brother;
     }
   }
   return param_list;
