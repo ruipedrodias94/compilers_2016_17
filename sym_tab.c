@@ -12,6 +12,7 @@ char* get_param_string(tab_ table_content)
   //ir buscar os parametros
   param_ aux = table_content->param->next;
   int count = 1;
+  if(aux!=NULL){
   while(aux!=NULL){
     if(count>1)
       {
@@ -26,6 +27,9 @@ param_string = concat("(",param_string);
 param_string = concat(param_string,")");
 
 return param_string;
+}else{
+  return "()";
+}
 }
 
 void imprime_lista (tab_ tabela)
@@ -64,8 +68,14 @@ void imprime_lista (tab_ tabela)
 
     while(table_content!=NULL)
     {
-      char *flag = table_content->flag;
+      char *flag;
+      if(strcmp(table_content->flag,"")==0){
+      flag = table_content->flag;
       flag = concat("\t",flag);
+      }
+      else{
+        flag = "";
+      }
       printf("%s\t%s\t%s%s\n",table_content->name,"",table_content->type,flag);
       table_content = table_content->next;
     }
@@ -156,7 +166,7 @@ int getNumberOfParams(Node *paramDelc){
 param_ getParams_list(Node *paramDelc) {
   param_ param_list = cria_tabela_params();
   Node *aux = paramDelc;
-  
+
   if (aux != NULL) {
     if (aux->node_type == type_ParamDecl) {
       while (aux != NULL) {
