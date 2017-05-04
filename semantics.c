@@ -116,7 +116,7 @@ void printAnotatedList(Node* root, int high) {
       for(i=0; i < high; i++){
           printf(".");
       }
-      printf("%s - int\n",getNode_type(root->node_type) );
+      printf("%s(%s) - int\n",getNode_type(root->node_type),root->token );
     }
     else
     {
