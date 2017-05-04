@@ -39,4 +39,5 @@ char* concat(const char *s1, const char *s2);
 param_ cria_tabela_params ();
 int getNumberOfParams(Node *paramDelc);
 void imprime_params(param_ tab);
+char* get_type_var_global(char *name, tab_ tabela);
 #endif

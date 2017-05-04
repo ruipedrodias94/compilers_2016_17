@@ -375,6 +375,30 @@ void add_local_symbol(tab_ tabela, char *name, char *type, char *flag)
   }
 }
 
+/*função para ir buscar os tipos de variaveis globais à tabela*/
+char* get_type_var_global(char *name, tab_ tabela)
+{
+  tab_ tab_aux = tabela;
+  tab_ table_content;
+
+
+
+  if(strcmp(tab_aux->type,"Class")==0)
+  {
+      table_content = tab_aux->node;
+      while(table_content!=NULL)
+      {
+        if(strcmp("Method",table_content->type)!=0){
+          if(strcmp(name,table_content->name)==0){
+        return table_content->type;
+      }
+    }
+      table_content = table_content->next;
+    }
+}
+return "";
+
+}
 
 
 

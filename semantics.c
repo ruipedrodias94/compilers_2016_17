@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-void check_ast_to_table(Node *root){
+tab_ check_ast_to_table(Node *root){
 
 
   tab_ tabela_global = NULL;
@@ -83,14 +82,23 @@ void check_ast_to_table(Node *root){
 
   imprime_lista(tabela_global);
 
-  return;
+
+  return tabela_global;
 }
 
-void printAnotatedList(Node* root, int high) {
+void printAnotatedList(Node* root, int high, tab_ tabela) {
   int i;
+
   if(root != NULL){
     /*All the terminals with multiple values*/
-    if(root->node_type == type_Id || root->node_type == type_BoolLit || root->node_type == type_RealLit  ){
+    if(root->node_type == type_BoolLit || root->node_type == type_RealLit  ){
+
+      for(i=0; i < high; i++){
+        printf(".");
+      }
+      printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+    }
+    if(root->node_type == type_Id ){
 
       for(i=0; i < high; i++){
         printf(".");
@@ -146,7 +154,7 @@ void printAnotatedList(Node* root, int high) {
       }
 
     /*As it is a son, prints 2 more (.)*/
-    printAnotatedList(root->son, high + 2);
-    printAnotatedList(root->brother, high);
+    printAnotatedList(root->son, high + 2, tabela);
+    printAnotatedList(root->brother, high, tabela);
   }
 }
