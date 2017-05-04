@@ -90,14 +90,14 @@ void printAnotatedList(Node* root, int high) {
   int i;
   if(root != NULL){
     /*All the terminals with multiple values*/
-    if(root->node_type == type_Id || root->node_type == type_BoolLit || root->node_type == type_RealLit || root->node_type == type_StrLit || root->node_type == type_DecLit){
+    if(root->node_type == type_Id || root->node_type == type_BoolLit || root->node_type == type_RealLit || root->node_type == type_StrLit ){
 
       for(i=0; i < high; i++){
         printf(".");
       }
       printf("%s(%s)\n",getNode_type(root->node_type), root->token);
     }
-    else if(root->node_type==type_Geq)
+    else if(root->node_type==type_Eq || root->node_type==type_Neq || root->node_type==type_Lt || root->node_type==type_Gt || root->node_type==type_Leq || root->node_type==type_Geq)
     {
       for(i=0; i < high; i++){
           printf(".");
@@ -105,6 +105,13 @@ void printAnotatedList(Node* root, int high) {
       printf("%s - boolean\n",getNode_type(root->node_type) );
     }
     else if(root->node_type==type_Length)
+    {
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s - int\n",getNode_type(root->node_type) );
+    }
+    else if(root->node_type==type_DecLit)
     {
       for(i=0; i < high; i++){
           printf(".");
