@@ -135,11 +135,15 @@ void printAnotatedList(Node* root, int high) {
     else
     {
       if(root->node_type!=type_Null){
-      for(i=0; i < high; i++){
-          printf(".");
+        if (root->node_type!=type_Id) {
+
+        for(i=0; i < high; i++){
+            printf(".");
+        }
+        printf("%s\n",getNode_type(root->node_type) );
       }
-      printf("%s\n",getNode_type(root->node_type) );
-    }}
+        }
+      }
 
     /*As it is a son, prints 2 more (.)*/
     printAnotatedList(root->son, high + 2);
