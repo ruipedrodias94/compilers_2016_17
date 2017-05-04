@@ -90,12 +90,19 @@ void printAnotatedList(Node* root, int high) {
   int i;
   if(root != NULL){
     /*All the terminals with multiple values*/
-    if(root->node_type == type_Id || root->node_type == type_BoolLit || root->node_type == type_RealLit || root->node_type == type_StrLit ){
+    if(root->node_type == type_Id || root->node_type == type_BoolLit || root->node_type == type_RealLit  ){
 
       for(i=0; i < high; i++){
         printf(".");
       }
       printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+    }
+    if(root->node_type == type_StrLit ){
+
+      for(i=0; i < high; i++){
+        printf(".");
+      }
+      printf("%s(%s) - String\n",getNode_type(root->node_type), root->token);
     }
     else if(root->node_type==type_Eq || root->node_type==type_Neq || root->node_type==type_Lt || root->node_type==type_Gt || root->node_type==type_Leq || root->node_type==type_Geq)
     {
