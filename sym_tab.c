@@ -18,7 +18,13 @@ char* get_param_string(tab_ table_content)
       {
         param_string = concat(param_string,",");
       }
+      if(strcmp(aux->type,"bool")==0)
+      {
+        param_string = concat(param_string,"boolean");
+      }
+      else{
       param_string = concat(param_string,aux->type);
+    }
 
   count++;
   aux = aux->next;
@@ -69,7 +75,7 @@ void imprime_lista (tab_ tabela)
     while(table_content!=NULL)
     {
       char *flag;
-      if(strcmp(table_content->flag,"")==0){
+      if(strcmp(table_content->flag,"")!=0){
       flag = table_content->flag;
       flag = concat("\t",flag);
       }
@@ -82,7 +88,7 @@ void imprime_lista (tab_ tabela)
 
   }
 
-  printf("\n");
+    printf("\n");
   tab_aux = tab_aux->next;
   }
 }
@@ -94,7 +100,7 @@ tab_ cria_tabela (char *name, param_ params )
     tab_ aux;
     aux = (tab_) malloc (sizeof (_tab));
     if (aux != NULL) {
-      aux->name = (char *)malloc(sizeof(char)*2);
+      aux->name = (char *)malloc(sizeof(char)*strlen(name)+1);
       strcpy(aux->name, name);
       aux->type = (char *)malloc(sizeof(char)*2);
       strcpy(aux->type, "Class");
@@ -110,7 +116,7 @@ param_ cria_tabela_params ()
     param_ aux;
     aux = (param_) malloc (sizeof (_param));
     if (aux != NULL) {
-      aux->name = (char *)malloc(sizeof(char)*2);
+      aux->name = (char *)malloc(sizeof(char)*3);
       strcpy(aux->name, "header");
       aux->type = (char *)malloc(sizeof(char)*2);
       strcpy(aux->type, "");
@@ -124,10 +130,20 @@ void add_global_symbol(tab_ tabela, char *name, char *type)
   tab_ aux;
   aux = (tab_) malloc (sizeof (_tab));
   if (aux != NULL) {
-    aux->name = (char *)malloc(sizeof(char)*2);
+    aux->name = (char *)malloc(sizeof(char)*strlen(name)+1);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->type, toLoweCase(type));
+    if(strcmp(type,"String[]")==0){
+    strcpy(aux->type, type);}
+    else if(strcmp(type,"Bool")==0)
+    {
+      strcpy(aux->type, "boolean");
+    }
+    else
+    {
+        strcpy(aux->type, toLoweCase(type));
+
+    }
     aux->param = NULL;
     aux->node = NULL;
     aux->next = NULL;
@@ -203,12 +219,17 @@ void insert_in_params(param_ param_list, char *name, char *type) {
   param_ aux;
   aux = (param_) malloc (sizeof(_param));
   if(aux != NULL){
-    aux->name = (char *)malloc(sizeof(char)*2 + strlen(name));
+    aux->name = (char *)malloc(sizeof(char)*2 + strlen(name)+1);
     strcpy(aux->name, name);
-    aux->type = (char *)malloc(sizeof(char)*2 + strlen(type));
+    aux->type = (char *)malloc(sizeof(char)*2 + strlen(type)+1);
     if (strcmp(type, "StringArray") == 0) {
       strcpy(aux->type, "String[]");
-    } else {
+    }
+    else if(strcmp(type,"Bool")==0)
+    {
+      strcpy(aux->type, "boolean");
+    }
+    else {
         strcpy(aux->type, toLoweCase(type));
     }
     aux->next = NULL;
@@ -238,14 +259,24 @@ void add_global_method(tab_ tabela, char *name, char *type, char *return_type, p
 
   if(aux != NULL)
   {
-    aux->name = (char *)malloc(sizeof(char)*2);
+    aux->name = (char *)malloc(sizeof(char)*strlen(name)+1);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
     strcpy(aux->type, "Method");
     aux->param = params;
     aux->node = NULL;
     aux->return_type =  (char *)malloc(sizeof(char)*2);
-    strcpy(aux->return_type, toLoweCase(return_type));
+    if(strcmp(type,"String[]")==0){
+    strcpy(aux->return_type, return_type);}
+    else if(strcmp(return_type,"Bool")==0)
+    {
+      strcpy(aux->return_type, "boolean");
+    }
+    else
+    {
+        strcpy(aux->return_type, toLoweCase(return_type));
+
+    }
     aux->next = NULL;
   }
 
@@ -274,7 +305,7 @@ tab_ add_local_method_table(tab_ tabela, char *name, char *return_type, param_ p
   aux =  (tab_) malloc (sizeof (_tab));
   if(aux != NULL)
   {
-    aux->name = (char *)malloc(sizeof(char)*2);
+    aux->name = (char *)malloc(sizeof(char)*strlen(name)+1);
     strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
     strcpy(aux->type, "Method");
@@ -308,14 +339,18 @@ void add_local_symbol(tab_ tabela, char *name, char *type, char *flag)
   aux =  (tab_) malloc (sizeof (_tab));
   if(aux != NULL)
   {
-    aux->name = (char *)malloc(sizeof(char)*2);
-    strcpy(aux->name, toLoweCase(name));
+    aux->name = (char *)malloc(sizeof(char)*strlen(name)+1);
+    strcpy(aux->name, name);
     aux->type = (char *)malloc(sizeof(char)*2);
-    if(strcmp(type,"String[]")!=0){
-      strcpy(aux->type, toLoweCase(type));}
+    if(strcmp(type,"String[]")==0){
+    strcpy(aux->type, type);}
+    else if(strcmp(type,"Bool")==0)
+    {
+      strcpy(aux->type, "boolean");
+    }
     else
     {
-      strcpy(aux->type, type);
+        strcpy(aux->type, toLoweCase(type));
     }
     aux->flag = (char *)malloc(sizeof(char)*2);
     strcpy(aux->flag, flag);

@@ -48,12 +48,14 @@ void check_ast_to_table(Node *root){
             return_type =  method_header_node->son;
 
             method_name = return_type->brother;
+            param_ params_method;
             method_params = method_name->brother;
 
 
             /*falta inserir os parametros*/
             param_decl = method_params->son;
-            param_ params_method = getParams_list(param_decl);
+            params_method = getParams_list(param_decl);
+
             //imprime_params(params_method);
             add_global_method(tabela_global,method_name->token, getNode_type(return_type->node_type), getNode_type(return_type->node_type),params_method);
             tabela_local = add_local_method_table(tabela_global,method_name->token,getNode_type(return_type->node_type),params_method);
@@ -82,4 +84,44 @@ void check_ast_to_table(Node *root){
   imprime_lista(tabela_global);
 
   return;
+}
+
+void printAnotatedList(Node* root, int high) {
+  int i;
+  if(root != NULL){
+    /*All the terminals with multiple values*/
+    if(root->node_type == type_Id || root->node_type == type_BoolLit || root->node_type == type_RealLit || root->node_type == type_StrLit || root->node_type == type_DecLit){
+
+      for(i=0; i < high; i++){
+        printf(".");
+      }
+      printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+    }
+    else if(root->node_type==type_Geq)
+    {
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s - boolean\n",getNode_type(root->node_type) );
+    }
+    else if(root->node_type==type_Length)
+    {
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s - int\n",getNode_type(root->node_type) );
+    }
+    else
+    {
+      if(root->node_type!=type_Null){
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s\n",getNode_type(root->node_type) );
+    }}
+
+    /*As it is a son, prints 2 more (.)*/
+    printAnotatedList(root->son, high + 2);
+    printAnotatedList(root->brother, high);
+  }
 }

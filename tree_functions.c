@@ -112,6 +112,7 @@ void printList(Node* root, int high) {
   }
 }
 
+
 /*Get Node Type*/
 char* getNode_type(NodeType node_type){
   return tokens[node_type];
