@@ -118,6 +118,13 @@ void printAnotatedList(Node* root, int high) {
       }
       printf("%s(%s) - int\n",getNode_type(root->node_type),root->token );
     }
+    else if(root->node_type==type_ParseArgs)
+    {
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s - int\n",getNode_type(root->node_type) );
+    }
     else
     {
       if(root->node_type!=type_Null){
