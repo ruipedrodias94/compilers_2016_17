@@ -47,10 +47,10 @@ void imprime_lista (tab_ tabela)
        char *param_string = "";
         if(strcmp(table_content->type,"Method")==0){
         param_string = get_param_string(table_content);
-        printf("%s\t%s\t%s\t%s\n",table_content->name,param_string,table_content->return_type,"");
+        printf("%s\t%s\t%s%s\n",table_content->name,param_string,table_content->return_type,"");
       }
       else{
-        printf("%s\t%s\t%s\t%s\n",table_content->name,"",table_content->type,"");
+        printf("%s\t%s\t%s%s\n",table_content->name,"",table_content->type,"");
       }
 
       table_content = table_content->next;
@@ -64,7 +64,9 @@ void imprime_lista (tab_ tabela)
 
     while(table_content!=NULL)
     {
-      printf("%s\t%s\t%s\t%s\n",table_content->name,"",table_content->type,table_content->flag);
+      char *flag = table_content->flag;
+      flag = concat("\t",flag);
+      printf("%s\t%s\t%s%s\n",table_content->name,"",table_content->type,flag);
       table_content = table_content->next;
     }
 
