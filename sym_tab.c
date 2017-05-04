@@ -39,7 +39,7 @@ void imprime_lista (tab_ tabela)
 
     if(strcmp(tab_aux->type,"Class")==0){
 
-    printf("===== %s %s Symbol Table ===== \n", tab_aux->type, tab_aux->name);
+    printf("===== %s %s Symbol Table =====\n", tab_aux->type, tab_aux->name);
     table_content = tab_aux->node;
 
     while(table_content!=NULL)
@@ -60,7 +60,7 @@ void imprime_lista (tab_ tabela)
     table_content = tab_aux->node;
     //char *param_s  = "";
     char *param_s  = get_param_string(tab_aux);
-    printf("===== %s %s%s Symbol Table ===== \n", tab_aux->type, tab_aux->name,param_s);
+    printf("===== %s %s%s Symbol Table =====\n", tab_aux->type, tab_aux->name,param_s);
 
     while(table_content!=NULL)
     {
