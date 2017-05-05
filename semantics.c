@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+Node *aux;
 tab_ check_ast_to_table(Node *root){
 
 
@@ -114,18 +115,27 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
       }
       printf("%s(%s)\n",getNode_type(root->node_type), root->token);
     }
-    else if(root->node_type == type_Id ){
+    else if (root->node_type == type_Id) {
+      if (aux == NULL) {
+          for(i=0; i < high; i++){
+            printf(".");
+          }
+          char *tipo = get_type_var_global(root->token, tabela);
+          if (strcmp(tipo, "") == 0) {
+            printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+          }else{
+            printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
+          }
+        }
+        else {
+          for(i=0; i < high; i++){
+            printf(".");
+          }
+            printf("%s(%s)\n",getNode_type(root->node_type), root->token);
 
-      for(i=0; i < high; i++){
-        printf(".");
+        }
       }
-      char *pao_barrado = get_type_var_global(root->token, tabela_global);
-      if (strcmp(pao_barrado, "") == 0) {
-        printf("%s(%s)\n",getNode_type(root->node_type), root->token);
-      }else{
-        printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, pao_barrado);
-      }
-    }
+
     else if(root->node_type == type_StrLit ){
 
       for(i=0; i < high; i++){
@@ -171,14 +181,16 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
     {
       if(root->node_type!=type_Null){
         if (root->node_type!=type_Id) {
-
-        for(i=0; i < high; i++){
+          for(i=0; i < high; i++){
             printf(".");
           }
-            printf("%s\n", getNode_type(root->node_type));
-          }
+          printf("%s\n", getNode_type(root->node_type));
+        }
+        if (root->node_type == type_FieldDecl) {
+          aux = root;
         }
       }
+    }
 
     /*As it is a son, prints 2 more (.)*/
     printAnotatedList(root->son, high + 2, tabela_global, tabela_global);
