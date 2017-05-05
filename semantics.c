@@ -125,7 +125,7 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
     }
     else if (root->node_type == type_Id) {
 
-      if(strcmp(father,getNode_type(type_ParamDecl))==0 || strcmp(father,getNode_type(type_VarDecl))==0 || strcmp(father,getNode_type(type_FieldDecl))==0){
+      if(strcmp(father,getNode_type(type_ParamDecl))==0 || strcmp(father,getNode_type(type_VarDecl))==0 || strcmp(father,getNode_type(type_FieldDecl))==0 || strcmp(father,getNode_type(type_MethodHeader))==0){
 
         for(i=0; i < high; i++){
           printf(".");
