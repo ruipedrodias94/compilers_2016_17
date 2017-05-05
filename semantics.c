@@ -106,9 +106,11 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           tabela_local_copy = get_local_table(method_decl_son->token, tabela_global);
         }
           method_decl_son = method_decl_son->brother;
-
       }
-
+      for(i=0; i < high; i++){
+        printf(".");
+      }
+      printf("%s\n",getNode_type(root->node_type));
 
     }
     /*All the terminals with multiple values*/
@@ -176,6 +178,18 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           printf(".");
       }
       printf("%s\n", getNode_type(root->node_type));
+    }
+    else if (root->node_type == type_Plus || root->node_type == type_Mul || root->node_type == type_Sub || root->node_type == type_Div) {
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s - %s\n", getNode_type(root->node_type), get_type_var(root->son->token, tabela_global_copy, tabela_local_copy));
+    }
+    else if (root->node_type == type_Assign) {
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s - %s\n", getNode_type(root->node_type), get_type_var(root->son->token, tabela_global_copy, tabela_local_copy));
     }
     else
     {
