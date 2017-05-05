@@ -89,6 +89,11 @@ tab_ check_ast_to_table(Node *root){
 
 void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_local) {
   int i;
+  tab_ tabela_global_copy;
+  tab_ tabela_local_copy;
+  tabela_local_copy = tabela_local;
+  tabela_global_copy = tabela_global;
+
 
   if(root != NULL){
     if(root->node_type == type_MethodHeader)
@@ -98,8 +103,10 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
       {
           //Quando entra aqui passa-se a tabela das variáveis locais
           if(method_decl_son->token!=NULL ){
-          tabela_local = get_local_table(method_decl_son->token, tabela_global);
-          printf("tabela local alterada para : %s\n", tabela_local->name);
+            printf(" token : %s",method_decl_son->token);
+          tabela_local_copy = get_local_table(method_decl_son->token, tabela_global);
+          printf("tabela local alterada para : %s\n", tabela_local_copy->name);
+          print_table(tabela_local_copy);
         }
           method_decl_son = method_decl_son->brother;
 
@@ -117,24 +124,18 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
       printf("%s(%s)\n",getNode_type(root->node_type), root->token);
     }
     else if (root->node_type == type_Id) {
-      if (field_decl_verifier == NULL) {
+
           for(i=0; i < high; i++){
             printf(".");
           }
-          char *tipo = get_type_var_global(root->token, tabela_global);
+          char *tipo = get_type_var(root->token, tabela_global,tabela_local_copy );
           if (strcmp(tipo, "") == 0) {
+            printf("é nulo");
             printf("%s(%s)\n",getNode_type(root->node_type), root->token);
           }else{
             printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
           }
-        }
-        else {
-          for(i=0; i < high; i++){
-            printf(".");
-          }
-            printf("%s(%s)\n",getNode_type(root->node_type), root->token);
 
-        }
       }
 
     else if(root->node_type == type_StrLit ){
@@ -187,14 +188,12 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           }
           printf("%s\n", getNode_type(root->node_type));
         }
-        if (root->node_type == type_FieldDecl) {
-          field_decl_verifier = root;
-        }
+
       }
     }
 
     /*As it is a son, prints 2 more (.)*/
-    printAnotatedList(root->son, high + 2, tabela_global, tabela_global);
-    printAnotatedList(root->brother, high, tabela_global, tabela_global);
+    printAnotatedList(root->son, high + 2, tabela_global_copy, tabela_global_copy);
+    printAnotatedList(root->brother, high, tabela_global_copy, tabela_global_copy);
   }
 }

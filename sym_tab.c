@@ -381,7 +381,7 @@ char* get_type_var_global(char *name, tab_ tabela)
   tab_ tab_aux = tabela;
   tab_ table_content;
 
-
+  printf("tabela NAME : %s\n",tabela->name);
 
   if(strcmp(tab_aux->type,"Class")==0)
   {
@@ -404,7 +404,7 @@ char* get_type_var_local(char *name, tab_ tabela)
 {
   tab_ tab_aux = tabela;
   tab_ table_content;
-
+  printf("tabela v : %s\n",tabela->name);
 
 
 /*função para ir buscar os tipos de variaveis locais à tabela*/
@@ -412,6 +412,7 @@ char* get_type_var_local(char *name, tab_ tabela)
       while(table_content!=NULL)
       {
         if(strcmp("Method",table_content->type)!=0){
+          printf("tabela var : %s\n",table_content->name);
           if(strcmp(name,table_content->name)==0){
         return table_content->type;
       }
@@ -422,6 +423,19 @@ return "";
 
 }
 
+
+void print_table(tab_ tabela)
+{
+  tab_ table_content = tabela->node;
+  while(table_content!=NULL)
+  {
+    if(strcmp("Method",table_content->type)!=0){
+      printf("tabela var : %s\n",table_content->name);
+    }
+      table_content = table_content->next;
+  }
+
+}
 /*funcao apra ir buscar a tabela local*/
 //tem de ser alterada porque duas funçoes podem ter nomes iguais mar numero de argumentos diferentes
 tab_ get_local_table( char *method_name, tab_ tabela_global)
@@ -440,6 +454,25 @@ tab_ get_local_table( char *method_name, tab_ tabela_global)
 
 }
 
+char* get_type_var(char * name,tab_ tabela_global, tab_ tabela_local)
+{
+  printf("retornou local: %s\n",get_type_var_local(name, tabela_local));
+  printf("retornou global: %s\n",get_type_var_global(name, tabela_global));
+
+  if(strcmp(get_type_var_local(name, tabela_local),"")!=0)
+  {
+    return get_type_var_local(name, tabela_local);
+  }
+  else if(strcmp(get_type_var_global(name, tabela_global),"")!=0)
+  {
+    return get_type_var_global(name, tabela_global);
+  }
+  else{
+    return "";
+  }
+
+
+}
 
 
 

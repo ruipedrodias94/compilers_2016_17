@@ -234,8 +234,7 @@ int main(int argc, char** argv){
   }else if(strcmp(argv[1],"-s")==0){
       syntax_flag = 1;
       yyparse();
-      tab_ table;
-      table = check_ast_to_table(root);
+
 
       tabela_global = check_ast_to_table(root);
 
