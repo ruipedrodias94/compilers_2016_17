@@ -1,4 +1,4 @@
-  #include "semantics.h"
+#include "semantics.h"
 #include "sym_tab.h"
 #include "estruturas.h"
 #include <stdio.h>
@@ -140,6 +140,18 @@ void printAnotatedList(Node* root, int high, tab_ tabela) {
       }
       printf("%s - int\n",getNode_type(root->node_type) );
     }
+    else if(root->node_type == type_Call){
+      for(i=0; i < high; i++){
+          printf(".");
+      }
+      printf("%s\n", getNode_type(root->node_type));
+    }
+    else if(root->node_type == type_Id){
+      for(i=0; i < high; i++){
+          printf(".");
+        }
+      printf("%s(%s)\n", getNode_type(root->node_type), root->token);
+    }
     else
     {
       if(root->node_type!=type_Null){
@@ -147,9 +159,9 @@ void printAnotatedList(Node* root, int high, tab_ tabela) {
 
         for(i=0; i < high; i++){
             printf(".");
-        }
-        printf("%s\n",getNode_type(root->node_type) );
-      }
+          }
+            printf("%s\n", getNode_type(root->node_type));
+          }
         }
       }
 

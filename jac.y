@@ -18,7 +18,7 @@
   Node* aux_node3 = NULL;
   Node* aux_node4 = NULL;
 
-
+  tab_ tabela_global;
 
 %}
 
@@ -235,10 +235,11 @@ int main(int argc, char** argv){
       syntax_flag = 1;
       yyparse();
 
-      check_ast_to_table(root);
+      tabela_global = check_ast_to_table(root);
 
       if(flag_error == 0){
-        printAnotatedList(root,0);
+        printAnotatedList(root,0, tabela_global);
+        //printList(root, 0);
       }
 
     free_tree(root);
