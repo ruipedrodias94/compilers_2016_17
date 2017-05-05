@@ -471,7 +471,7 @@ char* get_type_var(char * name,tab_ tabela_global, tab_ tabela_local){
 
 
 
-char get_param_string_on_tree(Node *call, tab_ tabela_global, tab_ tabela_local)
+char* get_param_string_on_tree(Node *call, tab_ tabela_global, tab_ tabela_local)
 {
   char *param_string = "(";
   Node * call_node = call->son->brother;
@@ -490,8 +490,8 @@ char get_param_string_on_tree(Node *call, tab_ tabela_global, tab_ tabela_local)
     call_node = call_node->brother;
 
 }
-param_string = concat(param_string,")");
-return param_string;
+  param_string = concat(param_string,")");
+  return param_string;
 }
 
 char* get_return_type_method_global(char *name, tab_ tabela)
@@ -514,7 +514,7 @@ while(table_content!=NULL)
 }
     table_content = table_content->next;
 }
-
+  return "";
 }
 
 

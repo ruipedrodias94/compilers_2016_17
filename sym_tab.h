@@ -42,4 +42,6 @@ void imprime_params(param_ tab);
 tab_ get_local_table( char *method_name, tab_ tabela_global);
 char* get_type_var(char * name,tab_ tabela_global, tab_ tabela_local);
 char* get_type_var_global(char *name, tab_ tabela);
+char* get_return_type_method_global(char *name, tab_ tabela);
+char* get_param_string_on_tree(Node *call, tab_ tabela_global, tab_ tabela_local);
 #endif
