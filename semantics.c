@@ -93,15 +93,15 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
   if(root != NULL){
     if(root->node_type == type_MethodHeader)
     {
-      Node *aux = root->son;
-      while(aux!=NULL)
+      Node *method_decl_son = root->son;
+      while(method_decl_son!=NULL)
       {
           //Quando entra aqui passa-se a tabela das variáveis locais
-          if(aux->token!=NULL ){
-          tabela_local = get_local_table(aux->token, tabela_global);
+          if(method_decl_son->token!=NULL ){
+          tabela_local = get_local_table(method_decl_son->token, tabela_global);
           printf("tabela local alterada para : %s\n", tabela_local->name);
         }
-          aux = aux->brother;
+          method_decl_son = method_decl_son->brother;
 
       }
 
