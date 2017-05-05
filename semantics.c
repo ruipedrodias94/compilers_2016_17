@@ -103,7 +103,12 @@ void printAnotatedList(Node* root, int high, tab_ tabela) {
       for(i=0; i < high; i++){
         printf(".");
       }
-      printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+      char *pao_barrado = get_type_var_global(root->token, tabela);
+      if (strcmp(pao_barrado, "") == 0) {
+        printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+      }else{
+        printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, pao_barrado);
+      }
     }
     if(root->node_type == type_StrLit ){
 
@@ -145,12 +150,6 @@ void printAnotatedList(Node* root, int high, tab_ tabela) {
           printf(".");
       }
       printf("%s\n", getNode_type(root->node_type));
-    }
-    else if(root->node_type == type_Id){
-      for(i=0; i < high; i++){
-          printf(".");
-        }
-      printf("%s(%s)\n", getNode_type(root->node_type), root->token);
     }
     else
     {
