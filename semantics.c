@@ -99,6 +99,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           //Quando entra aqui passa-se a tabela das variáveis locais
           if(aux->token!=NULL ){
           tabela_local = get_local_table(aux->token, tabela_global);
+          printf("tabela local alterada para : %s\n", tabela_local->name);
         }
           aux = aux->brother;
 
@@ -120,7 +121,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           for(i=0; i < high; i++){
             printf(".");
           }
-          char *tipo = get_type_var_global(root->token, tabela);
+          char *tipo = get_type_var_global(root->token, tabela_global);
           if (strcmp(tipo, "") == 0) {
             printf("%s(%s)\n",getNode_type(root->node_type), root->token);
           }else{
