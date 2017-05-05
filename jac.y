@@ -239,7 +239,7 @@ int main(int argc, char** argv){
       tabela_global = check_ast_to_table(root);
 
       if(flag_error == 0){
-        printAnotatedList(root,0, tabela_global, tabela_global);
+        printAnotatedList(NULL,root,0, tabela_global, tabela_global);
         //printList(root, 0);
       }
 

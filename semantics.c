@@ -87,7 +87,7 @@ tab_ check_ast_to_table(Node *root){
   return tabela_global;
 }
 
-void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_local) {
+void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, tab_ tabela_local) {
   int i;
   tab_ tabela_global_copy;
   tab_ tabela_local_copy;
@@ -96,6 +96,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
 
 
   if(root != NULL){
+
     if(root->node_type == type_MethodHeader)
     {
       Node *method_decl_son = root->son;
@@ -122,6 +123,14 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
     }
     else if (root->node_type == type_Id) {
 
+      if(strcmp(father,getNode_type(type_ParamDecl))==0 || strcmp(father,getNode_type(type_VarDecl))==0 || strcmp(father,getNode_type(type_FieldDecl))==0){
+
+        for(i=0; i < high; i++){
+          printf(".");
+        }
+          printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+      }
+      else{
           for(i=0; i < high; i++){
             printf(".");
           }
@@ -134,7 +143,9 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
             printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
           }
 
-      }
+
+    }
+  }
 
     else if(root->node_type == type_StrLit ){
 
@@ -191,7 +202,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
     }
 
     /*As it is a son, prints 2 more (.)*/
-    printAnotatedList(root->son, high + 2, tabela_global_copy, tabela_local_copy);
-    printAnotatedList(root->brother, high, tabela_global_copy, tabela_local_copy);
+    printAnotatedList(getNode_type(root->node_type),root->son, high + 2, tabela_global_copy, tabela_local_copy);
+    printAnotatedList(father, root->brother, high, tabela_global_copy, tabela_local_copy);
   }
 }
