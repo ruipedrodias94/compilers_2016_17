@@ -128,7 +128,8 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           for(i=0; i < high; i++){
             printf(".");
           }
-          char *tipo = get_type_var(root->token, tabela_global,tabela_local_copy );
+          char *tipo;
+          printf(" gettipevat: : %s\n", get_type_var(root->token, tabela_global,tabela_local_copy ));
           if (strcmp(tipo, "") == 0) {
             printf("é nulo");
             printf("%s(%s)\n",getNode_type(root->node_type), root->token);
