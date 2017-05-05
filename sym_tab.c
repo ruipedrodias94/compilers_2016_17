@@ -400,6 +400,45 @@ return "";
 
 }
 
+char* get_type_var_local(char *name, tab_ tabela)
+{
+  tab_ tab_aux = tabela;
+  tab_ table_content;
+
+
+
+/*função para ir buscar os tipos de variaveis locais à tabela*/
+      table_content = tab_aux->node;
+      while(table_content!=NULL)
+      {
+        if(strcmp("Method",table_content->type)!=0){
+          if(strcmp(name,table_content->name)==0){
+        return table_content->type;
+      }
+    }
+      table_content = table_content->next;
+    }
+return "";
+
+}
+
+/*funcao apra ir buscar a tabela local*/
+//tem de ser alterada porque duas funçoes podem ter nomes iguais mar numero de argumentos diferentes
+tab_ get_local_table( char *method_name, tab_ tabela_global)
+{
+  tab_ tab_aux = tabela_global;
+
+  while(tab_aux!=NULL)
+  {
+    if(strcmp(tab_aux->name,method_name)==0)
+    {
+      return tab_aux;
+    }
+    tab_aux=tab_aux->next;
+  }
+  return NULL;
+
+}
 
 
 

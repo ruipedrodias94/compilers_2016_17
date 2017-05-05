@@ -234,11 +234,13 @@ int main(int argc, char** argv){
   }else if(strcmp(argv[1],"-s")==0){
       syntax_flag = 1;
       yyparse();
+      tab_ table;
+      table = check_ast_to_table(root);
 
       tabela_global = check_ast_to_table(root);
 
       if(flag_error == 0){
-        printAnotatedList(root,0, tabela_global);
+        printAnotatedList(root,0, tabela_global, tabela_global);
         //printList(root, 0);
       }
 

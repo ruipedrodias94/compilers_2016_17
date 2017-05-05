@@ -86,31 +86,47 @@ tab_ check_ast_to_table(Node *root){
   return tabela_global;
 }
 
-void printAnotatedList(Node* root, int high, tab_ tabela) {
+void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_local) {
   int i;
 
   if(root != NULL){
+    if(root->node_type == type_MethodHeader)
+    {
+      Node *aux = root->son;
+      while(aux!=NULL)
+      {
+          //Quando entra aqui passa-se a tabela das variáveis locais
+          if(aux->token!=NULL ){
+          tabela_local = get_local_table(aux->token, tabela_global);
+        }
+          aux = aux->brother;
+
+      }
+
+
+    }
     /*All the terminals with multiple values*/
-    if(root->node_type == type_BoolLit || root->node_type == type_RealLit  ){
+
+    else if(root->node_type == type_BoolLit || root->node_type == type_RealLit  ){
 
       for(i=0; i < high; i++){
         printf(".");
       }
       printf("%s(%s)\n",getNode_type(root->node_type), root->token);
     }
-    if(root->node_type == type_Id ){
+    else if(root->node_type == type_Id ){
 
       for(i=0; i < high; i++){
         printf(".");
       }
-      char *pao_barrado = get_type_var_global(root->token, tabela);
+      char *pao_barrado = get_type_var_global(root->token, tabela_global);
       if (strcmp(pao_barrado, "") == 0) {
         printf("%s(%s)\n",getNode_type(root->node_type), root->token);
       }else{
         printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, pao_barrado);
       }
     }
-    if(root->node_type == type_StrLit ){
+    else if(root->node_type == type_StrLit ){
 
       for(i=0; i < high; i++){
         printf(".");
@@ -165,7 +181,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela) {
       }
 
     /*As it is a son, prints 2 more (.)*/
-    printAnotatedList(root->son, high + 2, tabela);
-    printAnotatedList(root->brother, high, tabela);
+    printAnotatedList(root->son, high + 2, tabela_global, tabela_global);
+    printAnotatedList(root->brother, high, tabela_global, tabela_global);
   }
 }
