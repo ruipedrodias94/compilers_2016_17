@@ -188,7 +188,13 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
       for(i=0; i < high; i++){
           printf(".");
       }
-      printf("%s\n", getNode_type(root->node_type));
+      //printf("%s\n", getNode_type(root->node_type));
+      //get_param_string_on_tree(root,tabela_global,tabela_local_copy);
+      char *rt =(char*) malloc (sizeof(char) + 10);
+       strcpy(rt,get_return_type_method_global(root->son->token,tabela_global));
+      printf("RT: %s\n",rt);
+
+
     }
     else if (root->node_type == type_Plus || root->node_type == type_Mul || root->node_type == type_Sub || root->node_type == type_Div) {
       for(i=0; i < high; i++){

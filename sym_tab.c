@@ -428,9 +428,9 @@ void print_table(tab_ tabela)
   tab_ table_content = tabela->node;
   while(table_content!=NULL)
   {
-    if(strcmp("Method",table_content->type)!=0){
-
-    }
+    if(strcmp(table_content->type,"Method")==0){
+    printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content);
+  }
       table_content = table_content->next;
   }
 
@@ -454,8 +454,6 @@ tab_ get_local_table( char *method_name, tab_ tabela_global)
 }
 
 char* get_type_var(char * name,tab_ tabela_global, tab_ tabela_local){
-print_table(tabela_local);
-print_table(tabela_global);
 
 
   if(strcmp(get_type_var_local(name, tabela_local),"")!=0)
@@ -469,6 +467,52 @@ print_table(tabela_global);
   else{
     return "";
   }
+}
+
+
+
+char get_param_string_on_tree(Node *call, tab_ tabela_global, tab_ tabela_local)
+{
+  char *param_string = "(";
+  Node * call_node = call->son->brother;
+  int count = 1;
+
+  while(call_node!=NULL)
+  {
+      if(call_node->node_type!=type_Null){
+        if(count>1)
+          {
+            param_string = concat(param_string,",");
+          }
+          param_string = concat(param_string,get_type_var(call_node->token,tabela_global,tabela_local));
+          count++;
+  }
+    call_node = call_node->brother;
+
+}
+param_string = concat(param_string,")");
+return param_string;
+}
+
+char* get_return_type_method_global(char *name, tab_ tabela)
+{
+
+
+
+tab_ table_content = tabela->node;
+while(table_content!=NULL)
+{
+  if(strcmp(table_content->type,"Method")==0){
+  printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content->return_type);
+  if(strcmp(name,table_content->name)==0)
+  {
+    printf("RT: %s", table_content->return_type);
+    char *rt2 = (char*) malloc (sizeof(char) + strlen(table_content->return_type));
+    return rt2;
+  }
+}
+    table_content = table_content->next;
+}
 
 
 }
