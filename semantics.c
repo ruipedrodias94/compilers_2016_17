@@ -103,10 +103,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
       {
           //Quando entra aqui passa-se a tabela das variáveis locais
           if(method_decl_son->token!=NULL ){
-            printf(" token : %s",method_decl_son->token);
           tabela_local_copy = get_local_table(method_decl_son->token, tabela_global);
-          printf("tabela local alterada para : %s\n", tabela_local_copy->name);
-          print_table(tabela_local_copy);
         }
           method_decl_son = method_decl_son->brother;
 
@@ -128,10 +125,10 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           for(i=0; i < high; i++){
             printf(".");
           }
-          char *tipo;
-          printf(" gettipevat: : %s\n", get_type_var(root->token, tabela_global,tabela_local_copy ));
+          char *tipo = "";
+          tipo = get_type_var(root->token, tabela_global,tabela_local_copy );
           if (strcmp(tipo, "") == 0) {
-            printf("é nulo");
+
             printf("%s(%s)\n",getNode_type(root->node_type), root->token);
           }else{
             printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
@@ -194,7 +191,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
     }
 
     /*As it is a son, prints 2 more (.)*/
-    printAnotatedList(root->son, high + 2, tabela_global_copy, tabela_global_copy);
-    printAnotatedList(root->brother, high, tabela_global_copy, tabela_global_copy);
+    printAnotatedList(root->son, high + 2, tabela_global_copy, tabela_local_copy);
+    printAnotatedList(root->brother, high, tabela_global_copy, tabela_local_copy);
   }
 }
