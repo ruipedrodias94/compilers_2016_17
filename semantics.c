@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Node *aux;
+Node *field_decl_verifier;
 tab_ check_ast_to_table(Node *root){
 
 
@@ -117,7 +117,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
       printf("%s(%s)\n",getNode_type(root->node_type), root->token);
     }
     else if (root->node_type == type_Id) {
-      if (aux == NULL) {
+      if (field_decl_verifier == NULL) {
           for(i=0; i < high; i++){
             printf(".");
           }
@@ -188,7 +188,7 @@ void printAnotatedList(Node* root, int high, tab_ tabela_global, tab_ tabela_loc
           printf("%s\n", getNode_type(root->node_type));
         }
         if (root->node_type == type_FieldDecl) {
-          aux = root;
+          field_decl_verifier = root;
         }
       }
     }
