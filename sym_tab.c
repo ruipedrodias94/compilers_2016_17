@@ -429,7 +429,7 @@ void print_table(tab_ tabela)
   while(table_content!=NULL)
   {
     if(strcmp(table_content->type,"Method")==0){
-    printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content);
+    //printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content);
   }
       table_content = table_content->next;
   }
@@ -503,17 +503,17 @@ tab_ table_content = tabela->node;
 while(table_content!=NULL)
 {
   if(strcmp(table_content->type,"Method")==0){
-  printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content->return_type);
+  //printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content->return_type);
   if(strcmp(name,table_content->name)==0)
   {
-    printf("RT: %s", table_content->return_type);
+    //printf("RT: %s", table_content->return_type);
     char *rt2 = (char*) malloc (sizeof(char) + strlen(table_content->return_type));
+    strcpy(rt2, table_content->return_type);
     return rt2;
   }
 }
     table_content = table_content->next;
 }
-
 
 }
 

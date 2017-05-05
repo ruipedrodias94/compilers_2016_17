@@ -191,8 +191,9 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
       //printf("%s\n", getNode_type(root->node_type));
       //get_param_string_on_tree(root,tabela_global,tabela_local_copy);
       char *rt =(char*) malloc (sizeof(char) + 10);
-       strcpy(rt,get_return_type_method_global(root->son->token,tabela_global));
-      printf("RT: %s\n",rt);
+      strcpy(rt, get_return_type_method_global(root->son->token,tabela_global));
+      printf("%s - %s\n", getNode_type(root->node_type), rt);
+      //printf("RT: %s\n",rt);
 
 
     }
