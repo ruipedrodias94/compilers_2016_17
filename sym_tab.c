@@ -494,25 +494,47 @@ char* get_param_string_on_tree(Node *call, tab_ tabela_global, tab_ tabela_local
   return param_string;
 }
 
-char* get_return_type_method_global(char *name, tab_ tabela)
+
+char* get_return_type_method_global(char *name, tab_ tabela, char* params)
 {
 
+  tab_ table_content = tabela->node;
+  int count = 0;
+  char *param_string = "(";
 
-
-tab_ table_content = tabela->node;
-while(table_content!=NULL)
-{
-  if(strcmp(table_content->type,"Method")==0){
-  //printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content->return_type);
-  if(strcmp(name,table_content->name)==0)
+  while(table_content!=NULL)
   {
-    //printf("RT: %s", table_content->return_type);
-    char *rt2 = (char*) malloc (sizeof(char) + strlen(table_content->return_type));
-    strcpy(rt2, table_content->return_type);
-    return rt2;
+    if(strcmp(table_content->type,"Method")==0){
+    //printf("n:%s t:%s rt:%s\n",table_content->name,table_content->type,table_content->return_type);
+    if(strcmp(name,table_content->name)==0)
+    {
+      param_ param = table_content->param;
+      
+      while(param != NULL)
+      {
+    
+        if(count>1)
+            {
+              param_string = concat(param_string,",");
+            }
+          param_string = concat(param_string, param->type);
+          count++;
+          param = param->next;
+      }
+      
+
+      param_string = concat(param_string,")");
+  
+
+      if (strcmp(params, param_string) == 0)
+      {
+        char *rt2 = (char*) malloc (sizeof(char) + strlen(table_content->return_type));
+        strcpy(rt2, table_content->return_type);
+        return rt2;
+      }      
+    }
   }
-}
-    table_content = table_content->next;
+  table_content = table_content->next;
 }
   return "";
 }
@@ -529,6 +551,7 @@ char *toLoweCase(char *string){
   return aux;
 }
 
+/*FUNCTION TO CONCAT STRINGS*/
 char* concat(const char *s1, const char *s2)
 {
     char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the zero-terminator

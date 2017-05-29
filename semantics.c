@@ -6,6 +6,8 @@
 #include <string.h>
 
 Node *field_decl_verifier;
+
+
 tab_ check_ast_to_table(Node *root){
 
 
@@ -87,12 +89,14 @@ tab_ check_ast_to_table(Node *root){
   return tabela_global;
 }
 
-void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, tab_ tabela_local) {
+void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, tab_ tabela_local, Node* pai) {
   int i;
   tab_ tabela_global_copy;
+  Node* no_pai = pai;
   tab_ tabela_local_copy;
   tabela_local_copy = tabela_local;
   tabela_global_copy = tabela_global;
+  
 
 
   if(root != NULL){
@@ -125,6 +129,7 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
     }
     else if (root->node_type == type_Id) {
 
+      //AQUI ESTA MAL, TEMOS DE IR BUSCAR O TIPO DE ARGUMENTOS QUE RECEBE
       if(strcmp(father,getNode_type(type_ParamDecl))==0 || strcmp(father,getNode_type(type_VarDecl))==0 || strcmp(father,getNode_type(type_FieldDecl))==0 || strcmp(father,getNode_type(type_MethodHeader))==0){
 
         for(i=0; i < high; i++){
@@ -138,17 +143,41 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
           }
           char *tipo = "";
           tipo = get_type_var(root->token, tabela_global,tabela_local_copy );
-          if (strcmp(tipo, "") == 0) {
-
-            printf("%s(%s)\n",getNode_type(root->node_type), root->token);
-          }else{
-            printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
+          char* params = "";
+          if (pai != NULL) 
+          {
+            
+            if (pai->node_type == type_Call)
+            {
+              
+              params = get_param_string_on_tree(pai, tabela_global_copy, tabela_local_copy);
+              
+              if (strcmp(params, "") == 0)
+              {
+                printf("NAO TEM PARAMS\n");
+                printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
+              } else if(strcmp(tipo, "") == 0){
+                printf("NAO TEM TIPO\n");
+                strcpy(tipo, "undef");
+                printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
+              }
+              else {
+                printf("TEM PARAMS\n");
+                printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, params);
+              }
+            }
           }
 
-
+          else{
+            if (strcmp(tipo, "") == 0) {
+              printf("%s(%s)\n",getNode_type(root->node_type), root->token);
+            }else{
+              printf("%s(%s) - %s\n",getNode_type(root->node_type), root->token, tipo);
+            }
+          }
+          
     }
   }
-
     else if(root->node_type == type_StrLit ){
 
       for(i=0; i < high; i++){
@@ -156,7 +185,7 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
       }
       printf("%s(%s) - String\n",getNode_type(root->node_type), root->token);
     }
-    else if(root->node_type==type_Eq || root->node_type==type_Neq || root->node_type==type_Lt || root->node_type==type_Gt || root->node_type==type_Leq || root->node_type==type_Geq)
+    else if(root->node_type == type_Not || root->node_type == type_Or || root->node_type == type_And || root->node_type==type_Eq || root->node_type==type_Neq || root->node_type==type_Lt || root->node_type==type_Gt || root->node_type==type_Leq || root->node_type==type_Geq)
     {
       for(i=0; i < high; i++){
           printf(".");
@@ -188,12 +217,22 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
       for(i=0; i < high; i++){
           printf(".");
       }
-      //printf("%s\n", getNode_type(root->node_type));
+      //printf("Buce %s\n", getNode_type(root->node_type));
       //get_param_string_on_tree(root,tabela_global,tabela_local_copy);
+      char* params = (char* ) malloc(sizeof(char) + 20);
+      strcpy(params, get_param_string_on_tree(root, tabela_global_copy, tabela_local_copy));
+
       char *rt =(char*) malloc (sizeof(char) + 10);
-      strcpy(rt, get_return_type_method_global(root->son->token,tabela_global));
+      strcpy(rt, get_return_type_method_global(root->son->token,tabela_global, params));
+      
+      /*O pai passa a ser a root*/
+      no_pai = root;
+
+      if (strcmp(rt, "") == 0){
+        strcpy(rt, "undef");
+      }
       printf("%s - %s\n", getNode_type(root->node_type), rt);
-      //printf("RT: %s\n",rt);
+      //printf("\nRT: %s\n",rt);
 
 
     }
@@ -223,7 +262,7 @@ void printAnotatedList(char* father,Node* root, int high, tab_ tabela_global, ta
     }
 
     /*As it is a son, prints 2 more (.)*/
-    printAnotatedList(getNode_type(root->node_type),root->son, high + 2, tabela_global_copy, tabela_local_copy);
-    printAnotatedList(father, root->brother, high, tabela_global_copy, tabela_local_copy);
+    printAnotatedList(getNode_type(root->node_type),root->son, high + 2, tabela_global_copy, tabela_local_copy, no_pai);
+    printAnotatedList(father, root->brother, high, tabela_global_copy, tabela_local_copy, no_pai);
   }
 }
