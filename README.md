@@ -1,9 +1,12 @@
-# COMP16_17
-Compilador para a linguagem Ja
+# Final assignment for the Compilers Course 
 
-Projecto da cadeira de Compiladores da Faculdade de Ciẽncias e Tecnologia da Universidade de Coimbra.
+Compiler Java Language. 
 
-Alunos:
-- Jorge Araújo
-- Rui Dias
+Developed by students:
+..* Jorge Araújo
+..* Rui Dias
+
+
+Faculdade de Ciências e Tecnologia da Universidade de Coimbra. (2016-2017)
+
 
